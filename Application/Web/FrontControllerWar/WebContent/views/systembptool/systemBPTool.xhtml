@@ -1,0 +1,73 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                template="/views/template/template.xhtml">
+
+    <ui:define name="title">
+        #{textI18.template_tool_TT}
+    </ui:define>
+
+    <ui:define name="description">
+    </ui:define>
+
+    <ui:define name="body">
+        <h:form id="formSystemBP">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+
+            <p:growl id="msgs" showDetail="true" sticky="true"/>
+
+            <p:dataTable id="sbpDT" var="sbp" value="#{systemBPView.systemBPList}" editable="true" widgetVar="widSbpDT"
+                         filteredValue="#{systemBPView.systemBPFilterList}" scrollable="true" scrollHeight="150"
+                         style="margin-bottom:20px">
+
+
+                <p:ajax event="rowEdit" listener="#{systemBPView.onRowEdit}" update=":formSystemBP:msgs"/>
+
+
+                <f:facet name="header">
+                    Propiedades del Sistema y del Negocio
+                    <p:outputPanel style="margin-left: 70%">
+                        <h:outputText value="Busqueda general:" />
+                        <p:inputText id="globalFilter" onkeyup="PF('widSbpDT').filter()" style="width:150px" placeholder="Introduzca palablra"/>
+                    </p:outputPanel>
+                </f:facet>
+
+
+                <p:column headerText="Codigo Propiedad" filterBy="#{sbp.codSbp}" footerText="contains" filterMatchMode="contains">
+                    <h:outputText value="#{sbp.codSbp}"/>
+                </p:column>
+
+                <p:column filterBy="#{sbp.codSm}" headerText="Color" footerText="in" filterMatchMode="in">
+                    <f:facet name="filter">
+                        <p:selectCheckboxMenu label="Modulos" onchange="PF('widSbpDT').filter()" panelStyle="width:125px" scrollHeight="150">
+                            <f:selectItems value="#{systemBPView.systemModulesList}" var="sm" itemValue="#{sm.cod}" itemLabel="#{sm.cod}"/>
+                        </p:selectCheckboxMenu>
+                    </f:facet>
+                    <h:outputText value="#{sbp.codSm}"/>
+                </p:column>
+
+                <p:column headerText="Descripcion">
+                    <h:outputText value="#{sbp.description}"/>
+                </p:column>
+
+                <p:column headerText="Valor">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{sbp.value}"/></f:facet>
+                        <f:facet name="input"><p:inputText id="valueInput" value="#{sbp.value}"
+                                                           style="width:100%"/></f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+                <p:column style="width:32px">
+                    <p:rowEditor />
+                </p:column>
+
+            </p:dataTable>
+
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>
