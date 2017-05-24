@@ -3,9 +3,30 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://java.sun.com/jsf/core"
         >
 
     <ul class="nav navbar-nav">
+
+        <li>
+
+            <div class="pull-left image">
+                <h:graphicImage library="images" name="multiple-language.jpg"
+                                styleClass="img-circle"
+                                style="max-width: 30px; margin-right: 5px; margin-top: 9px;"/>
+            </div>
+        </li>
+        <li>
+            <h:form prependId="false">
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                <h:selectOneMenu id="locale" value="#{language.selectedLocale}"
+                                 style="margin-top: 14px; width:95px">
+                    <c:selectItems value="#{language.localeInMap}"/>
+                    <p:ajax event="valueChange" listener="#{language.onLanguageChange}"/>
+                </h:selectOneMenu>
+            </h:form>
+        </li>
+
         <li class="dropdown messages-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
                 <i class="fa fa-envelope-o"></i>
@@ -54,30 +75,31 @@
                 <li class="footer"><a href="#">See all notifications</a></li>
             </ul>
         </li>
-        <li class="dropdown user user-menu">
+        <li class="dropdown user user-menu" style="width: 175px">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
 
-                <span class="hidden-xs">Rafael Pestano</span>
+                <h:graphicImage library="images" name="avatar5.png" styleClass="user-image"/>
+                <span class="hidden-xs">${loggedinuser}</span><br/>
+
+                <div class="clockApp">
+                    <p:clock pattern="HH:mm:ss dd/MM/yyyy" mode="server"/>
+                </div>
             </a>
             <ul class="dropdown-menu">
                 <li class="user-header">
-                    <div class="hidden-xs">
+                    <h:graphicImage library="images" name="avatar5.png" styleClass="user-image"/>
 
-                    </div>
                     <p>
-                        Rafael M. Pestano
-                        <small> Java EE Developer</small>
+                        ${loggedinuser} - Web Developer
+                        <small>Member since Oct. 2016</small>
                     </p>
                 </li>
                 <li class="user-footer">
                     <h:form prependId="false">
-                        <div class="pull-left">
-                            <p:commandLink styleClass="btn btn-danger" value="Change password"/>
-                        </div>
                         <div class="pull-right">
-                            <p:commandLink id="logout" action="sss" title="Logoff">
+                            <a href="${request.contextPath}/logout">
                                 <i class="fa fa-sign-out fa-2x"></i>
-                            </p:commandLink>
+                            </a>
                         </div>
                     </h:form>
                 </li>

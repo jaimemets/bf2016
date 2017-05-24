@@ -33,12 +33,16 @@
                 <span>Forms</span>
             </p:link>
         </li>
+
+        <sec:authorize access="hasRole('ADMIN')">
         <li>
-            <p:link href="/login.xhtml">
-                <i class="fa fa-users"></i>
-                <span>Logon</span>
-            </p:link>
+            <a href="${request.contextPath}/userTool">
+                <i class="fa fa-users"/><span>Cuentas y protección de </span><br/>
+                <span>usuarios</span>
+            </a>
         </li>
+        </sec:authorize>
+
         <li class="treeview">
             <a href="#">
                 <i class="fa fa-laptop"/>
