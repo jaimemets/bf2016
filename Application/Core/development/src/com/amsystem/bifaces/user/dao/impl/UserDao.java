@@ -71,7 +71,7 @@ public class UserDao extends AbstractDao<Integer, User> implements IUserDao {
     @Transactional(readOnly = false)
     public boolean deleteBySSO(String sso) {
         Criteria criteria = createEntityCriteria();
-        criteria.add(Restrictions.eq("ssoId", sso));
+        criteria.add(Restrictions.eq("userName", sso));
         User user = (User)criteria.uniqueResult();
         return delete(user);
     }

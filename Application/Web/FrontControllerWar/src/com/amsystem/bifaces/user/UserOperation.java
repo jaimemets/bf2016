@@ -47,7 +47,7 @@ public class UserOperation {
         if (userService.saveUser(selectedUser)) {
             //MessageUtil.showMessage("Usuario registrado exitosamente", ErrorType.INFO);
             MessageUtil.showMessage(NotificationType.INFO, rb.getString(NotificationType.INFO.getLabel().concat("_GRL")), "Usuario registrado exitosamente") ;
-            ComponentOperation.updateComponent("formUser:userDT");
+            //ComponentOperation.updateComponent("formUser:userDT");
         } else {
             //MessageUtil.showMessage("Error guardando usuario", ErrorType.ERROR);
             MessageUtil.showMessage(NotificationType.ERROR, rb.getString(NotificationType.ERROR.getLabel().concat("_GRL")),"Error guardando usuario");

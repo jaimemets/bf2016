@@ -66,6 +66,8 @@
                     <ui:insert name="title"/>
                     <small><ui:insert name="description"/></small>
                 </h1>
+                <ui:insert name="renderBreadCrumb"/>
+                <!--
                 <ui:fragment rendered="#{empty renderBreadCrumb or renderBreadCrumb eq 'true'}">
                     <ol class="breadcrumb">
                         <li>
@@ -86,6 +88,7 @@
                         </ui:repeat>
                     </ol>
                 </ui:fragment>
+                -->
                 <ui:insert name="content-header"/>
             </section>
             <section class="content">

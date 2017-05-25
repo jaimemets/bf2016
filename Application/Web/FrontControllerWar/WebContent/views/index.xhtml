@@ -7,6 +7,14 @@
     </ui:define>
 
     <ui:define name="title"/>
+
+    <ui:define name="renderBreadCrumb">
+        <ol class="breadcrumb">
+            <li><a href="#{request.contextPath}/"><i class="fa fa-dashboard"></i>Home</a></li>
+            <li class="active">Dashboard</li>
+        </ol>
+    </ui:define>
+
     <ui:define name="body"/>
 
 </ui:composition>

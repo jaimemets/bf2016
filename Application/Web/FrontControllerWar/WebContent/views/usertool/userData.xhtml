@@ -5,68 +5,86 @@
         xmlns:ui="http://java.sun.com/jsf/facelets"
         xmlns:p="http://primefaces.org/ui">
 
-    <!-- <h:form> -->
-    <h:panelGrid style=" width: 100%; border: 3px double cornflowerblue;  border-radius: 5px;  margin: 5px 0px 0px 0px;"
-                 columns="4"
-                 cellpadding="5">
+    <h:panelGrid id="pgUserData"
+                 style=" width: 100%; border: 3px double cornflowerblue;  border-radius: 5px;  margin: 5px 0px 0px 0px;"
+                 columns="4" cellpadding="5">
 
         <!--Campo para registrar el/los Nombres-->
         <p:outputLabel for="firstName" value="Nombres:"/>
-        <p:inputText id="firstName" value="#{userSectionVO.userBean.firstName}" style="width: 175px" label="Nombres"
+        <p:inputText id="firstName" value="#{userFormView.userData.firstName}" style="width: 65%"
+                     label="Nombres"
                      required="true">
             <f:validateLength minimum="2"/>
         </p:inputText>
 
         <!--Campo para registrar el/los Apellidos-->
         <p:outputLabel for="lastname" value="Apellidos:"/>
-        <p:inputText id="lastname" value="#{userSectionVO.userBean.lastName}" style="width: 175px" label="Apellidos"
+        <p:inputText id="lastname" value="#{userFormView.userData.lastName}" style="width: 65%"
+                     label="Apellidos"
                      required="true">
             <f:validateLength minimum="2"/>
         </p:inputText>
 
         <!--Campo para registrar el Correo Electronico-->
         <p:outputLabel for="email" value="Email:"/>
-        <p:inputText id="email" value="#{userSectionVO.userBean.email}" style="width: 175px"
-                     placeholder="Ej: micorreo@ejemplo.com" label="Email" required="true"/>
+        <p:inputText id="email" value="#{userFormView.userData.email}" style="width: 65%"
+                     placeholder="Ej: micorreo@ejemplo.com" label="Email" required="true">
+            <f:validateRegex pattern="^[_a-z0-9-]+(.[_a-z0-9-]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,})$"/>
+        </p:inputText>
 
 
         <!--Campo para registrar el Login-->
         <p:outputLabel for="login" value="Nombre Usuario:"/>
-        <p:inputText id="login" value="#{userSectionVO.userBean.userName}" style="width: 175px" label="Login"
+        <p:inputText id="login" value="#{userFormView.userData.userName}" style="width: 65%" label="Login"
                      required="true">
             <f:validateLength minimum="6"/>
         </p:inputText>
 
         <!--Campo para registrar la clave del usuario-->
         <p:outputLabel for="passw" value="Clave:"/>
-        <p:password id="passw" value="#{userSectionVO.userBean.password}" match="password" label="Clave" feedback="true"
-                    required="true">
+        <p:password id="passw" style="width:65%" value="#{userFormView.userData.password}" match="password"
+                    label="Clave"
+                    feedback="true" required="true">
         </p:password>
 
         <!--Campo para confirmar el registro de la clave del usuario-->
         <p:outputLabel for="password" value="Confirme Clave:"/>
-        <p:password id="password" value="#{userSectionVO.userBean.password}" label="Confirme Clave" feedback="true"
+        <p:password id="password" value="#{userFormView.userData.password}" style="width:65%"
+                    label="Confirme Clave" feedback="true"
                     required="true">
         </p:password>
 
         <!--Campo para registrar el Rol del Usuario-->
         <p:outputLabel for="profile" value="Rol/Grupo:"/>
-        <p:selectCheckboxMenu id="profile" style="width:165px" required="true" label="Roles"
-                              value="#{userSectionVO.selectedProfile}">
-            <f:selectItems value="#{userSectionVO.roleList}"/>
+        <p:selectCheckboxMenu id="profile" style="width:65%" required="true" label="Roles"
+                              value="#{userFormView.selectedProfile}">
+            <f:selectItems value="#{userFormView.roleList}"/>
         </p:selectCheckboxMenu>
 
         <!--Campo para registrar si el usuario es expirable-->
         <h:outputLabel for="expirable" value="Expirable: "/>
-        <p:selectBooleanButton id="expirable" value="#{userSectionVO.expirable}" onLabel="Si" offLabel="No">
+        <p:selectBooleanButton id="expirable" value="#{userFormView.expirable}" style="width:65%" onLabel="Si"
+                               offLabel="No">
             <p:ajax update="maskDate"/>
         </p:selectBooleanButton>
 
         <!--Campo para registrar Fecha Expiracion-->
         <p:outputLabel for="maskDate" value="Fecha expiracion:"/>
-        <p:calendar id="maskDate" value="#{userSectionVO.userBean.expirationDate}"
-                    pattern="dd-MM-yyyy" mask="true" disabled="#{!userSectionVO.expirable}"/>
+        <p:calendar id="maskDate" style="width:65%" value="#{userFormView.userData.expirationDate}"
+                    pattern="dd-MM-yyyy" mask="true" disabled="#{!userFormView.expirable}"/>
 
     </h:panelGrid>
+
+    <p:outputPanel style="width: 100%;overflow: auto;display: block">
+        <p:commandButton value="#{textI18.save_GRL}" style="margin: 1% 3% 3% 33%"
+                         icon="ui-icon-check"
+                         update="pgUserData userForm:winMessageId"
+                         actionListener="#{userFormView.saveUser}"/>
+
+        <p:button id="cancelUsrBtn" value="#{textI18.cancel_GRL}"
+                  href="/userTool"
+                  icon="ui-icon-cancel"/>
+
+    </p:outputPanel>
 
 </ui:composition>

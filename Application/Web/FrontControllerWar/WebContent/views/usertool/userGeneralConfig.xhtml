@@ -1,0 +1,39 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                template="/views/template/template.xhtml">
+
+    <ui:define name="title">
+        #{textI18.user_tool_title_US}
+    </ui:define>
+
+    <ui:define name="description"/>
+
+    <ui:define name="renderBreadCrumb">
+        <ol class="breadcrumb">
+            <li><a href="#{request.contextPath}/"><i class="fa fa-dashboard"></i>#{textI18.home_label_GRL}</a></li>
+            <li><a href="#{request.contextPath}/userTool">#{textI18.users_label_US}</a></li>
+            <li class="active">${operation}</li>
+        </ol>
+    </ui:define>
+
+    <ui:define name="body">
+        <h:form id="userForm">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+
+            <p:growl id="winMessageId" showDetail="true" sticky="true"/>
+
+            <p:tabView id="tabUserSetting" scrollable="true" cache="false">
+                <p:tab id="tabUserData" title="Datos del Usuario">
+                    <ui:include src="userData.xhtml"/>
+                </p:tab>
+                <p:tab id="tabPermissionUser" title="Permisologia">
+
+                </p:tab>
+            </p:tabView>
+
+        </h:form>
+    </ui:define>
+</ui:composition>

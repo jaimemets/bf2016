@@ -10,13 +10,20 @@
         #{textI18.template_tool_TT}
     </ui:define>
 
-    <ui:define name="description">
+    <ui:define name="description" />
+
+    <ui:define name="renderBreadCrumb">
+        <ol class="breadcrumb">
+            <li><a href="/"><i class="fa fa-dashboard"></i>#{textI18.home_label_GRL}</a></li>
+            <li><a href="#">#{textI18.config_label_GRL}</a></li>
+            <li class="active">#{textI18.template_tool_TT}</li>
+        </ol>
     </ui:define>
 
     <ui:define name="body">
-        <h:form id="form" style="margin:auto;margin-top:2%;width:1024px;">
+        <h:form id="form">
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-            <p:layoutUnit position="center">
+
                 <p:growl id="winMessageId" showDetail="true" sticky="true"/>
 
                 <p:panelGrid>
@@ -107,8 +114,7 @@
                         <p:column colspan="2" rowspan="2">
                             <p:dataTable id="propertyDT" var="prop" value="#{propertySectionView.properties}"
                                          selection="#{propertySectionView.selectedProp}" selectionMode="single"
-                                         rowKey="#{prop.name}"
-                                         scrollable="true" scrollHeight="423">
+                                         rowKey="#{prop.name}" scrollable="true" scrollHeight="423">
 
                                 <p:ajax event="rowSelect" update="associateBtn editPropBtn clonePropBtn deletePropBtn" />
 
@@ -136,13 +142,13 @@
 
                                     <p:spacer styleClass="vertical-separator" style="width: 2px; height: 22px"/>
 
-                                    <p:commandButton id="editPropBtn" process="propertyDT" value="#{textI18.edit_TT}"
+                                    <p:commandButton id="editPropBtn" process="propertyDT" value="#{textI18.edit_GRL}"
                                                      icon="fa fa-edit"
                                                      disabled="#{empty propertySectionView.selectedProp}"
                                                      update=":form:tabSetting"
                                                      onclick="PF('widSettingProperty').show();"/>
 
-                                    <p:commandButton id="clonePropBtn" value="#{textI18.clone_TT}"
+                                    <p:commandButton id="clonePropBtn" value="#{textI18.clone_GRL}"
                                                      icon="fa fa-code-fork"
                                                      disabled="#{empty propertySectionView.selectedProp}"
                                                      process="@this propertyDT"
@@ -150,7 +156,7 @@
                                                      update=":form:clonePropertyDlgId"
                                                      oncomplete="PF('clonePropertyDlg').show();"/>
 
-                                    <p:commandButton id="deletePropBtn" value="#{textI18.delete_TT}" icon="ui-icon-minusthick"
+                                    <p:commandButton id="deletePropBtn" value="#{textI18.delete_GRL}" icon="ui-icon-minusthick"
                                                      disabled="#{empty propertySectionView.selectedProp}"
                                                      process="@this propertyDT"
                                                      update="propertyDT :form:winMessageId"
@@ -202,7 +208,7 @@
                 </p:panelGrid>
 
 
-            </p:layoutUnit>
+
 
             <!-- Ventana detalles de la propiedad -->
             <p:dialog id="widSettPropId" header="#{textI18.property_detail_TT}" widgetVar="widSettingProperty"
@@ -225,7 +231,7 @@
                                      action="#{propertySectionView.updateProperty()}"
                                      update="propertyDT" icon="ui-icon-plusthick"
                                      oncomplete="PF('widSettingProperty').hide();"/>
-                    <p:commandButton value="#{textI18.cancel_TT}" icon="ui-icon-cancel"
+                    <p:commandButton value="#{textI18.cancel_GRL}" icon="ui-icon-cancel"
                                      onclick="PF('widSettingProperty').hide();" type="button"/>
                 </p:outputPanel>
 
@@ -292,7 +298,7 @@
                                      update="propertyCloneId templateTree winMessageId"
                                      action="#{templateTreeView.cloneTemplate}"/>
 
-                    <p:commandButton value="#{textI18.cancel_TT}" icon="ui-icon-cancel"
+                    <p:commandButton value="#{textI18.cancel_GRL}" icon="ui-icon-cancel"
                                      onclick="PF('clonePropertyDlg').hide();" type="button"/>
                 </p:outputPanel>
 
@@ -311,7 +317,7 @@
 
                         <p:outputPanel style="width: 100%;overflow: auto;display: block">
                             <p:commandButton value="#{textI18.save_TT}" style="margin: 1% 3% 3% 33%"/>
-                            <p:commandButton value="#{textI18.cancel_TT}" icon="ui-icon-cancel"
+                            <p:commandButton value="#{textI18.cancel_GRL}" icon="ui-icon-cancel"
                                              onclick="PF('dlgLifeCycle').hide();" type="button"/>
                         </p:outputPanel>
                     </p:dialog>

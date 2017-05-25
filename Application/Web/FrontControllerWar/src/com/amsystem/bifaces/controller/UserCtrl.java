@@ -9,6 +9,7 @@ package com.amsystem.bifaces.controller;
 
 import com.amsystem.bifaces.user.model.User;
 import com.amsystem.bifaces.user.service.UserService;
+import com.amsystem.bifaces.util.OperationType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import javax.validation.Valid;
-import java.util.Locale;
+import java.util.ResourceBundle;
+
 
 @Controller
 @RequestMapping("/")
@@ -36,7 +38,7 @@ public class UserCtrl extends GeneralCtrl{
     UserService userService;
 
     @Autowired
-    MessageSource messageSource;
+    private ResourceBundle rb;
 
     /**
      * This method will list all existing users.
@@ -50,13 +52,14 @@ public class UserCtrl extends GeneralCtrl{
     /**
      * This method will provide the medium to add a new user.
      */
-    @RequestMapping(value = { "/newuser" }, method = RequestMethod.GET)
+    @RequestMapping(value = { "/newUser" }, method = RequestMethod.GET)
     public String newUser(ModelMap model) {
         User user = new User();
-        model.addAttribute("user", user);
-        model.addAttribute("edit", false);
+        model.addAttribute("requestUsr", user);
+        model.addAttribute("operation", rb.getString("newRegister_GRL"));
+        model.addAttribute("operationType", OperationType.CREATE);
         model.addAttribute("loggedinuser", getPrincipal());
-        return "registration";
+        return "usertool/userGeneralConfig";
     }
 
     /**
@@ -80,8 +83,8 @@ public class UserCtrl extends GeneralCtrl{
 		 *
 		 */
         if (!userService.isUserSSOUnique(user.getUserId(), user.getUserName())) {
-            FieldError ssoError =new FieldError("user","ssoId",messageSource.getMessage("non.unique.ssoId", new String[]{user.getUserName()}, Locale.getDefault()));
-            result.addError(ssoError);
+            //FieldError ssoError =new FieldError("user","ssoId",rb.getString("non.unique.ssoId", new String[]{user.getUserName()}, Locale.getDefault()));
+            //result.addError(ssoError);
             return "registration";
         }
 
@@ -97,13 +100,15 @@ public class UserCtrl extends GeneralCtrl{
     /**
      * This method will provide the medium to update an existing user.
      */
-    @RequestMapping(value = { "/edit-user-{ssoId}" }, method = RequestMethod.GET)
-    public String editUser(@PathVariable String ssoId, ModelMap model) {
-        User user = userService.findBySSO(ssoId);
-        model.addAttribute("user", user);
-        model.addAttribute("edit", true);
+    @RequestMapping(value = { "/editUser-{userName}"}, method = RequestMethod.GET)
+    public String editUser(@PathVariable String userName, ModelMap model) {
+        User user = userService.findBySSO(userName);
+        model.addAttribute("requestUsr", user);
+        model.addAttribute("operation", rb.getString("registryUpdate_GRL"));
+        model.addAttribute("operationType", OperationType.EDIT);
+
         model.addAttribute("loggedinuser", getPrincipal());
-        return "registration";
+        return "usertool/userGeneralConfig";
     }
 
     /**
@@ -144,23 +149,5 @@ public class UserCtrl extends GeneralCtrl{
     }
 
 
-
-
-    /**
-     * This method returns the principal[user-name] of logged-in user.
-     *
-    private String getPrincipal(){
-        String userName = null;
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (principal instanceof UserDetails) {
-            userName = ((UserDetails)principal).getUsername();
-        } else {
-            userName = principal.toString();
-        }
-        User user = userService.findBySSO(userName);
-        return user.getFirstName().concat(" ").concat(user.getLastName());
-    }
-*/
 
 }
