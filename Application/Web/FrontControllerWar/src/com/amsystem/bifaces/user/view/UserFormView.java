@@ -1,4 +1,4 @@
-package com.amsystem.bifaces.user.vo;
+package com.amsystem.bifaces.user.view;
 
 import com.amsystem.bifaces.user.UserOperation;
 import com.amsystem.bifaces.user.model.User;

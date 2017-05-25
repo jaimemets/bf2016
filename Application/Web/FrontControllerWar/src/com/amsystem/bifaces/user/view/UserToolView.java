@@ -1,26 +1,15 @@
-package com.amsystem.bifaces.user.vo;
+package com.amsystem.bifaces.user.view;
 
 import com.amsystem.bifaces.user.UserOperation;
-import com.amsystem.bifaces.user.bean.UserBean;
 import com.amsystem.bifaces.user.model.User;
-import com.amsystem.bifaces.user.model.UserProfile;
-import com.amsystem.bifaces.util.ComponentOperation;
-import com.amsystem.bifaces.util.MessageUtil;
 import com.amsystem.bifaces.util.OperationType;
-import com.amsystem.bifaces.util.SymbolType;
-import org.primefaces.context.RequestContext;
-import org.primefaces.event.SelectEvent;
-import org.springframework.web.context.annotation.ApplicationScope;
 
 import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.List;
 
 /**
  * Title: UserSection.java <br>
