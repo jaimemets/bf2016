@@ -1,13 +1,16 @@
 package com.amsystem.bifaces.dynamictemplate.controller;
 
 
-import com.amsystem.bifaces.dynamictemplate.setting.model.*;
-import com.amsystem.bifaces.dynamictemplate.setting.services.PropertyTemplateService;
-import com.amsystem.bifaces.util.*;
 import com.amsystem.bifaces.dynamictemplate.setting.bo.PropertyTree;
+import com.amsystem.bifaces.dynamictemplate.setting.model.IFProperty;
+import com.amsystem.bifaces.dynamictemplate.setting.model.Property;
+import com.amsystem.bifaces.dynamictemplate.setting.model.PropertyTemplate;
+import com.amsystem.bifaces.dynamictemplate.setting.model.Template;
+import com.amsystem.bifaces.dynamictemplate.setting.services.PropertyTemplateService;
 import com.amsystem.bifaces.dynamictemplate.setting.services.TemplateService;
 import com.amsystem.bifaces.dynamictemplate.util.TemplateStatus;
 import com.amsystem.bifaces.dynamictemplate.view.PropertyTemplateNode;
+import com.amsystem.bifaces.util.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.primefaces.model.DefaultTreeNode;
@@ -203,7 +206,7 @@ public class TreeOperation implements Serializable {
 
                 if (templateService.deleteTemplate(template)) {
                     removeChild(selectedNode, Boolean.FALSE);
-                    MessageUtil.updateExecute(Arrays.asList("form:templateTree,form:winMessageId".split(SymbolType.COMMA.getValue())), null);
+                    ComponentOperation.updateExecute(Arrays.asList("form:templateTree,form:winMessageId".split(SymbolType.COMMA.getValue())), null);
                     MessageUtil.showMessage(NotificationType.INFO, rb.getString(NotificationType.INFO.getLabel().concat("_GRL")), rb.getString("template_deleted_success_TT"));
 
                 } else {
@@ -215,7 +218,7 @@ public class TreeOperation implements Serializable {
             } else {
                 //Lanzar mensaje de confirmacion para continuar con el proceso de eliminacion
                 //Si la respuesta es afirmativa, llamar metodo de eliminar plantillas
-                MessageUtil.updateExecute(null, "PF('confirmDeleteTemplDlg').show();");
+                ComponentOperation.updateExecute(null, "PF('confirmDeleteTemplDlg').show();");
             }
 
         } else {

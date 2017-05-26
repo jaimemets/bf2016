@@ -32,6 +32,8 @@ public class UserFormView implements Serializable{
 
     private boolean expirable;
 
+    private boolean saved;
+
     private static List<String> roleList;
 
     private static Map<String, UserProfile> roles;
@@ -83,9 +85,9 @@ public class UserFormView implements Serializable{
 
         if (operation == OperationType.CREATE) {
             userData.setExpeditionDate(new Date());
-            userOperation.saveUser(userData);
+            saved = userOperation.saveUser(userData);
         } else {
-            userOperation.updateUser(userData);
+            saved = userOperation.updateUser(userData);
         }
 
     }
@@ -120,6 +122,14 @@ public class UserFormView implements Serializable{
 
     public void setExpirable(boolean expirable) {
         this.expirable = expirable;
+    }
+
+    public boolean isSaved() {
+        return saved;
+    }
+
+    public void setSaved(boolean saved) {
+        this.saved = saved;
     }
 
     public List<String> getRoleList() {

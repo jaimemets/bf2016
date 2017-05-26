@@ -14,7 +14,7 @@
 
     <ui:define name="renderBreadCrumb">
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa fa-dashboard"></i>#{textI18.home_label_GRL}</a></li>
+            <li><a href="/"><i class="fa fa-dashboard"></i>#{textI18.label_home_GRL}</a></li>
             <li><a href="#">#{textI18.config_label_GRL}</a></li>
             <li class="active">#{textI18.template_tool_TT}</li>
         </ol>
@@ -44,7 +44,8 @@
                                             <f:validateRegex pattern="^[a-zA-Z]+$"/>
                                             <f:validateLength minimum="2"/>
                                         </p:inputText>
-                                        <p:commandButton id="addTemplateBtn" value="#{textI18.save_TT}" style="margin-right: 2px"
+                                        <p:commandButton id="addTemplateBtn" value="#{textI18.save_GRL}"
+                                                         style="margin-right: 2px"
                                                          icon="ui-icon-plusthick"
                                                          disabled="#{empty templateTreeView.selectedNode or templateTreeView.selectedNode.type ne 'default'}"
                                                          process="@this templName templateTree"
@@ -67,7 +68,7 @@
                                             <f:validateLength minimum="2"/>
                                         </p:inputText>
 
-                                        <p:commandButton value="#{textI18.save_TT}" style="margin-right:2px"
+                                        <p:commandButton value="#{textI18.save_GRL}" style="margin-right:2px"
                                                          icon="ui-icon-plusthick"
                                                          process="@this propertyName propertyDT"
                                                          action="#{propertySectionView.addProperty}"
@@ -174,13 +175,13 @@
                             <p:outputPanel style="">
 
 
-                                <p:commandButton id="deleteTemplBtn" value="#{textI18.delete_TT}"
+                                <p:commandButton id="deleteTemplBtn" value="#{textI18.delete_GRL}"
                                                  disabled="#{templateTreeView.selectedNode.type ne 'TEMP'}"
                                                  action="#{templateTreeView.deleteTemplate}"
                                                  icon="ui-icon-minusthick"
                                                  process="@this templateTree winMessageId"/>
 
-                                <p:commandButton id="cloneTemplBtn" value="#{textI18.clone_TT}"
+                                <p:commandButton id="cloneTemplBtn" value="#{textI18.clone_GRL}"
                                                  icon="fa fa-code-fork"
                                                  disabled="#{templateTreeView.selectedNode.type ne 'TEMP'}"
                                                  process="@this propertyDT"

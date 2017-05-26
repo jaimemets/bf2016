@@ -10,78 +10,93 @@
                  columns="4" cellpadding="5">
 
         <!--Campo para registrar el/los Nombres-->
-        <p:outputLabel for="firstName" value="Nombres:"/>
-        <p:inputText id="firstName" value="#{userFormView.userData.firstName}" style="width: 65%"
-                     label="Nombres"
-                     required="true">
+        <p:outputLabel for="firstName" value="#{textI18.field_name_UT}:"/>
+        <p:inputText id="firstName" value="#{userFormView.userData.firstName}" style="width: 75%"
+                     label="Nombres" required="true"
+                     disabled="#{userFormView.saved}">
             <f:validateLength minimum="2"/>
         </p:inputText>
 
         <!--Campo para registrar el/los Apellidos-->
-        <p:outputLabel for="lastname" value="Apellidos:"/>
-        <p:inputText id="lastname" value="#{userFormView.userData.lastName}" style="width: 65%"
-                     label="Apellidos"
-                     required="true">
+        <p:outputLabel for="lastname" value="#{textI18.field_lastName_UT}:"/>
+        <p:inputText id="lastname" value="#{userFormView.userData.lastName}" style="width: 75%"
+                     label="Apellidos" required="true"
+                     disabled="#{userFormView.saved}">
             <f:validateLength minimum="2"/>
         </p:inputText>
 
         <!--Campo para registrar el Correo Electronico-->
-        <p:outputLabel for="email" value="Email:"/>
-        <p:inputText id="email" value="#{userFormView.userData.email}" style="width: 65%"
-                     placeholder="Ej: micorreo@ejemplo.com" label="Email" required="true">
+        <p:outputLabel for="email" value="#{textI18.field_email_UT}:"/>
+        <p:inputText id="email" value="#{userFormView.userData.email}" style="width: 75%"
+                     converter="toLowerCaseConverter" placeholder="Ej: micorreo@ejemplo.com"
+                     label="Email" required="true" disabled="#{userFormView.saved}">
+
+            <f:ajax event="keyup" render="@this"/>
             <f:validateRegex pattern="^[_a-z0-9-]+(.[_a-z0-9-]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,})$"/>
+
         </p:inputText>
 
 
         <!--Campo para registrar el Login-->
-        <p:outputLabel for="login" value="Nombre Usuario:"/>
-        <p:inputText id="login" value="#{userFormView.userData.userName}" style="width: 65%" label="Login"
-                     required="true">
+        <p:outputLabel for="login" value="#{textI18.field_login_UT}:"/>
+        <p:inputText id="login" value="#{userFormView.userData.userName}" style="width: 75%" label="Login"
+                     required="true" disabled="#{userFormView.saved}">
             <f:validateLength minimum="6"/>
         </p:inputText>
 
         <!--Campo para registrar la clave del usuario-->
-        <p:outputLabel for="passw" value="Clave:"/>
-        <p:password id="passw" style="width:65%" value="#{userFormView.userData.password}" match="password"
+        <p:outputLabel for="passw" value="#{textI18.label_password_UT}:"/>
+        <p:password id="passw" style="width:75%" value="#{userFormView.userData.password}" match="password"
+                    disabled="#{userFormView.saved}"
                     label="Clave"
                     feedback="true" required="true">
         </p:password>
 
         <!--Campo para confirmar el registro de la clave del usuario-->
-        <p:outputLabel for="password" value="Confirme Clave:"/>
-        <p:password id="password" value="#{userFormView.userData.password}" style="width:65%"
+        <p:outputLabel for="password" value="#{textI18.label_passwordConfirmation_UT}:"/>
+        <p:password id="password" value="#{userFormView.userData.password}" style="width:75%"
+                    disabled="#{userFormView.saved}"
                     label="Confirme Clave" feedback="true"
                     required="true">
         </p:password>
 
         <!--Campo para registrar el Rol del Usuario-->
-        <p:outputLabel for="profile" value="Rol/Grupo:"/>
-        <p:selectCheckboxMenu id="profile" style="width:65%" required="true" label="Roles"
-                              value="#{userFormView.selectedProfile}">
+        <p:outputLabel for="profile" value="#{textI18.label_roleGroup_UT}:"/>
+        <p:selectCheckboxMenu id="profile" value="#{userFormView.selectedProfile}" style="width:75%"
+                              required="true" label="Roles"
+                              disabled="#{userFormView.saved}"
+                >
             <f:selectItems value="#{userFormView.roleList}"/>
         </p:selectCheckboxMenu>
 
         <!--Campo para registrar si el usuario es expirable-->
-        <h:outputLabel for="expirable" value="Expirable: "/>
-        <p:selectBooleanButton id="expirable" value="#{userFormView.expirable}" style="width:65%" onLabel="Si"
-                               offLabel="No">
+        <h:outputLabel for="expirable" value="#{textI18.label_expirable_UT}: "/>
+        <p:selectBooleanButton id="expirable" value="#{userFormView.expirable}" style="width:75%" onLabel="Si"
+                               offLabel="No" disabled="#{userFormView.saved}">
             <p:ajax update="maskDate"/>
         </p:selectBooleanButton>
 
         <!--Campo para registrar Fecha Expiracion-->
-        <p:outputLabel for="maskDate" value="Fecha expiracion:"/>
-        <p:calendar id="maskDate" style="width:65%" value="#{userFormView.userData.expirationDate}"
-                    pattern="dd-MM-yyyy" mask="true" disabled="#{!userFormView.expirable}"/>
+        <p:outputLabel for="maskDate" value="#{textI18.label_expirationDate_UT}"/>
+        <p:calendar id="maskDate" style="width:75%" value="#{userFormView.userData.expirationDate}"
+
+                    pattern="dd-MM-yyyy" mask="true" disabled="#{!userFormView.expirable or userFormView.saved}"/>
 
     </h:panelGrid>
+    <br/>
+    <p:outputPanel id="opButtonsUserForm" style="text-align: center">
 
-    <p:outputPanel style="width: 100%;overflow: auto;display: block">
-        <p:commandButton value="#{textI18.save_GRL}" style="margin: 1% 3% 3% 33%"
+        <p:commandButton value="#{textI18.save_GRL}" rendered="#{!userFormView.saved}"
                          icon="ui-icon-check"
-                         update="pgUserData userForm:winMessageId"
+                         update="opButtonsUserForm pgUserData userForm:winMessageId"
                          actionListener="#{userFormView.saveUser}"/>
+        <p:spacer/>
 
-        <p:button id="cancelUsrBtn" value="#{textI18.cancel_GRL}"
+        <p:button id="cancelUsrBtn" value="#{textI18.cancel_GRL}" rendered="#{!userFormView.saved}"
+                  href="/userTool"
+                  icon="ui-icon-cancel"/>
+
+        <p:button id="continueUsrBtn" value="Continuar" rendered="#{userFormView.saved}"
                   href="/userTool"
                   icon="ui-icon-cancel"/>
 

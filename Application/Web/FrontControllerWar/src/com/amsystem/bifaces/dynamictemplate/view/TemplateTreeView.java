@@ -2,7 +2,7 @@ package com.amsystem.bifaces.dynamictemplate.view;
 
 import com.amsystem.bifaces.dynamictemplate.controller.TreeOperation;
 import com.amsystem.bifaces.util.CategoryName;
-import com.amsystem.bifaces.util.MessageUtil;
+import com.amsystem.bifaces.util.ComponentOperation;
 import com.amsystem.bifaces.util.NodeType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -137,7 +137,7 @@ public class TemplateTreeView implements Serializable {
         log.debug(selectedCategory);
         service.cloneTemplate(getCloneTemplateName(), selectedNode, selectedCategory);
         setCloneTemplateName(null);
-        MessageUtil.updateExecute(null, "PF('clonePropertyDlg').hide();");
+        ComponentOperation.updateExecute(null, "PF('clonePropertyDlg').hide();");
         init();
 
     }
