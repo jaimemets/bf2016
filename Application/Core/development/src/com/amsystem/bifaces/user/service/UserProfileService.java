@@ -19,4 +19,6 @@ public interface UserProfileService {
 
     List<UserProfile> findAll();
 
+    List<UserProfile> finProfilesByIds(List<Integer> profileIds);
+
 }

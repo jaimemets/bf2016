@@ -1,21 +1,26 @@
 package com.amsystem.bifaces.user;
 
+import com.amsystem.bifaces.menu.model.Menu;
+import com.amsystem.bifaces.menu.model.MenuItem;
+import com.amsystem.bifaces.menu.model.MenuItemPK;
+import com.amsystem.bifaces.menu.service.MenuItemService;
+import com.amsystem.bifaces.menu.service.MenuService;
 import com.amsystem.bifaces.user.model.User;
 import com.amsystem.bifaces.user.model.UserProfile;
 import com.amsystem.bifaces.user.service.UserProfileService;
 import com.amsystem.bifaces.user.service.UserService;
-import com.amsystem.bifaces.util.ComponentOperation;
-import com.amsystem.bifaces.util.MessageUtil;
-import com.amsystem.bifaces.util.NotificationType;
+import com.amsystem.bifaces.user.view.TreeNodeMenu;
+import com.amsystem.bifaces.util.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.primefaces.model.CheckboxTreeNode;
+import org.primefaces.model.TreeNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * Title: UserOperation.java <br>
@@ -36,6 +41,13 @@ public class UserOperation {
 
     @Autowired
     UserProfileService userProfileService;
+
+    @Autowired
+    MenuService menuService;
+
+    @Autowired
+    MenuItemService menuItemService;
+
 
     @Autowired
     private ResourceBundle rb;
@@ -64,6 +76,8 @@ public class UserOperation {
      */
     public boolean updateUser(User selectedUser) {
         boolean success = false;
+
+
         if (userService.updateUser(selectedUser)) {
             //MessageUtil.showMessage("Usuario actualizando exitosamente", ErrorType.INFO);
             MessageUtil.showMessage(NotificationType.INFO, rb.getString(NotificationType.INFO.getLabel().concat("_GRL")), "Usuario actualizando exitosamente") ;
@@ -103,5 +117,83 @@ public class UserOperation {
      */
     public List<UserProfile> allProfile() {
         return userProfileService.findAll();
+    }
+
+
+    public TreeNode createTree(User requestUsr) {
+        log.debug("**Inicio Arbol de Plantillas **");
+        TreeNode root = new CheckboxTreeNode(new TreeNodeMenu(-1, null, NodeTypeMenu.ROOT), null);
+        List<Menu> menuList = menuService.findAllMenuAppWeb();
+        Set<MenuItem> userMenuItemSet = null;
+        TreeNode parentNodeMenu;
+        TreeNode childNodeItem;
+        TreeNodeMenu dataNode;
+
+        if (requestUsr != null) {
+            userMenuItemSet = requestUsr.getMenuItems();
+        }
+
+        for (Menu m : menuList) {
+            parentNodeMenu = new CheckboxTreeNode(NodeTypeMenu.MENU.getLabel(), new TreeNodeMenu(m.getMenuId(), rb.getString(m.getCodI18n().concat("_MNU")), NodeTypeMenu.MENU), root);
+            log.debug("Objeto creado: " + parentNodeMenu.getClass().toString());
+
+            if (!m.getItemSet().isEmpty()) {
+                log.debug("Menu: " + m.getCodI18n());
+                MenuItem menuItem;
+
+                Iterator<MenuItem> itemIterator = m.getItemSet().iterator();
+                while (itemIterator.hasNext()) {
+                    menuItem = itemIterator.next();
+                    log.debug("Item: " + menuItem.getDescription());
+                    dataNode = new TreeNodeMenu(menuItem.getMenuItemPK().getMenuItemId(), rb.getString(menuItem.getCodI18n().concat("_MNU")), NodeTypeMenu.ITEM);
+                    childNodeItem = new CheckboxTreeNode(NodeTypeMenu.ITEM.getLabel(), dataNode, parentNodeMenu);
+                    if (userMenuItemSet != null)
+                        childNodeItem.setSelected(userMenuItemSet.contains(menuItem));
+                }
+
+            }
+
+
+        }
+        return root;
+    }
+
+    /**
+     * @param selectedNodes
+     * @return
+     */
+    public Set<MenuItem> getMenuItem(TreeNode[] selectedNodes) {
+        Set<MenuItem> menuItems = null;
+        List<MenuItemPK> itemPKs;
+
+        if (selectedNodes.length > 0) {
+            itemPKs = new ArrayList<>();
+            for (TreeNode node : selectedNodes) {
+                if (node.isLeaf()) {
+                    TreeNodeMenu parent = (TreeNodeMenu) node.getParent().getData();
+                    TreeNodeMenu child = (TreeNodeMenu) node.getData();
+                    itemPKs.add(new MenuItemPK(parent.getId(), child.getId()));
+                }
+            }
+            menuItems = new HashSet<>(menuItemService.findByIds(itemPKs));
+        }
+        return menuItems;
+    }
+
+    public Set<UserProfile> getProfiles(List<UserProfile> selectedProfiles) {
+        String strProfile = null;
+        Set<UserProfile> userProfileSet = null;
+
+        if (!selectedProfiles.isEmpty()) {
+            List<Integer> idRoles = new ArrayList<>();
+            int beginIndex;
+            for (int i = 0; i < selectedProfiles.size(); i++) {
+                strProfile = String.valueOf(selectedProfiles.get(i));
+                beginIndex = strProfile.indexOf(SymbolType.EQUALS_SYMBOL.getValue());
+                idRoles.add(Integer.valueOf(strProfile.substring(beginIndex + 1, beginIndex + 2)));
+            }
+            userProfileSet = new HashSet<>(userProfileService.finProfilesByIds(idRoles));
+        }
+        return userProfileSet;
     }
 }

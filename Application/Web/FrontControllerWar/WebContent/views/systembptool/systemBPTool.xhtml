@@ -6,7 +6,7 @@
                 template="/views/template/template.xhtml">
 
     <ui:define name="title">
-        #{textI18.template_tool_TT}
+        #{textI18.title_sbp_tool_SBPT}
     </ui:define>
 
     <ui:define name="description"/>
@@ -26,7 +26,7 @@
 
 
                 <f:facet name="header">
-                    Propiedades del Sistema y del Negocio
+                    Propiedades del sistema y del negocio
                     <p:outputPanel style="text-align: right">
                         <h:outputText value="#{textI18.gral_search_field_GRL}: " />
                         <p:inputText id="globalFilter" onkeyup="PF('widSbpDT').filter()" style="width:auto" placeholder="#{textI18.label_enterKeyword_GRL}"/>
@@ -38,7 +38,7 @@
                     <h:outputText value="#{sbp.codSbp}"/>
                 </p:column>
 
-                <p:column filterBy="#{sbp.codSm}" headerText="Color" footerText="in" filterMatchMode="in">
+                <p:column filterBy="#{sbp.codSm}" headerText="Modulo" footerText="in" filterMatchMode="in">
                     <f:facet name="filter">
                         <p:selectCheckboxMenu label="Modulos" onchange="PF('widSbpDT').filter()" panelStyle="width:125px" scrollHeight="150">
                             <f:selectItems value="#{systemBPView.systemModulesList}" var="sm" itemValue="#{sm.cod}" itemLabel="#{sm.cod}"/>

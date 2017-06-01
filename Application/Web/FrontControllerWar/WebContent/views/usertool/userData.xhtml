@@ -62,11 +62,12 @@
 
         <!--Campo para registrar el Rol del Usuario-->
         <p:outputLabel for="profile" value="#{textI18.label_roleGroup_UT}:"/>
-        <p:selectCheckboxMenu id="profile" value="#{userFormView.selectedProfile}" style="width:75%"
+        <p:selectCheckboxMenu id="profile" value="#{userFormView.selectedProfiles}" style="width:75%"
                               required="true" label="Roles"
                               disabled="#{userFormView.saved}"
                 >
-            <f:selectItems value="#{userFormView.roleList}"/>
+            <f:selectItems value="#{userFormView.roleList}" var="rol" itemLabel="#{rol.description}"
+                           itemValue="#{rol}"/>
         </p:selectCheckboxMenu>
 
         <!--Campo para registrar si el usuario es expirable-->
@@ -84,22 +85,6 @@
 
     </h:panelGrid>
     <br/>
-    <p:outputPanel id="opButtonsUserForm" style="text-align: center">
 
-        <p:commandButton value="#{textI18.save_GRL}" rendered="#{!userFormView.saved}"
-                         icon="ui-icon-check"
-                         update="opButtonsUserForm pgUserData userForm:winMessageId"
-                         actionListener="#{userFormView.saveUser}"/>
-        <p:spacer/>
-
-        <p:button id="cancelUsrBtn" value="#{textI18.cancel_GRL}" rendered="#{!userFormView.saved}"
-                  href="/userTool"
-                  icon="ui-icon-cancel"/>
-
-        <p:button id="continueUsrBtn" value="Continuar" rendered="#{userFormView.saved}"
-                  href="/userTool"
-                  icon="ui-icon-cancel"/>
-
-    </p:outputPanel>
 
 </ui:composition>

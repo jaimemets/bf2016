@@ -1,8 +1,8 @@
 package com.amsystem.bifaces.user.service.impl;
 
-import com.amsystem.bifaces.user.service.UserService;
-import com.amsystem.bifaces.user.dao.IUserDao;
+import com.amsystem.bifaces.user.dao.UserDao;
 import com.amsystem.bifaces.user.model.User;
+import com.amsystem.bifaces.user.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
     private static final Logger log = LogManager.getLogger(UserServiceImpl.class.getName());
 
     @Autowired
-    private IUserDao dao;
+    private UserDao dao;
 
     private boolean flag;
 
@@ -65,6 +65,7 @@ public class UserServiceImpl implements UserService {
                 entity.setLastName(user.getLastName());
                 entity.setEmail(user.getEmail());
                 entity.setUserProfiles(user.getUserProfiles());
+                entity.setMenuItems(user.getMenuItems());
             }
 
         } catch (Exception e) {

@@ -46,7 +46,7 @@
         <li class="treeview">
             <a href="#">
                 <i class="fa fa-laptop"/>
-                <span>Configuracion</span>
+                <span>#{textI18.label_setting_MNU}</span>
                 <span class="pull-right-container">
                               <i class="fa fa-angle-left pull-right"/>
                             </span>
@@ -54,12 +54,12 @@
             <sec:authorize access="hasRole('ADMIN')">
                 <ul class="treeview-menu">
 
-                    <li><a href="${request.contextPath}/propertyTemplateTool"><i
-                            class="fa fa-circle-o"/> Herramienta de plantillas</a></li>
-                    <li><a href="${request.contextPath}/productTool"><i
-                            class="fa fa-circle-o"/> Herramienta de producto</a></li>
+                    <li><a href="${request.contextPath}/propertyTemplateTool">
+                        <i class="fa fa-circle-o"/> #{textI18.label_templateTool_MNU}</a></li>
+                    <li><a href="${request.contextPath}/productTool">
+                        <i class="fa fa-circle-o"/> #{textI18.label_productTool_MNU}</a></li>
                     <li><a href="${request.contextPath}/systemBPTool"><i
-                            class="fa fa-circle-o"/> Props. del Negocio y Systema</a></li>
+                            class="fa fa-circle-o"/> #{textI18.label_systemBPTool_MNU}</a></li>
                     <li><a href="${request.contextPath}/testTemplateGenerator"><i
                             class="fa fa-circle-o"/> Generar plantila Test</a></li>
                     <li><a href="${request.contextPath}/menuviejo" target="_blank"><i

@@ -10,7 +10,7 @@ import java.util.List;
  * @author Jaime Aguilar (JAR)
  *         File Creation on 08/09/2016.
  */
-public interface IUserDao {
+public interface UserDao {
 
     User findById(int id);
 

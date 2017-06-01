@@ -281,18 +281,19 @@
 
                 </h:panelGrid>
 
-                <p:outputPanel style="width: 100%;overflow: auto;display: block">
+                <p:outputPanel style="text-align: center">
 
-
-                    <p:commandButton value="#{textI18.save_TT}" style="margin: 1% 3% 3% 33%"
+                    <br/>
+                    <p:commandButton value="#{textI18.save_GRL}"
                                      icon="ui-icon-plusthick"
                                      rendered="#{propertySectionView.commandClicked eq 'clonePropBtn'}"
                                      process="@this propertyCloneId propertyDT winMessageId"
                                      update="propertyCloneId propertyDT winMessageId"
                                      onsuccess="PF('clonePropertyDlg').hide();"
                                      action="#{propertySectionView.cloneProperty}"/>
+                    <p:spacer/>
 
-                    <p:commandButton value="#{textI18.save_TT}" style="margin: 1% 3% 3% 33%"
+                    <p:commandButton value="#{textI18.save_GRL}"
                                      icon="ui-icon-plusthick"
                                      rendered="#{propertySectionView.commandClicked ne 'clonePropBtn'}"
                                      process="@this propertyCloneId templateTree categoryBtn winMessageId"
@@ -339,7 +340,5 @@
         </script>
     </ui:define>
 
-    <!-- <ui:define name="code">
 
-     </ui:define>-->
 </ui:composition>

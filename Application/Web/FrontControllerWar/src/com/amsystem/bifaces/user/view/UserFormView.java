@@ -4,6 +4,7 @@ import com.amsystem.bifaces.user.UserOperation;
 import com.amsystem.bifaces.user.model.User;
 import com.amsystem.bifaces.user.model.UserProfile;
 import com.amsystem.bifaces.util.OperationType;
+import org.primefaces.model.TreeNode;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -11,7 +12,9 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Title: UserFormSection.java <br>
@@ -26,7 +29,7 @@ public class UserFormView implements Serializable{
 
     private User userData;
 
-    private List<String> selectedProfile;
+    private List<UserProfile> selectedProfiles;
 
     private OperationType operation;
 
@@ -34,23 +37,19 @@ public class UserFormView implements Serializable{
 
     private boolean saved;
 
-    private static List<String> roleList;
+    private static List<UserProfile> profileList;
 
-    private static Map<String, UserProfile> roles;
+    //Raiz del arbol de plantillas
+    private TreeNode root;
+
+    private TreeNode[] selectedNodes;
 
     @ManagedProperty("#{userOperation}")
     private UserOperation userOperation;
 
-
     @PostConstruct
     public void init() {
-        List<UserProfile> userProfiles = userOperation.allProfile();
-        roles = new LinkedHashMap<>();
-        roleList = new ArrayList<>();
-        for (UserProfile up : userProfiles) {
-            roles.put(up.getType(), up);
-            roleList.add(up.getType());
-        }
+        profileList = userOperation.allProfile();
 
         //Para la edicion de usuario
         User requestUsr = (User) FacesContext.getCurrentInstance().getExternalContext().getRequestMap().get("requestUsr");
@@ -60,28 +59,20 @@ public class UserFormView implements Serializable{
             if(requestUsr.getUserId() != null) editUser();
         }
 
+        root = userOperation.createTree(requestUsr);
+
     }
 
     public void editUser() {
         expirable = userData.getExpirable() > 0 ? Boolean.TRUE : Boolean.FALSE;
-        Iterator<UserProfile> iterator = userData.getUserProfiles().iterator();
-        selectedProfile = new ArrayList<>();
-        while (iterator.hasNext()) {
-            int i = 0;
-            UserProfile nextProfile = iterator.next();
-            selectedProfile.add(nextProfile.getType());
-            i++;
-        }
+        selectedProfiles = new ArrayList<>();
+        selectedProfiles.addAll(userData.getUserProfiles());
     }
 
     public void saveUser(){
         userData.setExpirable(expirable == Boolean.TRUE ? 1 : 0);
-        HashSet<UserProfile> rol = new HashSet<UserProfile>();
-        for (String userProfile : selectedProfile) {
-            rol.add(roles.get(userProfile));
-        }
-
-        userData.setUserProfiles(rol);
+        userData.setUserProfiles(userOperation.getProfiles(selectedProfiles));
+        userData.setMenuItems(userOperation.getMenuItem(selectedNodes));
 
         if (operation == OperationType.CREATE) {
             userData.setExpeditionDate(new Date());
@@ -98,14 +89,6 @@ public class UserFormView implements Serializable{
 
     public void setUserData(User userData) {
         this.userData = userData;
-    }
-
-    public List<String> getSelectedProfile() {
-        return selectedProfile;
-    }
-
-    public void setSelectedProfile(List<String> selectedProfile) {
-        this.selectedProfile = selectedProfile;
     }
 
     public OperationType getOperation() {
@@ -132,20 +115,8 @@ public class UserFormView implements Serializable{
         this.saved = saved;
     }
 
-    public List<String> getRoleList() {
-        return roleList;
-    }
-
-    public static void setRoleList(List<String> roleList) {
-        UserFormView.roleList = roleList;
-    }
-
-    public static Map<String, UserProfile> getRoles() {
-        return roles;
-    }
-
-    public static void setRoles(Map<String, UserProfile> roles) {
-        UserFormView.roles = roles;
+    public List<UserProfile> getRoleList() {
+        return profileList;
     }
 
     public UserOperation getUserOperation() {
@@ -154,5 +125,29 @@ public class UserFormView implements Serializable{
 
     public void setUserOperation(UserOperation userOperation) {
         this.userOperation = userOperation;
+    }
+
+    public TreeNode getRoot() {
+        return root;
+    }
+
+    public void setRoot(TreeNode root) {
+        this.root = root;
+    }
+
+    public TreeNode[] getSelectedNodes() {
+        return selectedNodes;
+    }
+
+    public void setSelectedNodes(TreeNode[] selectedNodes) {
+        this.selectedNodes = selectedNodes;
+    }
+
+    public List<UserProfile> getSelectedProfiles() {
+        return selectedProfiles;
+    }
+
+    public void setSelectedProfiles(List<UserProfile> selectedProfiles) {
+        this.selectedProfiles = selectedProfiles;
     }
 }

@@ -1,8 +1,8 @@
 package com.amsystem.bifaces.user.dao.impl;
 
+import com.amsystem.bifaces.user.dao.UserDao;
 import com.amsystem.bifaces.user.model.User;
 import com.amsystem.bifaces.util.AbstractDao;
-import com.amsystem.bifaces.user.dao.IUserDao;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
@@ -22,9 +22,9 @@ import java.util.List;
  */
 
 @Repository("userDao")
-public class UserDao extends AbstractDao<Integer, User> implements IUserDao {
+public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 
-    private static final Logger log = LogManager.getLogger(UserDao.class.getName());
+    private static final Logger log = LogManager.getLogger(UserDaoImpl.class.getName());
 
     @Transactional(readOnly = false)
     public User findById(int id) {

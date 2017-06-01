@@ -74,7 +74,6 @@ public class UserProfile implements Serializable{
     public String toString() {
         return "UserProfile{" +
                 "roleId=" + roleId +
-                ", type='" + type + '\'' +
                 '}';
     }
 }

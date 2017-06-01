@@ -1,8 +1,8 @@
 package com.amsystem.bifaces.user.dao.impl;
 
-import com.amsystem.bifaces.util.AbstractDao;
-import com.amsystem.bifaces.user.dao.IUserProfileDao;
+import com.amsystem.bifaces.user.dao.UserProfileDao;
 import com.amsystem.bifaces.user.model.UserProfile;
+import com.amsystem.bifaces.util.AbstractDao;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -19,27 +19,33 @@ import java.util.List;
  */
 
 @Repository("userProfileDao")
-public class UserProfileDao extends AbstractDao<Integer, UserProfile> implements IUserProfileDao {
+@Transactional
+public class UserProfileDaoImpl extends AbstractDao<Integer, UserProfile> implements UserProfileDao {
 
-    @Transactional(readOnly = false)
     public UserProfile findById(int id) {
         return getByKey(id);
     }
 
-    @Transactional(readOnly = false)
+
     public UserProfile findByType(String type) {
         Criteria crit = createEntityCriteria();
         crit.add(Restrictions.eq("type", type));
         return (UserProfile) crit.uniqueResult();
     }
 
-    @SuppressWarnings("unchecked")
-    @Transactional(readOnly = false)
+
     public List<UserProfile> findAll(){
         Criteria crit = createEntityCriteria();
         crit.addOrder(Order.asc("type"));
         return (List<UserProfile>)crit.list();
     }
 
+    @Override
+    public List<UserProfile> loadProfileByIds(List<Integer> idList) {
+        Criteria criteria = createEntityCriteria();
+        criteria.addOrder(Order.asc("type"));
+        criteria.add(Restrictions.in("roleId", idList));
+        return criteria.list();
+    }
 }
 

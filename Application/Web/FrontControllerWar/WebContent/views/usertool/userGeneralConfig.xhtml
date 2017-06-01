@@ -29,9 +29,27 @@
                     <ui:include src="userData.xhtml"/>
                 </p:tab>
                 <p:tab id="tabPermissionUser" title="#{textI18.title_permissions_UT}">
-
+                    <ui:include src="userPermit.xhtml"/>
                 </p:tab>
             </p:tabView>
+
+            <p:outputPanel id="opButtonsUserForm" style="text-align: center">
+
+                <p:commandButton value="#{textI18.save_GRL}" rendered="#{!userFormView.saved}"
+                                 icon="ui-icon-check"
+                                 update="opButtonsUserForm userForm:tabUserSetting:pgUserData userForm:winMessageId"
+                                 actionListener="#{userFormView.saveUser}"/>
+                <p:spacer/>
+
+                <p:button id="cancelUsrBtn" value="#{textI18.cancel_GRL}" rendered="#{!userFormView.saved}"
+                          href="/userTool"
+                          icon="ui-icon-cancel"/>
+
+                <p:button id="continueUsrBtn" value="Continuar" rendered="#{userFormView.saved}"
+                          href="/userTool"
+                          icon="ui-icon-cancel"/>
+
+            </p:outputPanel>
 
         </h:form>
     </ui:define>

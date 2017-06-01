@@ -1,20 +1,23 @@
 package com.amsystem.bifaces.util;
 
 /**
- * Title: NodeType.java
- * @author jaguilar (JAR)
- * File Creation on 07/05/2016
+ * Title: NodeTypeMenu.java <br>
+ *
+ * @author Jaime Aguilar (JAR)
+ *         File Creation on 30/05/2017.
  */
-public enum NodeType {
-    
-    ROOT (0, "ROOT"),
-    TEMPLATE_NAME (1, "TEMP"),
-    PROPERTY(2,"PROP");
-    
+
+
+public enum NodeTypeMenu {
+    ROOT(0, "ROOT"),
+    MENU(1, "MEN"),
+    SUB_MENU(2, "SB"),
+    ITEM(2, "ITEM");
+
     private int value;
     private String label;
 
-    private NodeType(int value, String label) {
+    private NodeTypeMenu(int value, String label) {
         this.value = value;
         this.label = label;
     }
@@ -36,16 +39,12 @@ public enum NodeType {
     }
 
 
-    public static NodeType valueOf(int value) {
-        for (NodeType nt : values()) {
-            if (nt.getValue() == value) {
-                return nt;
+    public static NodeTypeMenu valueOf(int value) {
+        for (NodeTypeMenu ntm : values()) {
+            if (ntm.getValue() == value) {
+                return ntm;
             }
         }
         return null;
     }
-    
-    
-    
-
 }

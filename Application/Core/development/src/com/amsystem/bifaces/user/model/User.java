@@ -1,5 +1,6 @@
 package com.amsystem.bifaces.user.model;
 
+import com.amsystem.bifaces.menu.model.MenuItem;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
@@ -63,7 +64,14 @@ public class User implements Serializable{
     @JoinTable(name = "USER_ROLE",
             joinColumns = {@JoinColumn(name = "IDUSER")},
             inverseJoinColumns = {@JoinColumn(name = "IDROLE")})
-    private Set<UserProfile> userProfiles = new HashSet<UserProfile>();
+    private Set<UserProfile> userProfiles = new HashSet<>();
+
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "USER_MENU_ITEM",
+            joinColumns = {@JoinColumn(name = "IDUSER")},
+            inverseJoinColumns = {@JoinColumn(name = "ID_MENU"), @JoinColumn(name = "ID_MI")})
+    private Set<MenuItem> menuItems = new HashSet<>();
 
     public Integer getUserId() {
         return userId;
@@ -151,6 +159,14 @@ public class User implements Serializable{
 
     public void setUserProfiles(Set<UserProfile> userProfiles) {
         this.userProfiles = userProfiles;
+    }
+
+    public Set<MenuItem> getMenuItems() {
+        return menuItems;
+    }
+
+    public void setMenuItems(Set<MenuItem> menuItems) {
+        this.menuItems = menuItems;
     }
 
     @Override

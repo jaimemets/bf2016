@@ -1,0 +1,33 @@
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui">
+
+    <h:panelGrid id="pgUserMenu"
+                 style=" width: 100%; border: 3px double cornflowerblue;  border-radius: 5px;  margin: 5px 0px 0px 0px; ">
+
+        <p:tree value="#{userFormView.root}" var="tree"
+                selectionMode="checkbox"
+                selection="#{userFormView.selectedNodes}">
+
+            <p:treeNode>
+                <h:outputText value="#{tree.name}"/>
+            </p:treeNode>
+
+            <p:treeNode type="MEN" expandedIcon="ui-icon-folder-open"
+                        collapsedIcon="ui-icon-folder-collapsed">
+                <h:outputText value="#{tree.name}"/>
+            </p:treeNode>
+
+            <p:treeNode type="ITEM" icon="ui-icon-note">
+                <h:outputText value="#{tree.name}"/>
+            </p:treeNode>
+
+        </p:tree>
+
+    </h:panelGrid>
+    <br/>
+
+
+</ui:composition>

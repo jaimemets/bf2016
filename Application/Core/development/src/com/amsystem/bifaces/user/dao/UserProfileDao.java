@@ -10,9 +10,11 @@ import java.util.List;
  * @author Jaime Aguilar (JAR)
  *         File Creation on 08/09/2016.
  */
-public interface IUserProfileDao {
+public interface UserProfileDao {
 
     List<UserProfile> findAll();
+
+    List<UserProfile> loadProfileByIds(List<Integer> idList);
 
     UserProfile findByType(String type);
 
