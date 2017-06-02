@@ -48,7 +48,7 @@ public class SystemBusinessPropertiesDaoImpl extends AbstractDao<String, SystemB
 
     @Transactional(readOnly = false)
     @Override
-    public SystemBusinessProperties getByCod(String codSystemBP) {
+    public SystemBusinessProperties loadSystemBPByCod(String codSystemBP) {
         SystemBusinessProperties systemBP = getByKey(codSystemBP);
         if(systemBP != null)
             Hibernate.initialize(systemBP.getLanguage());

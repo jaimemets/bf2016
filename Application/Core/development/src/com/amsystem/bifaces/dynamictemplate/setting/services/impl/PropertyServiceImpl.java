@@ -1,10 +1,11 @@
 package com.amsystem.bifaces.dynamictemplate.setting.services.impl;
 
-import com.amsystem.bifaces.dynamictemplate.setting.dao.PropertyItemLabelDao;
 import com.amsystem.bifaces.dynamictemplate.setting.dao.PropertyDao;
+import com.amsystem.bifaces.dynamictemplate.setting.dao.PropertyItemLabelDao;
 import com.amsystem.bifaces.dynamictemplate.setting.dao.PropertyOptionItemDao;
 import com.amsystem.bifaces.dynamictemplate.setting.dao.PropertyTemplateDao;
 import com.amsystem.bifaces.dynamictemplate.setting.model.IFProperty;
+import com.amsystem.bifaces.dynamictemplate.setting.model.Property;
 import com.amsystem.bifaces.dynamictemplate.setting.model.PropertyOptionItem;
 import com.amsystem.bifaces.dynamictemplate.setting.model.PropertyOptionItemLabel;
 import com.amsystem.bifaces.dynamictemplate.setting.services.PropertyService;
@@ -135,7 +136,7 @@ public class PropertyServiceImpl implements PropertyService {
     }
 
 
-    public List<IFProperty> findAllPropertyByIds(List idsProperty) {
+    public List<Property> findAllPropertyByIds(List idsProperty) {
         return propertyDao.loadPropertyListByIdList(idsProperty);
 
     }

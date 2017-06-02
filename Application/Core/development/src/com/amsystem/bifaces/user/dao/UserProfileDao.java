@@ -12,11 +12,12 @@ import java.util.List;
  */
 public interface UserProfileDao {
 
-    List<UserProfile> findAll();
+    UserProfile loadProfileByType(String type);
+
+    UserProfile loadProfileById(int id);
+
+    List<UserProfile> loadAllProfile();
 
     List<UserProfile> loadProfileByIds(List<Integer> idList);
 
-    UserProfile findByType(String type);
-
-    UserProfile findById(int id);
 }

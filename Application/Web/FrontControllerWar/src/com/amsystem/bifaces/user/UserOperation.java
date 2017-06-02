@@ -20,6 +20,7 @@ import org.springframework.stereotype.Controller;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -32,7 +33,7 @@ import java.util.*;
 @Controller
 @ViewScoped
 @ManagedBean(name = "userOperation")
-public class UserOperation {
+public class UserOperation implements Serializable {
 
     private static final Logger log = LogManager.getLogger(UserOperation.class.getName());
 
@@ -103,23 +104,20 @@ public class UserOperation {
         }
     }
 
-    /**
-     *
-     * @return
-     */
+
     public List<User> loadAllUsers() {
         return userService.findAllUsers();
     }
 
-    /**
-     *
-     * @return
-     */
+
     public List<UserProfile> allProfile() {
         return userProfileService.findAll();
     }
 
-
+    /**
+     * @param requestUsr
+     * @return
+     */
     public TreeNode createTree(User requestUsr) {
         log.debug("**Inicio Arbol de Plantillas **");
         TreeNode root = new CheckboxTreeNode(new TreeNodeMenu(-1, null, NodeTypeMenu.ROOT), null);
@@ -180,6 +178,11 @@ public class UserOperation {
         return menuItems;
     }
 
+    /**
+     *
+     * @param selectedProfiles
+     * @return
+     */
     public Set<UserProfile> getProfiles(List<UserProfile> selectedProfiles) {
         String strProfile = null;
         Set<UserProfile> userProfileSet = null;
@@ -195,5 +198,13 @@ public class UserOperation {
             userProfileSet = new HashSet<>(userProfileService.finProfilesByIds(idRoles));
         }
         return userProfileSet;
+    }
+
+    /**
+     * @param userName
+     * @return
+     */
+    public User findUser(String userName) {
+        return userService.findBySSO(userName);
     }
 }

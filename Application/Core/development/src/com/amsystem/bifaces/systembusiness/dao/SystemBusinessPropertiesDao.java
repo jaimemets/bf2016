@@ -20,7 +20,7 @@ public interface SystemBusinessPropertiesDao {
 
     boolean delete(String codSystemBP);
 
-    SystemBusinessProperties getByCod(String codSystemBP);
+    SystemBusinessProperties loadSystemBPByCod(String codSystemBP);
 
     List<SystemBusinessProperties> loadAllSystemBP();
 

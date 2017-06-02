@@ -1,12 +1,13 @@
 package com.amsystem.bifaces.dynamictemplate.setting.services.impl;
 
+import com.amsystem.bifaces.dynamictemplate.setting.bo.PropertyTree;
 import com.amsystem.bifaces.dynamictemplate.setting.dao.PropertyDao;
 import com.amsystem.bifaces.dynamictemplate.setting.dao.PropertyTemplateDao;
 import com.amsystem.bifaces.dynamictemplate.setting.dao.TemplateDao;
 import com.amsystem.bifaces.dynamictemplate.setting.model.IFProperty;
+import com.amsystem.bifaces.dynamictemplate.setting.model.Property;
 import com.amsystem.bifaces.dynamictemplate.setting.model.PropertyTemplate;
 import com.amsystem.bifaces.dynamictemplate.setting.model.Template;
-import com.amsystem.bifaces.dynamictemplate.setting.bo.PropertyTree;
 import com.amsystem.bifaces.dynamictemplate.setting.services.TemplateService;
 import com.amsystem.bifaces.util.CategoryName;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +65,7 @@ public class TemplateServiceImpl implements TemplateService {
 
         if(addTemplate(cloneTemplate)){
             cloneTemplate = templateDao.loadTemplateByName(cloneTemplateName);
-            List<IFProperty> propertyList = selectedTemplate.getPropertyList();
+            List<Property> propertyList = selectedTemplate.getPropertyList();
             List<PropertyTemplate> propertyTemplateList;
 
             if(propertyList != null && !propertyList.isEmpty()){
@@ -88,7 +89,7 @@ public class TemplateServiceImpl implements TemplateService {
         Template template = templateDao.loadTemplateById(templateId);
 
         List<Integer> propertyIdList = propertyTemplateDao.loadPropertyByTemplateId(template.getTemplateId());
-        List<IFProperty> propertyList = propertyDao.loadPropertyListByIdList(propertyIdList);
+        List<Property> propertyList = propertyDao.loadPropertyListByIdList(propertyIdList);
         template.setPropertyList(propertyList);
 
         return template;
@@ -99,7 +100,7 @@ public class TemplateServiceImpl implements TemplateService {
         Template template = templateDao.loadTemplateByName(templateName);
 
         List<Integer> propertyIdList = propertyTemplateDao.loadPropertyByTemplateId(template.getTemplateId());
-        List<IFProperty> propertyList = propertyDao.loadPropertyListByIdList(propertyIdList);
+        List<Property> propertyList = propertyDao.loadPropertyListByIdList(propertyIdList);
         template.setPropertyList(propertyList);
 
         return template;
@@ -127,7 +128,7 @@ public class TemplateServiceImpl implements TemplateService {
             propertyTreeList = new ArrayList<>();
 
             if(!propertyIdList.isEmpty()) {
-                List<IFProperty> propertyList = propertyDao.loadPropertyListByIdList(propertyIdList);
+                List<Property> propertyList = propertyDao.loadPropertyListByIdList(propertyIdList);
                 for (IFProperty property : propertyList) {
                     propertyTreeList.add(new PropertyTree(property.getPropertyId(), property.getName()));
                 }

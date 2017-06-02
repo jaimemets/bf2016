@@ -19,7 +19,7 @@
             <h:outputText value=" - " />
             <p:inputText id="optItemValue" value="#{propertySectionView.optionItemValue}" placeholder="Value In" />
 
-            <p:commandButton value="#{textI18.save_TT}" style="margin-right:2px"
+            <p:commandButton value="#{textI18.save_GRL}" style="margin-right:2px"
                              icon="ui-icon-plusthick"
                              process="@this :form:tabSetting:optionItemDT optItemDesc optItemValue"
                              action="#{propertySectionView.addOptionItem}"
@@ -37,7 +37,7 @@
         </p:column>
 
         <f:facet name="footer">
-            <p:commandButton id="deleteOptioItemBtn" icon="ui-icon-minusthick" value="#{textI18.delete_TT}"
+            <p:commandButton id="deleteOptioItemBtn" icon="ui-icon-minusthick" value="#{textI18.delete_GRL}"
                              disabled="#{empty propertySectionView.optionItemSelected}"
                              process="@this :form:tabSetting:optionItemDT"
                              action="#{propertySectionView.deleteOptionItem}"

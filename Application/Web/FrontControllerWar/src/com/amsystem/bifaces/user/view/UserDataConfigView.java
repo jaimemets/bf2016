@@ -17,31 +17,38 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Title: UserFormSection.java <br>
+ * Title: UserDataConfigView.java <br>
  *
  * @author Jaime Aguilar (JAR)
  *         File Creation on 25/05/2017.
  */
 
 @ViewScoped
-@ManagedBean(name = "userFormView")
-public class UserFormView implements Serializable{
+@ManagedBean(name = "userDataConfigView")
+public class UserDataConfigView implements Serializable {
 
+    //Dato del usuario
     private User userData;
 
+    //Lista de perfiles vinculado a un usuario
     private List<UserProfile> selectedProfiles;
 
+    //Tipo de operacion en ejecucion
     private OperationType operation;
 
+    //Indicador de expiracion del usuario
     private boolean expirable;
 
+    //Indicador si la operacion fue almacenada con exito
     private boolean saved;
 
+    //Lista de perfiles existente en el sistema
     private static List<UserProfile> profileList;
 
-    //Raiz del arbol de plantillas
+    //Arbol de Menues existentes en el sistema
     private TreeNode root;
 
+    //Items del menu seleccionados
     private TreeNode[] selectedNodes;
 
     @ManagedProperty("#{userOperation}")
@@ -52,23 +59,32 @@ public class UserFormView implements Serializable{
         profileList = userOperation.allProfile();
 
         //Para la edicion de usuario
-        User requestUsr = (User) FacesContext.getCurrentInstance().getExternalContext().getRequestMap().get("requestUsr");
+        String userName = (String) FacesContext.getCurrentInstance().getExternalContext().getRequestMap().get("requestUsrName");
         operation = (OperationType) FacesContext.getCurrentInstance().getExternalContext().getRequestMap().get("operationType");
-        if(requestUsr != null) {
-            userData = requestUsr;
-            if(requestUsr.getUserId() != null) editUser();
+        userData = (userName != null) ? userOperation.findUser(userName) : new User();
+
+        if (userData.getUserId() != null) {
+            editUser();
         }
 
-        root = userOperation.createTree(requestUsr);
+        //Se construye el arbol de menues
+        root = userOperation.createTree(userData);
 
     }
 
+    /**
+     * Metodo para la actualizacion y edicion de un usuario seleccionado
+     */
     public void editUser() {
         expirable = userData.getExpirable() > 0 ? Boolean.TRUE : Boolean.FALSE;
         selectedProfiles = new ArrayList<>();
         selectedProfiles.addAll(userData.getUserProfiles());
     }
 
+    /**
+     * Metodo para el registro de un nuevo usuario en el sistema o la actualizacion de un usuario seleccionado
+     * segun el tipo de operacion <tt>operation</tt>
+     */
     public void saveUser(){
         userData.setExpirable(expirable == Boolean.TRUE ? 1 : 0);
         userData.setUserProfiles(userOperation.getProfiles(selectedProfiles));

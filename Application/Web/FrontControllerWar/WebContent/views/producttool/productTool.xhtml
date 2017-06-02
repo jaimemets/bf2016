@@ -1,0 +1,84 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                template="/views/template/template.xhtml">
+
+    <ui:define name="title">
+        #{textI18.title_productTool_PT}
+    </ui:define>
+
+    <ui:define name="description"/>
+
+    <ui:define name="renderBreadCrumb">
+        <ol class="breadcrumb">
+            <li><a href="#{request.contextPath}/"><i class="fa fa-dashboard"></i>#{textI18.label_home_GRL}</a></li>
+            <li><a href="#">#{textI18.config_label_GRL}</a></li>
+            <li class="active">#{textI18.title_productTool_PT}</li>
+        </ol>
+    </ui:define>
+
+    <ui:define name="body">
+        <h:form id="formProduct">
+
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+
+            <p:growl id="growl" showDetail="true" autoUpdate="true" sticky="true"/>
+
+            <p:dataTable id="productDT" var="pr" value="#{productToolView.allProduct}" widgetVar="productTable"
+                         emptyMessage="#{textI18.msj_notRegisterCriteria_GRL}"
+                         selection="#{productToolView.selectedProduct}" selectionMode="single"
+                         rowKey="#{pr.productId}" scrollable="true" scrollHeight="300">
+
+
+                <p:ajax event="rowSelect" update="editPrBtn clonePrBtn"/>
+
+
+                <f:facet name="header">
+                    <p:outputPanel style="text-align: right">
+                        <h:outputText value="#{textI18.gral_search_field_GRL}: "/>
+                        <p:inputText id="globalFilter" onkeyup="PF('productTable').filter()" style="width:auto"
+                                     placeholder="#{textI18.label_enterKeyword_GRL}"/>
+                    </p:outputPanel>
+                </f:facet>
+
+                <p:column filterBy="#{pr.name}" headerText="#{textI18.label_name_PT}"
+                          footerText="#{textI18.label_contains_GRL}"
+                          filterMatchMode="contains">
+                    <h:outputText value="#{pr.name}"/>
+                </p:column>
+
+                <p:column filterBy="#{pr.status}" headerText="#{textI18.label_status_PT}"
+                          footerText="#{textI18.label_contains_GRL}"
+                          filterMatchMode="contains">
+                    <h:outputText value="#{pr.status}"/>
+                </p:column>
+
+                <f:facet name="footer">
+                    <!--
+                    <p:button id="newUsrBtn" process="userDT" value="#{textI18.new_GRL}"
+                              href="/newUser"
+                              icon="ui-icon-plusthick"/>
+
+                    <p:spacer styleClass="vertical-separator" style="width: 2px; height: 22px"/>
+                    -->
+
+                    <p:button id="editPrBtn" process="productDT" value="#{textI18.edit_GRL}"
+                              href="/editUser-#{productToolView.selectedProduct.name}"
+                              disabled="#{empty productToolView.selectedProduct}"
+                              icon="fa fa-edit"/>
+
+                    <p:commandButton id="clonePrBtn" process="productDT" value="#{textI18.clone_GRL}"
+                                     icon="fa fa-code-fork"
+                                     disabled="#{empty productToolView.selectedProduct}"
+                                     update=""/>
+
+                </f:facet>
+            </p:dataTable>
+
+
+        </h:form>
+
+    </ui:define>
+</ui:composition>

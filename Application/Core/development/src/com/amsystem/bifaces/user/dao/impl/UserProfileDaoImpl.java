@@ -22,19 +22,19 @@ import java.util.List;
 @Transactional
 public class UserProfileDaoImpl extends AbstractDao<Integer, UserProfile> implements UserProfileDao {
 
-    public UserProfile findById(int id) {
+    public UserProfile loadProfileById(int id) {
         return getByKey(id);
     }
 
 
-    public UserProfile findByType(String type) {
+    public UserProfile loadProfileByType(String type) {
         Criteria crit = createEntityCriteria();
         crit.add(Restrictions.eq("type", type));
         return (UserProfile) crit.uniqueResult();
     }
 
 
-    public List<UserProfile> findAll(){
+    public List<UserProfile> loadAllProfile() {
         Criteria crit = createEntityCriteria();
         crit.addOrder(Order.asc("type"));
         return (List<UserProfile>)crit.list();

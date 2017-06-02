@@ -13,11 +13,9 @@ import com.amsystem.bifaces.util.OperationType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -102,8 +100,7 @@ public class UserCtrl extends GeneralCtrl{
      */
     @RequestMapping(value = { "/editUser-{userName}"}, method = RequestMethod.GET)
     public String editUser(@PathVariable String userName, ModelMap model) {
-        User user = userService.findBySSO(userName);
-        model.addAttribute("requestUsr", user);
+        model.addAttribute("requestUsrName", userName);
         model.addAttribute("operation", rb.getString("registryUpdate_GRL"));
         model.addAttribute("operationType", OperationType.EDIT);
 

@@ -33,11 +33,11 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
 
     public User findById(int id) {
-        return dao.findById(id);
+        return dao.loadUserById(id);
     }
 
     public User findBySSO(String sso) {
-        User user = dao.findBySSO(sso);
+        User user = dao.loadUserBySSO(sso);
         return user;
     }
 
@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
      * It will be updated in db once transaction ends.
      */
     public boolean updateUser(User user) {
-        User entity = dao.findById(user.getUserId());
+        User entity = dao.loadUserById(user.getUserId());
         flag = true;
 
         try {
@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public List<User> findAllUsers() {
-        return dao.findAllUsers();
+        return dao.loadAllUser();
     }
 
     public boolean isUserSSOUnique(Integer id, String sso) {

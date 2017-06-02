@@ -10,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -32,22 +31,6 @@ public class SystemBPOperation implements Serializable{
     @Autowired
     private ResourceBundle rb;
 
-
-    private static final String[] colors;
-
-    static {
-        colors = new String[10];
-        colors[0] = "Black";
-        colors[1] = "White";
-        colors[2] = "Green";
-        colors[3] = "Red";
-        colors[4] = "Blue";
-        colors[5] = "Orange";
-        colors[6] = "Silver";
-        colors[7] = "Yellow";
-        colors[8] = "Brown";
-        colors[9] = "Maroon";
-    }
 
 
     /**
@@ -80,7 +63,5 @@ public class SystemBPOperation implements Serializable{
         this.systemBPService = systemBPService;
     }
 
-    public List<String> getColors() {
-        return Arrays.asList(colors);
-    }
+
 }

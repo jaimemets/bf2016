@@ -1,5 +1,7 @@
 package com.amsystem.bifaces.dynamictemplate.setting.model;
 
+import javax.persistence.*;
+
 /**
  * Title: PropertyItemLabel.java <br>
  *
@@ -7,12 +9,21 @@ package com.amsystem.bifaces.dynamictemplate.setting.model;
  *         File Creation on 18/04/2017.
  */
 
-
+@Entity
+@Table(name="PROPERTYOPTIONITEMLABEL")
 public class PropertyOptionItemLabel {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "IDPOIL")
     private Integer poilId;
+
     private Integer poiId;
+
     private Integer propertyId;
+
     private String description;
+
     private String locale;
 
     public PropertyOptionItemLabel(Integer poilId, Integer poiId, Integer propertyId, String description, String locale) {

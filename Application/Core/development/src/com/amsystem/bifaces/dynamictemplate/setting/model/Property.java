@@ -1,5 +1,6 @@
 package com.amsystem.bifaces.dynamictemplate.setting.model;
 
+import javax.persistence.*;
 import java.util.List;
 
 /**
@@ -8,22 +9,42 @@ import java.util.List;
  * @author Jaime Aguilar (JAR)
  * File Creation on 03/04/2016
  */
+
+@Entity
+@Table(name = "PROPERTY")
 public class Property implements IFProperty{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "IDPROPERTY")
     private Integer propertyId;
+
     private String name;
+
     private String label;
+
     private int type;
+
     private int renderingType;
+
     private String expressionValidator;
+
     private String formula;
+
     private String defaultValue;
+
     private boolean visible;
+
     private boolean editable;
+
     private boolean required;
+
     private String parent;
+
     private String mask;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "IDPROPERTY")
     private List<PropertyOptionItem> propertyOptionItems;
-    private List<Template> templateAssociated;
 
 
     public Property() { }

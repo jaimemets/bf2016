@@ -11,25 +11,25 @@
 
         <!--Campo para registrar el/los Nombres-->
         <p:outputLabel for="firstName" value="#{textI18.field_name_UT}:"/>
-        <p:inputText id="firstName" value="#{userFormView.userData.firstName}" style="width: 75%"
+        <p:inputText id="firstName" value="#{userDataConfigView.userData.firstName}" style="width: 75%"
                      label="Nombres" required="true"
-                     disabled="#{userFormView.saved}">
+                     disabled="#{userDataConfigView.saved}">
             <f:validateLength minimum="2"/>
         </p:inputText>
 
         <!--Campo para registrar el/los Apellidos-->
         <p:outputLabel for="lastname" value="#{textI18.field_lastName_UT}:"/>
-        <p:inputText id="lastname" value="#{userFormView.userData.lastName}" style="width: 75%"
+        <p:inputText id="lastname" value="#{userDataConfigView.userData.lastName}" style="width: 75%"
                      label="Apellidos" required="true"
-                     disabled="#{userFormView.saved}">
+                     disabled="#{userDataConfigView.saved}">
             <f:validateLength minimum="2"/>
         </p:inputText>
 
         <!--Campo para registrar el Correo Electronico-->
         <p:outputLabel for="email" value="#{textI18.field_email_UT}:"/>
-        <p:inputText id="email" value="#{userFormView.userData.email}" style="width: 75%"
+        <p:inputText id="email" value="#{userDataConfigView.userData.email}" style="width: 75%"
                      converter="toLowerCaseConverter" placeholder="Ej: micorreo@ejemplo.com"
-                     label="Email" required="true" disabled="#{userFormView.saved}">
+                     label="Email" required="true" disabled="#{userDataConfigView.saved}">
 
             <f:ajax event="keyup" render="@this"/>
             <f:validateRegex pattern="^[_a-z0-9-]+(.[_a-z0-9-]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,})$"/>
@@ -39,49 +39,50 @@
 
         <!--Campo para registrar el Login-->
         <p:outputLabel for="login" value="#{textI18.field_login_UT}:"/>
-        <p:inputText id="login" value="#{userFormView.userData.userName}" style="width: 75%" label="Login"
-                     required="true" disabled="#{userFormView.saved}">
+        <p:inputText id="login" value="#{userDataConfigView.userData.userName}" style="width: 75%" label="Login"
+                     required="true" disabled="#{userDataConfigView.saved}">
             <f:validateLength minimum="6"/>
         </p:inputText>
 
         <!--Campo para registrar la clave del usuario-->
         <p:outputLabel for="passw" value="#{textI18.label_password_UT}:"/>
-        <p:password id="passw" style="width:75%" value="#{userFormView.userData.password}" match="password"
-                    disabled="#{userFormView.saved}"
+        <p:password id="passw" style="width:75%" value="#{userDataConfigView.userData.password}" match="password"
+                    disabled="#{userDataConfigView.saved}"
                     label="Clave"
                     feedback="true" required="true">
         </p:password>
 
         <!--Campo para confirmar el registro de la clave del usuario-->
         <p:outputLabel for="password" value="#{textI18.label_passwordConfirmation_UT}:"/>
-        <p:password id="password" value="#{userFormView.userData.password}" style="width:75%"
-                    disabled="#{userFormView.saved}"
+        <p:password id="password" value="#{userDataConfigView.userData.password}" style="width:75%"
+                    disabled="#{userDataConfigView.saved}"
                     label="Confirme Clave" feedback="true"
                     required="true">
         </p:password>
 
         <!--Campo para registrar el Rol del Usuario-->
         <p:outputLabel for="profile" value="#{textI18.label_roleGroup_UT}:"/>
-        <p:selectCheckboxMenu id="profile" value="#{userFormView.selectedProfiles}" style="width:75%"
+        <p:selectCheckboxMenu id="profile" value="#{userDataConfigView.selectedProfiles}" style="width:75%"
                               required="true" label="Roles"
-                              disabled="#{userFormView.saved}"
+                              disabled="#{userDataConfigView.saved}"
                 >
-            <f:selectItems value="#{userFormView.roleList}" var="rol" itemLabel="#{rol.description}"
+            <f:selectItems value="#{userDataConfigView.roleList}" var="rol" itemLabel="#{rol.description}"
                            itemValue="#{rol}"/>
         </p:selectCheckboxMenu>
 
         <!--Campo para registrar si el usuario es expirable-->
         <h:outputLabel for="expirable" value="#{textI18.label_expirable_UT}: "/>
-        <p:selectBooleanButton id="expirable" value="#{userFormView.expirable}" style="width:75%" onLabel="Si"
-                               offLabel="No" disabled="#{userFormView.saved}">
+        <p:selectBooleanButton id="expirable" value="#{userDataConfigView.expirable}" style="width:75%" onLabel="Si"
+                               offLabel="No" disabled="#{userDataConfigView.saved}">
             <p:ajax update="maskDate"/>
         </p:selectBooleanButton>
 
         <!--Campo para registrar Fecha Expiracion-->
         <p:outputLabel for="maskDate" value="#{textI18.label_expirationDate_UT}"/>
-        <p:calendar id="maskDate" style="width:75%" value="#{userFormView.userData.expirationDate}"
+        <p:calendar id="maskDate" style="width:75%" value="#{userDataConfigView.userData.expirationDate}"
 
-                    pattern="dd-MM-yyyy" mask="true" disabled="#{!userFormView.expirable or userFormView.saved}"/>
+                    pattern="dd-MM-yyyy" mask="true"
+                    disabled="#{!userDataConfigView.expirable or userDataConfigView.saved}"/>
 
     </h:panelGrid>
     <br/>

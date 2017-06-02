@@ -48,29 +48,13 @@ public class TreeOperation implements Serializable {
     @Autowired
     private ResourceBundle rb;
 
-    public TemplateService getTemplateService() {
-        return templateService;
-    }
-
-    public void setTemplateService(TemplateService templateService) {
-        this.templateService = templateService;
-    }
-
-    public PropertyTemplateService getPropertyTemplateService() {
-        return propertyTemplateService;
-    }
-
-    public void setPropertyTemplateService(PropertyTemplateService propertyTemplateService) {
-        this.propertyTemplateService = propertyTemplateService;
-    }
 
     /**
      * Crea el arbol de plantillas organizado por categorias
-     *
      * @return arbol de plantillas
      */
     public TreeNode create() {
-        log.debug("**Inicio Arbol **");
+        log.debug("**Inicio Arbol de Plantillas **");
         TreeNode root = new DefaultTreeNode(new PropertyTemplateNode(NodeType.ROOT, -1, TemplateStatus.ACTIVE.getValue(), null), null);
         TreeNode product = new DefaultTreeNode(new PropertyTemplateNode(NodeType.ROOT, CategoryName.PRODUCT.getValue(), TemplateStatus.ACTIVE.getValue(), CategoryName.PRODUCT.getLabel()), root);
         TreeNode policy = new DefaultTreeNode(new PropertyTemplateNode(NodeType.ROOT, CategoryName.POLICY.getValue(), TemplateStatus.ACTIVE.getValue(), CategoryName.POLICY.getLabel()), root);
@@ -250,7 +234,7 @@ public class TreeOperation implements Serializable {
         selectedTemplate.setStatus(templateNode.getStatus());
 
         List<TreeNode> children = selectedNode.getChildren();
-        List<IFProperty> propertyTemplateList;
+        List<Property> propertyTemplateList;
         if(!children.isEmpty()){
             propertyTemplateList = new ArrayList<>();
             for(TreeNode child : children){
@@ -266,18 +250,18 @@ public class TreeOperation implements Serializable {
     public void addChild(TreeNode rootName, PropertyTemplateNode childNode, Boolean isLeaf) {
 
         List<TreeNode> children = rootName.getChildren();
-        log.debug(" JRA -> Hijos, antes de: " + children.size());
+        //log.debug(" JRA -> Hijos, antes de: " + children.size());
         TreeNode child;
         if (isLeaf) {
             child = new DefaultTreeNode(NodeType.PROPERTY.getLabel(), childNode, rootName);
-            child.setType(NodeType.PROPERTY.getLabel());
+            //child.setType(NodeType.PROPERTY.getLabel());
         } else {
             child = new DefaultTreeNode(NodeType.TEMPLATE_NAME.getLabel(), childNode, rootName);
-            child.setType(NodeType.TEMPLATE_NAME.getLabel());
+            //child.setType(NodeType.TEMPLATE_NAME.getLabel());
         }
 
-        children = rootName.getChildren();
-        Collections.sort(children, new LevelComparator());
+        //children = rootName.getChildren();
+        Collections.sort(rootName.getChildren(), new LevelComparator());
 
     }
 
@@ -303,6 +287,7 @@ public class TreeOperation implements Serializable {
         }
     }
 
+
     private void orderRootChild(TreeNode root) {
         final List<TreeNode> children = root.getChildren();
         log.debug("Hijos de Root : " + children.size());
@@ -313,6 +298,7 @@ public class TreeOperation implements Serializable {
         }
 
     }
+
 
     private void loadChild(TreeNode root, List<PropertyTree> propertyList) {
         log.debug("Padre: " + ((PropertyTemplateNode) root.getData()).getName() + "\tHijos: " + propertyList.size());
@@ -338,6 +324,23 @@ public class TreeOperation implements Serializable {
 
         }
 
+    }
+
+
+    public TemplateService getTemplateService() {
+        return templateService;
+    }
+
+    public void setTemplateService(TemplateService templateService) {
+        this.templateService = templateService;
+    }
+
+    public PropertyTemplateService getPropertyTemplateService() {
+        return propertyTemplateService;
+    }
+
+    public void setPropertyTemplateService(PropertyTemplateService propertyTemplateService) {
+        this.propertyTemplateService = propertyTemplateService;
     }
 
 }

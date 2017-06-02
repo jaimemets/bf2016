@@ -12,13 +12,13 @@ import java.util.List;
  */
 public interface UserDao {
 
-    User findById(int id);
-
-    User findBySSO(String sso);
-
     boolean save(User user);
 
     boolean deleteBySSO(String sso);
 
-    List<User> findAllUsers();
+    User loadUserById(int id);
+
+    User loadUserBySSO(String sso);
+
+    List<User> loadAllUser();
 }

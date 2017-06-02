@@ -60,14 +60,14 @@ public class User implements Serializable{
     private int status;
 
     @NotEmpty
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "USER_ROLE",
             joinColumns = {@JoinColumn(name = "IDUSER")},
             inverseJoinColumns = {@JoinColumn(name = "IDROLE")})
     private Set<UserProfile> userProfiles = new HashSet<>();
 
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "USER_MENU_ITEM",
             joinColumns = {@JoinColumn(name = "IDUSER")},
             inverseJoinColumns = {@JoinColumn(name = "ID_MENU"), @JoinColumn(name = "ID_MI")})

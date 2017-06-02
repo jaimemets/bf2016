@@ -24,15 +24,15 @@ public class UserProfileServiceImpl implements UserProfileService {
     UserProfileDao dao;
 
     public UserProfile findById(int id) {
-        return dao.findById(id);
+        return dao.loadProfileById(id);
     }
 
     public UserProfile findByType(String type){
-        return dao.findByType(type);
+        return dao.loadProfileByType(type);
     }
 
     public List<UserProfile> findAll() {
-        return dao.findAll();
+        return dao.loadAllProfile();
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.amsystem.bifaces.dynamictemplate.setting.services;
 
 import com.amsystem.bifaces.dynamictemplate.setting.model.IFProperty;
+import com.amsystem.bifaces.dynamictemplate.setting.model.Property;
 import com.amsystem.bifaces.dynamictemplate.setting.model.PropertyOptionItem;
 import com.amsystem.bifaces.dynamictemplate.setting.model.PropertyOptionItemLabel;
 
@@ -47,7 +48,7 @@ public interface PropertyService {
 
     List<IFProperty> findAllProperty();
 
-    List<IFProperty> findAllPropertyByIds(List idsProperty);
+    List<Property> findAllPropertyByIds(List idsProperty);
 
 
     boolean isAssociate(IFProperty selectedProp);

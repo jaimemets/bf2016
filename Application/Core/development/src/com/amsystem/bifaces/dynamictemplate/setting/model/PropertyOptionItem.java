@@ -1,5 +1,6 @@
 package com.amsystem.bifaces.dynamictemplate.setting.model;
 
+import javax.persistence.*;
 import java.util.Set;
 
 /**
@@ -11,11 +12,23 @@ import java.util.Set;
  * @author Jaime Aguilar (JAR)
  *         File Creation on 27/07/2016.
  */
+
+@Entity
+@Table(name = "PROPERTYOPTIONITEM")
 public class PropertyOptionItem {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "IDPOI")
     private Integer poiId;
+
     private Integer propertyId;
+
     private float value;
+
     private String description;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "IDPOI")
     private Set<PropertyOptionItemLabel> itemLabels;
 
 

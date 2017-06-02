@@ -1,9 +1,9 @@
 package com.amsystem.bifaces.dynamictemplate.setting.dao.impl;
 
-import com.amsystem.bifaces.dynamictemplate.setting.model.IFProperty;
-import com.amsystem.bifaces.util.AbstractDao;
 import com.amsystem.bifaces.dynamictemplate.setting.dao.PropertyDao;
+import com.amsystem.bifaces.dynamictemplate.setting.model.IFProperty;
 import com.amsystem.bifaces.dynamictemplate.setting.model.Property;
+import com.amsystem.bifaces.util.AbstractDao;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -256,9 +256,9 @@ public class PropertyDaoImpl extends AbstractDao<Integer, Property> implements P
      *
      * @return <tt>List</tt> de propiedades
      */
-    public List<IFProperty> loadPropertyListByIdList(List idsProperty) {
+    public List<Property> loadPropertyListByIdList(List idsProperty) {
 
-        List<IFProperty> propertyList;
+        List<Property> propertyList;
 
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("ids", idsProperty);

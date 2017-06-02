@@ -26,7 +26,6 @@
             <p:growl id="growl" showDetail="true" autoUpdate="true" sticky="true"/>
 
             <p:dataTable id="userDT" var="user" value="#{userToolView.allUsers}" widgetVar="userTable"
-                         rendered="#{userToolView.operation eq null}"
                          emptyMessage="#{textI18.msj_notRegisterCriteria_GRL}"
                          selection="#{userToolView.selectedUser}" selectionMode="single"
                          rowKey="#{user.userId}" scrollable="true" scrollHeight="300">

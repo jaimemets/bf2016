@@ -14,7 +14,7 @@
 
     <ui:define name="renderBreadCrumb">
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa fa-dashboard"></i>#{textI18.label_home_GRL}</a></li>
+            <li><a href="#{request.contextPath}/"><i class="fa fa-dashboard"></i>#{textI18.label_home_GRL}</a></li>
             <li><a href="#">#{textI18.config_label_GRL}</a></li>
             <li class="active">#{textI18.template_tool_TT}</li>
         </ol>
@@ -227,7 +227,7 @@
                 </p:tabView>
 
                 <p:outputPanel style="width: 100%;overflow: auto;display: block">
-                    <p:commandButton value="#{textI18.save_TT}" style="margin: 1% 3% 3% 33%"
+                    <p:commandButton value="#{textI18.save_GRL}" style="margin: 1% 3% 3% 33%"
                                      process="@this propertyDT winMessageId widSettPropId"
                                      action="#{propertySectionView.updateProperty()}"
                                      update="propertyDT" icon="ui-icon-plusthick"

@@ -1,6 +1,7 @@
 package com.amsystem.bifaces.dynamictemplate.setting.dao;
 
 import com.amsystem.bifaces.dynamictemplate.setting.model.IFProperty;
+import com.amsystem.bifaces.dynamictemplate.setting.model.Property;
 
 import java.util.List;
 
@@ -83,7 +84,7 @@ public interface PropertyDao {
      * @param propertyId Lista de identificadores
      * @return <tt>List</tt> de propiedades
      */
-    List<IFProperty> loadPropertyListByIdList(List propertyId);
+    List<Property> loadPropertyListByIdList(List propertyId);
 
 
 }

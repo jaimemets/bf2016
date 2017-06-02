@@ -64,10 +64,6 @@ public class SystemBPView implements Serializable{
         return SystemModules.values();
     }
 
-    public List<String> getColors() {
-        return service.getColors();
-    }
-
     public SystemBusinessProperties getSelectedProp() {
         return selectedProp;
     }

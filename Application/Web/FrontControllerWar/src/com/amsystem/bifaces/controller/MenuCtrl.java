@@ -59,7 +59,7 @@ public class MenuCtrl extends GeneralCtrl {
     @RequestMapping(value = {"/productTool"}, method = RequestMethod.GET)
     public String goProductTool(ModelMap model) {
         model.addAttribute("loggedinuser", getPrincipal());
-        return "templatetool/templateTool";
+        return "producttool/productTool";
     }
 
     /**

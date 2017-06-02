@@ -35,17 +35,17 @@
 
             <p:outputPanel id="opButtonsUserForm" style="text-align: center">
 
-                <p:commandButton value="#{textI18.save_GRL}" rendered="#{!userFormView.saved}"
+                <p:commandButton value="#{textI18.save_GRL}" rendered="#{!userDataConfigView.saved}"
                                  icon="ui-icon-check"
                                  update="opButtonsUserForm userForm:tabUserSetting:pgUserData userForm:winMessageId"
-                                 actionListener="#{userFormView.saveUser}"/>
+                                 actionListener="#{userDataConfigView.saveUser}"/>
                 <p:spacer/>
 
-                <p:button id="cancelUsrBtn" value="#{textI18.cancel_GRL}" rendered="#{!userFormView.saved}"
+                <p:button id="cancelUsrBtn" value="#{textI18.cancel_GRL}" rendered="#{!userDataConfigView.saved}"
                           href="/userTool"
                           icon="ui-icon-cancel"/>
 
-                <p:button id="continueUsrBtn" value="Continuar" rendered="#{userFormView.saved}"
+                <p:button id="continueUsrBtn" value="Continuar" rendered="#{userDataConfigView.saved}"
                           href="/userTool"
                           icon="ui-icon-cancel"/>
 

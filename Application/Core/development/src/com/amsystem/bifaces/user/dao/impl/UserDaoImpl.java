@@ -27,7 +27,7 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
     private static final Logger log = LogManager.getLogger(UserDaoImpl.class.getName());
 
     @Transactional(readOnly = false)
-    public User findById(int id) {
+    public User loadUserById(int id) {
         User user = getByKey(id);
         if(user!=null){
             Hibernate.initialize(user.getUserProfiles());
@@ -36,20 +36,21 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
     }
 
     @Transactional(readOnly = false)
-    public User findBySSO(String sso) {
+    public User loadUserBySSO(String sso) {
         log.info("SSO : {}" + sso);
         Criteria crit = createEntityCriteria();
         crit.add(Restrictions.eq("userName", sso));
         User user = (User)crit.uniqueResult();
         if(user!=null){
             Hibernate.initialize(user.getUserProfiles());
+            Hibernate.initialize(user.getMenuItems());
         }
         return user;
     }
 
     @SuppressWarnings("unchecked")
     @Transactional(readOnly = false)
-    public List<User> findAllUsers() {
+    public List<User> loadAllUser() {
         Criteria criteria = createEntityCriteria().addOrder(Order.asc("firstName"));
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);//To avoid duplicates.
         List<User> users = (List<User>) criteria.list();

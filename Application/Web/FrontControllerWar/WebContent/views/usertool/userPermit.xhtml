@@ -7,9 +7,9 @@
     <h:panelGrid id="pgUserMenu"
                  style=" width: 100%; border: 3px double cornflowerblue;  border-radius: 5px;  margin: 5px 0px 0px 0px; ">
 
-        <p:tree value="#{userFormView.root}" var="tree"
+        <p:tree value="#{userDataConfigView.root}" var="tree"
                 selectionMode="checkbox"
-                selection="#{userFormView.selectedNodes}">
+                selection="#{userDataConfigView.selectedNodes}">
 
             <p:treeNode>
                 <h:outputText value="#{tree.name}"/>
