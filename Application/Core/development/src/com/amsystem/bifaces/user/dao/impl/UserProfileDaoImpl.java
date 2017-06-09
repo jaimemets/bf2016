@@ -27,24 +27,24 @@ public class UserProfileDaoImpl extends AbstractDao<Integer, UserProfile> implem
     }
 
 
-    public UserProfile loadProfileByType(String type) {
+    public UserProfile loadProfileByCod(String type) {
         Criteria crit = createEntityCriteria();
-        crit.add(Restrictions.eq("type", type));
+        crit.add(Restrictions.eq("codProfile", type));
         return (UserProfile) crit.uniqueResult();
     }
 
 
     public List<UserProfile> loadAllProfile() {
         Criteria crit = createEntityCriteria();
-        crit.addOrder(Order.asc("type"));
+        crit.addOrder(Order.asc("codProfile"));
         return (List<UserProfile>)crit.list();
     }
 
     @Override
-    public List<UserProfile> loadProfileByIds(List<Integer> idList) {
+    public List<UserProfile> loadAllProfileByCod(List<String> codList) {
         Criteria criteria = createEntityCriteria();
-        criteria.addOrder(Order.asc("type"));
-        criteria.add(Restrictions.in("roleId", idList));
+        criteria.addOrder(Order.asc("codProfile"));
+        criteria.add(Restrictions.in("codProfile", codList));
         return criteria.list();
     }
 }

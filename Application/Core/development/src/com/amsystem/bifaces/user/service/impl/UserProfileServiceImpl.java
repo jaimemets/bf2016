@@ -23,12 +23,9 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Autowired
     UserProfileDao dao;
 
-    public UserProfile findById(int id) {
-        return dao.loadProfileById(id);
-    }
 
-    public UserProfile findByType(String type){
-        return dao.loadProfileByType(type);
+    public UserProfile findByCod(String codProfile) {
+        return dao.loadProfileByCod(codProfile);
     }
 
     public List<UserProfile> findAll() {
@@ -36,7 +33,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    public List<UserProfile> finProfilesByIds(List<Integer> profileIds) {
-        return dao.loadProfileByIds(profileIds);
+    public List<UserProfile> findAllProfilesByCod(List<String> codProfile) {
+        return dao.loadAllProfileByCod(codProfile);
     }
 }

@@ -12,6 +12,8 @@ public enum SymbolType {
     SPACE(" "),
     LEFT_PARENTHESIS("("),
     RIGHT_PARENTHESIS(")"),
+    LEFT_CURLY_BRACKET("{"),
+    RIGHT_CURLY_BRACKET("}"),
     UNDERSCORE("_"),
     PIPE("|"),
     AMPERSAND_SYMBOL("&"),

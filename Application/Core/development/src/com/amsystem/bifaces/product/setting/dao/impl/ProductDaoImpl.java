@@ -6,6 +6,7 @@ import com.amsystem.bifaces.util.AbstractDao;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.Hibernate;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
@@ -44,22 +45,30 @@ public class ProductDaoImpl extends AbstractDao<String, Product> implements Prod
         return false;
     }
 
-    public Product getById(Integer productId) {
+    public Product loadById(Integer productId) {
         Criteria criteria = createEntityCriteria();
         criteria.add(Restrictions.eq("productId", productId));
-        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);//To avoid duplicates.
-        return (Product) criteria.uniqueResult();
+        //criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);//To avoid duplicates.
+        Product product = (Product) criteria.uniqueResult();
+        if (product != null)
+            Hibernate.initialize(product.getPlanSet());
+
+        return product;
     }
 
     @Transactional(readOnly = false)
-    public List<Product> loadAllProduct() {
+    public List<Product> loadAllProductPlan() {
         Criteria criteria = createEntityCriteria().addOrder(Order.asc("name"));
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);//To avoid duplicates.
-        return (List<Product>) criteria.list();
+        List<Product> productList = (List<Product>) criteria.list();
+        for (Product pr : productList) {
+            Hibernate.initialize(pr.getPlanSet());
+        }
+        return productList;
     }
 
     @Transactional(readOnly = false)
-    public List<Product> loadProductByStatus(Integer status) {
+    public List<Product> loadAllProductByStatus(Integer status) {
         Criteria criteria = createEntityCriteria().addOrder(Order.asc("name"));
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);//To avoid duplicates.
         criteria.add(Restrictions.eq("status", status));

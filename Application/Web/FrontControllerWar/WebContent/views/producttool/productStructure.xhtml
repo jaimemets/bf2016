@@ -1,0 +1,58 @@
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui">
+
+    <p:panelGrid id="pgConfigProduct" columns="2" cellpadding="5" layout="grid"
+                 style=" width: 100%; border: 3px double cornflowerblue;  border-radius: 5px;  margin: 5px 0px 0px 0px;">
+
+        <p:tree id="prTreeId" value="#{productConfigView.productRoot}" var="prTree"
+                selectionMode="single"
+                selection="#{productConfigView.selectProductNode}">
+
+            <p:ajax event="select"
+                    update="productSettingForm:tabProductSetting:tempTreeId"
+                    listener="#{productConfigView.onNodeSelect}"/>
+
+
+            <p:treeNode>
+                <h:outputText value="#{prTree.name}"/>
+            </p:treeNode>
+
+            <p:treeNode type="PA" expandedIcon="ui-icon-folder-open"
+                        collapsedIcon="ui-icon-folder-collapsed">
+                <h:outputText value="#{prTree.name}"/>
+            </p:treeNode>
+
+            <p:treeNode type="CH" icon="ui-icon-note">
+                <h:outputText value="#{prTree.name}"/>
+            </p:treeNode>
+
+        </p:tree>
+
+        <!-- Estructura Arbol de Plantillas -->
+        <p:tree id="tempTreeId" value="#{productConfigView.templateRoot}" var="tempTree"
+                selectionMode="single"
+                selection="#{productConfigView.selectTemplateNode}">
+
+            <p:treeNode>
+                <h:outputText value="#{tempTree.name}"/>
+            </p:treeNode>
+
+            <p:treeNode type="PA" expandedIcon="ui-icon-folder-open"
+                        collapsedIcon="ui-icon-folder-collapsed">
+                <h:outputText value="#{tempTree.name}"/>
+            </p:treeNode>
+
+            <p:treeNode type="CH" icon="ui-icon-note">
+                <h:outputText value="#{tempTree.name}"/>
+            </p:treeNode>
+
+        </p:tree>
+
+    </p:panelGrid>
+    <br/>
+
+
+</ui:composition>

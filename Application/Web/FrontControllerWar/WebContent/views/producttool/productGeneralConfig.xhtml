@@ -1,0 +1,58 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                template="/views/template/template.xhtml">
+
+    <ui:define name="title">
+        #{textI18.title_productTool_PT}
+    </ui:define>
+
+    <ui:define name="description"/>
+
+    <ui:define name="renderBreadCrumb">
+        <ol class="breadcrumb">
+            <li><a href="#{request.contextPath}/"><i class="fa fa-dashboard"></i>#{textI18.label_home_GRL}</a></li>
+            <li><a href="#{request.contextPath}/productTool">#{textI18.title_productTool_PT}</a></li>
+            <li class="active">${operation}</li>
+        </ol>
+    </ui:define>
+
+    <ui:define name="body">
+        <h:form id="productSettingForm">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+
+            <p:growl id="winMessageId" showDetail="true" sticky="true"/>
+
+            <p:tabView id="tabProductSetting" scrollable="true" cache="false">
+                <p:tab id="tabProductStructure" title="Estructura del Producto">
+                    <ui:include src="productStructure.xhtml"/>
+                </p:tab>
+                <p:tab id="tabAdvancedConfig" title="Configuracion Avanzada">
+                    <!-- <ui:include src="productAdvancedConfig.xhtml"/> -->
+                </p:tab>
+            </p:tabView>
+
+            <p:outputPanel id="opButtonsProductForm" style="text-align: center">
+
+                <!--
+
+                <p:commandButton value="#{textI18.save_GRL}" rendered="#{!userDataConfigView.saved}"
+                                 icon="ui-icon-check"
+                                 update="opButtonsProductForm productSettingForm:tabProductSetting:pgConfigProduct productSettingForm:winMessageId"
+                                 actionListener="#{userDataConfigView.saveUser}"/>
+                <p:spacer/>
+
+                <p:button id="cancelUsrBtn" value="#{textI18.cancel_GRL}" rendered="#{!userDataConfigView.saved}"
+                          href="/userTool"
+                          icon="ui-icon-cancel"/>
+
+                <p:button id="continueUsrBtn" value="Continuar" rendered="#{userDataConfigView.saved}"
+                          href="/userTool"
+                          icon="ui-icon-cancel"/>
+-->
+            </p:outputPanel>
+
+        </h:form>
+    </ui:define>
+</ui:composition>

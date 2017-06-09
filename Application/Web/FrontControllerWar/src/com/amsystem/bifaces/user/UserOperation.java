@@ -133,7 +133,6 @@ public class UserOperation implements Serializable {
 
         for (Menu m : menuList) {
             parentNodeMenu = new CheckboxTreeNode(NodeTypeMenu.MENU.getLabel(), new TreeNodeMenu(m.getMenuId(), rb.getString(m.getCodI18n().concat("_MNU")), NodeTypeMenu.MENU), root);
-            log.debug("Objeto creado: " + parentNodeMenu.getClass().toString());
 
             if (!m.getItemSet().isEmpty()) {
                 log.debug("Menu: " + m.getCodI18n());
@@ -188,14 +187,15 @@ public class UserOperation implements Serializable {
         Set<UserProfile> userProfileSet = null;
 
         if (!selectedProfiles.isEmpty()) {
-            List<Integer> idRoles = new ArrayList<>();
-            int beginIndex;
+            List<String> codProfile = new ArrayList<>();
+            int beginIndex, endIndex;
             for (int i = 0; i < selectedProfiles.size(); i++) {
                 strProfile = String.valueOf(selectedProfiles.get(i));
                 beginIndex = strProfile.indexOf(SymbolType.EQUALS_SYMBOL.getValue());
-                idRoles.add(Integer.valueOf(strProfile.substring(beginIndex + 1, beginIndex + 2)));
+                endIndex = strProfile.indexOf(SymbolType.RIGHT_CURLY_BRACKET.getValue());
+                codProfile.add(strProfile.substring(beginIndex + 2, endIndex - 1));
             }
-            userProfileSet = new HashSet<>(userProfileService.finProfilesByIds(idRoles));
+            userProfileSet = new HashSet<>(userProfileService.findAllProfilesByCod(codProfile));
         }
         return userProfileSet;
     }

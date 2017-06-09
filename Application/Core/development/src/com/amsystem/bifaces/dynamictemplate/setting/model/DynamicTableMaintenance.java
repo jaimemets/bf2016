@@ -1,7 +1,7 @@
 package com.amsystem.bifaces.dynamictemplate.setting.model;
 
-import com.amsystem.bifaces.util.CategoryName;
 import com.amsystem.bifaces.util.SymbolType;
+import com.amsystem.bifaces.util.TemplateCategory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,7 +26,7 @@ public class DynamicTableMaintenance extends Template implements IFDynamicTableM
     public String getGenerateCreateQuery() {
         log.debug("** Creando Tabla Dinamica**");
         StringBuilder query = new StringBuilder();
-        query.append("CREATE TABLE ").append(CategoryName.valueOf(getCategoryId()).getPrefix().concat(SymbolType.UNDERSCORE.getValue()))
+        query.append("CREATE TABLE ").append(TemplateCategory.valueOf(getCategoryId()).getPrefix().concat(SymbolType.UNDERSCORE.getValue()))
                 .append(getName()).append(" (PKT INT(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador Tabla Dinamica Generada', ")
                 .append("PRIMARY KEY (PKT ) COMMENT '')");
         return query.toString();
@@ -36,7 +36,7 @@ public class DynamicTableMaintenance extends Template implements IFDynamicTableM
     @Override
     public String getGenerateDropQuery() {
         StringBuilder query = new StringBuilder();
-        query.append("DROP TABLE IF EXISTS ").append(CategoryName.valueOf(getCategoryId()).getPrefix().concat(SymbolType.UNDERSCORE.getValue()))
+        query.append("DROP TABLE IF EXISTS ").append(TemplateCategory.valueOf(getCategoryId()).getPrefix().concat(SymbolType.UNDERSCORE.getValue()))
                                         .append(getName());
         return query.toString();
     } 
@@ -75,7 +75,7 @@ public class DynamicTableMaintenance extends Template implements IFDynamicTableM
     @Override
     public String getCountRowQuery() {
         StringBuilder query = new StringBuilder();
-        query.append(" SELECT COUNT(*) FROM ").append(CategoryName.valueOf(getCategoryId()).getPrefix().concat(SymbolType.UNDERSCORE.getValue()))
+        query.append(" SELECT COUNT(*) FROM ").append(TemplateCategory.valueOf(getCategoryId()).getPrefix().concat(SymbolType.UNDERSCORE.getValue()))
                 .append(getName());
         return query.toString();
     }

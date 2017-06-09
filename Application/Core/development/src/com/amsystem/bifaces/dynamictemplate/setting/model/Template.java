@@ -42,7 +42,7 @@ public class Template implements Serializable{
             inverseJoinColumns = {@JoinColumn(name = "IDPROPERTY")})
     private List<Property> propertyList;
 
-    @OneToMany(mappedBy = "id.template",
+    @OneToMany(mappedBy = "ptlPK.template",
             cascade = CascadeType.ALL)
     private Set<ProductTemplateLevel> productTemplateLevelSet = new HashSet<>();
 

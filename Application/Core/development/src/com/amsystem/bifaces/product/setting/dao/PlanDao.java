@@ -16,11 +16,11 @@ public interface PlanDao {
 
     boolean save(Plan plan);
 
-    boolean updateProduct(Plan plan);
+    boolean updatePlan(Plan plan);
 
     boolean delete(String planName);
 
-    Plan getById(Integer planId);
+    Plan loadById(Integer planId);
 
     List<Plan> loadAllPlan();
 

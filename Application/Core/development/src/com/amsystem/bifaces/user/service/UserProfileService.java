@@ -13,12 +13,10 @@ import java.util.List;
 
 public interface UserProfileService {
 
-    UserProfile findById(int id);
-
-    UserProfile findByType(String type);
+    UserProfile findByCod(String codProfile);
 
     List<UserProfile> findAll();
 
-    List<UserProfile> finProfilesByIds(List<Integer> profileIds);
+    List<UserProfile> findAllProfilesByCod(List<String> codProfile);
 
 }

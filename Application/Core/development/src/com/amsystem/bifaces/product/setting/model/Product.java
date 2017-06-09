@@ -31,8 +31,8 @@ public class Product {
     private Integer status;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "IDPLAN")
-    private Set<Plan> plans = new HashSet<>();
+    @JoinColumn(name = "IDPRS")
+    private Set<Plan> planSet = new HashSet<>();
 
     public Integer getProductId() {
         return productId;
@@ -58,12 +58,12 @@ public class Product {
         this.status = status;
     }
 
-    public Set<Plan> getPlans() {
-        return plans;
+    public Set<Plan> getPlanSet() {
+        return planSet;
     }
 
-    public void setPlans(Set<Plan> plans) {
-        this.plans = plans;
+    public void setPlanSet(Set<Plan> planSet) {
+        this.planSet = planSet;
     }
 
 }

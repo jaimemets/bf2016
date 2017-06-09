@@ -20,11 +20,57 @@
     </ui:define>
 
     <ui:define name="body">
-        <h:form id="formProduct">
+        <h:form id="productForm">
 
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 
             <p:growl id="growl" showDetail="true" autoUpdate="true" sticky="true"/>
+
+            <p:treeTable id="productTT" value="#{productToolView.root}" var="pr" selectionMode="single"
+                         widgetVar="productTable" scrollable="true" scrollHeight="300"
+                         selection="#{productToolView.selectedNode}">
+
+                <f:facet name="header">
+                    Productos / Planes
+
+                </f:facet>
+
+                <p:ajax event="select" update="editPrBtn clonePrBtn"/>
+
+                <p:column headerText="Name">
+                    <h:outputText value="#{pr.name}"/>
+                </p:column>
+
+                <p:column headerText="Activo?" style="text-align: center">
+                    <p:selectBooleanButton disabled="#{true}" value="#{pr.status eq '1' ? true : false}" onLabel="Yes"
+                                           offLabel="No"/>
+                    <!--<h:outputText value="#{pr.status}" /> -->
+
+                </p:column>
+
+                <f:facet name="footer">
+
+                    <p:button id="editPrBtn" process="productTT" value="#{textI18.edit_GRL}"
+                              href="/editProduct-#{productToolView.idProdPlan}"
+                              disabled="#{productToolView.selectedNode.type ne 'CH'}"
+                              icon="fa fa-edit">
+
+                    </p:button>
+
+                    <f:param id="view" name="view" value="parametro"/>
+                    <f:attribute name="view" value="atributo"/>
+
+                    <p:commandButton id="clonePrBtn" process="productTT" value="Activar"
+                                     icon="fa fa-code-fork"
+                                     disabled="#{empty productToolView.selectedNode}"
+                                     update=""
+                            />
+
+                </f:facet>
+
+            </p:treeTable>
+
+            <!--
 
             <p:dataTable id="productDT" var="pr" value="#{productToolView.allProduct}" widgetVar="productTable"
                          emptyMessage="#{textI18.msj_notRegisterCriteria_GRL}"
@@ -56,13 +102,7 @@
                 </p:column>
 
                 <f:facet name="footer">
-                    <!--
-                    <p:button id="newUsrBtn" process="userDT" value="#{textI18.new_GRL}"
-                              href="/newUser"
-                              icon="ui-icon-plusthick"/>
 
-                    <p:spacer styleClass="vertical-separator" style="width: 2px; height: 22px"/>
-                    -->
 
                     <p:button id="editPrBtn" process="productDT" value="#{textI18.edit_GRL}"
                               href="/editUser-#{productToolView.selectedProduct.name}"
@@ -76,7 +116,7 @@
 
                 </f:facet>
             </p:dataTable>
-
+-->
 
         </h:form>
 

@@ -1,12 +1,12 @@
 package com.amsystem.bifaces.dynamictemplate.setting.dao.impl;
 
 import com.amsystem.bifaces.dynamictemplate.setting.dao.TemplateDao;
-import com.amsystem.bifaces.util.AbstractDao;
 import com.amsystem.bifaces.dynamictemplate.setting.model.DynamicTableMaintenance;
 import com.amsystem.bifaces.dynamictemplate.setting.model.Template;
 import com.amsystem.bifaces.dynamictemplate.util.TemplateStatus;
-import com.amsystem.bifaces.util.CategoryName;
+import com.amsystem.bifaces.util.AbstractDao;
 import com.amsystem.bifaces.util.StringUtil;
+import com.amsystem.bifaces.util.TemplateCategory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -116,7 +116,7 @@ public class TemplateDaoImpl extends AbstractDao<Integer, Template> implements T
     }
 
     @Override
-    public List<Template> loadTemplateByCategory(CategoryName categoryTemplateName) {
+    public List<Template> loadTemplateByCategory(TemplateCategory categoryTemplateName) {
         List<Template> doList;
         doList = findDynamicObjectList(null, categoryTemplateName.getValue(), null);
         return doList;
@@ -163,7 +163,7 @@ public class TemplateDaoImpl extends AbstractDao<Integer, Template> implements T
             .append(" FROM TEMPLATEREPOSITORY TR");
 
         if(templateStatus != null || category != null || !StringUtil.isEmptyOrNullValue(templateName)) {
-            sqlWhere.append("WHERE ");
+            sqlWhere.append(" WHERE ");
 
             //Estatus de la plantilla
             if (templateStatus != null) {
@@ -198,6 +198,9 @@ public class TemplateDaoImpl extends AbstractDao<Integer, Template> implements T
         if (sqlWhere.length()>0){
             query.append(sqlWhere);
         }
+
+        query.append(" ORDER BY categoryId ASC");
+
         log.debug("sqlWhere: " + sqlWhere);
         log.debug("Query: " + query);
 

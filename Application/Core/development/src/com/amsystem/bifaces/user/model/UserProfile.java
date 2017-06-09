@@ -1,6 +1,9 @@
 package com.amsystem.bifaces.user.model;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 
 /**
@@ -11,36 +14,23 @@ import java.io.Serializable;
  */
 
 @Entity
-@Table(name="ROLE")
+@Table(name="PROFILE")
 public class UserProfile implements Serializable{
 
     @Id
-    @NotNull
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "IDROLE")
-    private Integer roleId;
+	@Column(name="COD_PROFILE", length=5)
+    private String codProfile;
 
-	@Column(name="TYPE", length=20, unique=true, nullable=false)
-    private String type;
-
-    @Column(name="DESCRIPTION", length=45, nullable=true)
+    @Column(name="DESCRIPTION", length=45)
     private String description;
 
-    public Integer getRoleId() {
-        return roleId;
+    public String getCodProfile() {
+        return codProfile;
     }
 
-    public void setRoleId(Integer roleId) {
-        this.roleId = roleId;
+    public void setCodProfile(String codProfile) {
+        this.codProfile = codProfile;
     }
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
 
     public String getDescription() {
         return description;
@@ -51,30 +41,30 @@ public class UserProfile implements Serializable{
     }
 
     @Override
+    public String toString() {
+        return "UserProfile{" +
+                "codProfile='" + codProfile + '\'' +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof UserProfile)) return false;
 
         UserProfile that = (UserProfile) o;
 
-        if (!roleId.equals(that.roleId)) return false;
-        if (!type.equals(that.type)) return false;
+        if (codProfile != null ? !codProfile.equals(that.codProfile) : that.codProfile != null) return false;
+        if (description != null ? !description.equals(that.description) : that.description != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = roleId.hashCode();
-        result = 31 * result + type.hashCode();
+        int result = codProfile != null ? codProfile.hashCode() : 0;
+        result = 31 * result + (description != null ? description.hashCode() : 0);
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return "UserProfile{" +
-                "roleId=" + roleId +
-                '}';
     }
 }
 

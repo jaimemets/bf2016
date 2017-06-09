@@ -5,7 +5,7 @@ package com.amsystem.bifaces.util;
  * @author jaguilar (JAR)
  * File Creation on 07/05/2016
  */
-public enum CategoryName {
+public enum TemplateCategory {
     
     PRODUCT(1, "Product", "PR"),
     POLICY(2, "Policy", "POL"),
@@ -21,7 +21,7 @@ public enum CategoryName {
     private String label;
     private String prefix;
 
-    private CategoryName(int value, String label, String prefix) {
+    private TemplateCategory(int value, String label, String prefix) {
         this.value = value;
         this.label = label;
         this.prefix = prefix;
@@ -51,8 +51,8 @@ public enum CategoryName {
         this.prefix = prefix;
     }
 
-    public static CategoryName valueOf(int value) {
-        for (CategoryName ct : values()) {
+    public static TemplateCategory valueOf(int value) {
+        for (TemplateCategory ct : values()) {
             if (ct.getValue() == value) {
                 return ct;
             }

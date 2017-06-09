@@ -22,7 +22,7 @@ public interface ProductService {
 
     Product findById(Integer productId);
 
-    List<Product> findAllProduct();
+    List<Product> findAllProductPlan();
 
     List<Product> findProductByStatus(Integer status);
 }

@@ -2,7 +2,7 @@ package com.amsystem.bifaces.dynamictemplate.setting.dao;
 
 import com.amsystem.bifaces.dynamictemplate.setting.model.Template;
 import com.amsystem.bifaces.dynamictemplate.util.TemplateStatus;
-import com.amsystem.bifaces.util.CategoryName;
+import com.amsystem.bifaces.util.TemplateCategory;
 
 import java.util.List;
 
@@ -65,10 +65,10 @@ public interface TemplateDao {
     /**
      * Carga de la base de datos todas la plantillas pertenecientes a la categoria que recibe el metodo por parametro
      *
-     * @param categoryName categoria de la plantilla
+     * @param templateCategory categoria de la plantilla
      * @return <tt>List</tt> de plantillas
      */
-    List<Template> loadTemplateByCategory(CategoryName categoryName);
+    List<Template> loadTemplateByCategory(TemplateCategory templateCategory);
 
     /**
      * Carga todas la plantillas almacenadas en la base de datos

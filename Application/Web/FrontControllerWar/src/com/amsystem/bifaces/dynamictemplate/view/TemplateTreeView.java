@@ -1,9 +1,9 @@
 package com.amsystem.bifaces.dynamictemplate.view;
 
 import com.amsystem.bifaces.dynamictemplate.controller.TreeOperation;
-import com.amsystem.bifaces.util.CategoryName;
 import com.amsystem.bifaces.util.ComponentOperation;
 import com.amsystem.bifaces.util.NodeType;
+import com.amsystem.bifaces.util.TemplateCategory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.primefaces.model.TreeNode;
@@ -46,7 +46,7 @@ public class TemplateTreeView implements Serializable {
     private String cloneTemplateName;
 
     //Categoria destino para la plantilla clonada
-    private CategoryName selectedCategory;
+    private TemplateCategory selectedCategory;
 
     //Lista de categorias disponibles para las plantillas
     private List<SelectItem> categoryNameItems;
@@ -142,15 +142,15 @@ public class TemplateTreeView implements Serializable {
 
     }
 
-    public CategoryName[] getCategoryNames() {
-        return CategoryName.values();
+    public TemplateCategory[] getCategoryNames() {
+        return TemplateCategory.values();
     }
 
-    public CategoryName getSelectedCategory() {
+    public TemplateCategory getSelectedCategory() {
         return selectedCategory;
     }
 
-    public void setSelectedCategory(CategoryName selectedCategory) {
+    public void setSelectedCategory(TemplateCategory selectedCategory) {
         this.selectedCategory = selectedCategory;
     }
 

@@ -28,8 +28,8 @@ public class RoleToUserProfileConverter implements Converter<Object, UserProfile
      * @see org.springframework.core.convert.converter.Converter#convert(java.lang.Object)
      */
     public UserProfile convert(Object element) {
-        Integer id = Integer.parseInt((String)element);
-        UserProfile profile= userProfileService.findById(id);
+        String codProfile = (String)element;
+        UserProfile profile= userProfileService.findByCod(codProfile);
         log.info("Profile : {}" + profile);
         return profile;
     }

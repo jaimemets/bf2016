@@ -1,5 +1,7 @@
 package com.amsystem.bifaces.product.setting.model;
 
+import com.amsystem.bifaces.dynamictemplate.setting.model.Template;
+
 import javax.persistence.*;
 
 /**
@@ -12,25 +14,25 @@ import javax.persistence.*;
 @Entity
 @Table(name = "TEMPLATELEVELPRODUCT")
 @AssociationOverrides({
-        @AssociationOverride(name = "id.productConfigBehavior",
+        @AssociationOverride(name = "ptlPK.productConfigBehavior",
                 joinColumns = @JoinColumn(name = "IDPCB")),
-        @AssociationOverride(name = "id.template",
+        @AssociationOverride(name = "ptlPK.template",
                 joinColumns = @JoinColumn(name = "IDTR"))})
 public class ProductTemplateLevel {
 
     @EmbeddedId
-    private ProductTemplateLevelID id;
+    private ProductTemplateLevelPK ptlPK;
 
     private Integer level;
 
     private String levelDescription;
 
-    public ProductTemplateLevelID getId() {
-        return id;
+    public ProductTemplateLevelPK getPtlPK() {
+        return ptlPK;
     }
 
-    public void setId(ProductTemplateLevelID id) {
-        this.id = id;
+    public void setPtlPK(ProductTemplateLevelPK ptlPK) {
+        this.ptlPK = ptlPK;
     }
 
     public Integer getLevel() {
@@ -48,4 +50,24 @@ public class ProductTemplateLevel {
     public void setLevelDescription(String levelDescription) {
         this.levelDescription = levelDescription;
     }
+
+    @Transient
+    public ProductConfigBehavior getProductConfigBehavior() {
+        return getPtlPK().getProductConfigBehavior();
+    }
+
+    public void setProductConfigBehavior(ProductConfigBehavior pcb) {
+        getPtlPK().setProductConfigBehavior(pcb);
+    }
+
+    @Transient
+    public Template getTemplate() {
+        return getPtlPK().getTemplate();
+    }
+
+    public void setTemplate(Template template) {
+        getPtlPK().setTemplate(template);
+    }
+
+
 }

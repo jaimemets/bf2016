@@ -43,16 +43,16 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product findById(Integer productId) {
-        return productDao.getById(productId);
+        return productDao.loadById(productId);
     }
 
     @Override
-    public List<Product> findAllProduct() {
-        return productDao.loadAllProduct();
+    public List<Product> findAllProductPlan() {
+        return productDao.loadAllProductPlan();
     }
 
     @Override
     public List<Product> findProductByStatus(Integer status) {
-        return productDao.loadProductByStatus(status);
+        return productDao.loadAllProductByStatus(status);
     }
 }

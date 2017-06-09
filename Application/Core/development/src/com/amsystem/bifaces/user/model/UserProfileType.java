@@ -1,25 +1,29 @@
 package com.amsystem.bifaces.user.model;
 
-import java.io.Serializable;
-
 /**
  * Title: UserProfileType.java <br>
  *
  * @author Jaime Aguilar (JAR)
  *         File Creation on 08/09/2016.
  */
-public enum UserProfileType implements Serializable {
+public enum UserProfileType {
     USER("USER"),
     DBA("DBA"),
     ADMIN("ADMIN");
 
-    String userProfileType;
+    private String value;
 
-    private UserProfileType(String userProfileType){
-        this.userProfileType = userProfileType;
+    UserProfileType(String value) {
+        this.value = value;
     }
 
-    public String getUserProfileType(){
-        return userProfileType;
+    public String getValue() {
+        return value;
     }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+
 }

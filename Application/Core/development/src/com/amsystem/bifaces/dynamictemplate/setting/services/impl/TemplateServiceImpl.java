@@ -9,7 +9,7 @@ import com.amsystem.bifaces.dynamictemplate.setting.model.Property;
 import com.amsystem.bifaces.dynamictemplate.setting.model.PropertyTemplate;
 import com.amsystem.bifaces.dynamictemplate.setting.model.Template;
 import com.amsystem.bifaces.dynamictemplate.setting.services.TemplateService;
-import com.amsystem.bifaces.util.CategoryName;
+import com.amsystem.bifaces.util.TemplateCategory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,7 +59,7 @@ public class TemplateServiceImpl implements TemplateService {
     }
 
     @Override
-    public boolean cloneTemplate(String cloneTemplateName, Template selectedTemplate, CategoryName fromCategory) {
+    public boolean cloneTemplate(String cloneTemplateName, Template selectedTemplate, TemplateCategory fromCategory) {
         Template cloneTemplate = new Template(cloneTemplateName, fromCategory.getValue());
         cloneTemplate.setStatus(selectedTemplate.getStatus());
 
@@ -109,6 +109,11 @@ public class TemplateServiceImpl implements TemplateService {
     @Override
     public List<Template> findAllTemplate() {
         return templateDao.loadAllTemplate();
+    }
+
+    @Override
+    public List<Template> findAllTemplateByCategory(TemplateCategory templateCategory) {
+        return templateDao.loadTemplateByCategory(templateCategory);
     }
 
     @Override

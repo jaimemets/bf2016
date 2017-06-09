@@ -25,7 +25,7 @@ public class ProductConfigBehavior {
     @Column(name = "NUM_COLUMN")
     private Integer numColumn;
 
-    @OneToMany(mappedBy = "id.productConfigBehavior",
+    @OneToMany(mappedBy = "ptlPK.productConfigBehavior",
             cascade = CascadeType.ALL)
     private Set<ProductTemplateLevel> productTemplateLevelSet = new HashSet<>();
 

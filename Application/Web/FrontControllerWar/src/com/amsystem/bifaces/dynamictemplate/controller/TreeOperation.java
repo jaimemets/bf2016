@@ -56,24 +56,24 @@ public class TreeOperation implements Serializable {
     public TreeNode create() {
         log.debug("**Inicio Arbol de Plantillas **");
         TreeNode root = new DefaultTreeNode(new PropertyTemplateNode(NodeType.ROOT, -1, TemplateStatus.ACTIVE.getValue(), null), null);
-        TreeNode product = new DefaultTreeNode(new PropertyTemplateNode(NodeType.ROOT, CategoryName.PRODUCT.getValue(), TemplateStatus.ACTIVE.getValue(), CategoryName.PRODUCT.getLabel()), root);
-        TreeNode policy = new DefaultTreeNode(new PropertyTemplateNode(NodeType.ROOT, CategoryName.POLICY.getValue(), TemplateStatus.ACTIVE.getValue(), CategoryName.POLICY.getLabel()), root);
-        TreeNode riskUnit = new DefaultTreeNode(new PropertyTemplateNode(NodeType.ROOT, CategoryName.RISK_UNIT.getValue(), TemplateStatus.ACTIVE.getValue(), CategoryName.RISK_UNIT.getLabel()), root);
-        TreeNode insuranceObject = new DefaultTreeNode(new PropertyTemplateNode(NodeType.ROOT, CategoryName.INSURANCE_OBJECT.getValue(), TemplateStatus.ACTIVE.getValue(), CategoryName.INSURANCE_OBJECT.getLabel()), root);
-        TreeNode coverage = new DefaultTreeNode(new PropertyTemplateNode(NodeType.ROOT, CategoryName.COVERAGE.getValue(), TemplateStatus.ACTIVE.getValue(), CategoryName.COVERAGE.getLabel()), root);
-        TreeNode client = new DefaultTreeNode(new PropertyTemplateNode(NodeType.ROOT, CategoryName.PARTICIPATION.getValue(), TemplateStatus.ACTIVE.getValue(), CategoryName.PARTICIPATION.getLabel()), root);
-        TreeNode summary = new DefaultTreeNode(new PropertyTemplateNode(NodeType.ROOT, CategoryName.SUMMARY.getValue(), TemplateStatus.ACTIVE.getValue(), CategoryName.SUMMARY.getLabel()), root);
-        TreeNode generic = new DefaultTreeNode(new PropertyTemplateNode(NodeType.ROOT, CategoryName.GENERIC.getValue(), TemplateStatus.ACTIVE.getValue(), CategoryName.GENERIC.getLabel()), root);
+        TreeNode product = new DefaultTreeNode(new PropertyTemplateNode(NodeType.ROOT, TemplateCategory.PRODUCT.getValue(), TemplateStatus.ACTIVE.getValue(), TemplateCategory.PRODUCT.getLabel()), root);
+        TreeNode policy = new DefaultTreeNode(new PropertyTemplateNode(NodeType.ROOT, TemplateCategory.POLICY.getValue(), TemplateStatus.ACTIVE.getValue(), TemplateCategory.POLICY.getLabel()), root);
+        TreeNode riskUnit = new DefaultTreeNode(new PropertyTemplateNode(NodeType.ROOT, TemplateCategory.RISK_UNIT.getValue(), TemplateStatus.ACTIVE.getValue(), TemplateCategory.RISK_UNIT.getLabel()), root);
+        TreeNode insuranceObject = new DefaultTreeNode(new PropertyTemplateNode(NodeType.ROOT, TemplateCategory.INSURANCE_OBJECT.getValue(), TemplateStatus.ACTIVE.getValue(), TemplateCategory.INSURANCE_OBJECT.getLabel()), root);
+        TreeNode coverage = new DefaultTreeNode(new PropertyTemplateNode(NodeType.ROOT, TemplateCategory.COVERAGE.getValue(), TemplateStatus.ACTIVE.getValue(), TemplateCategory.COVERAGE.getLabel()), root);
+        TreeNode client = new DefaultTreeNode(new PropertyTemplateNode(NodeType.ROOT, TemplateCategory.PARTICIPATION.getValue(), TemplateStatus.ACTIVE.getValue(), TemplateCategory.PARTICIPATION.getLabel()), root);
+        TreeNode summary = new DefaultTreeNode(new PropertyTemplateNode(NodeType.ROOT, TemplateCategory.SUMMARY.getValue(), TemplateStatus.ACTIVE.getValue(), TemplateCategory.SUMMARY.getLabel()), root);
+        TreeNode generic = new DefaultTreeNode(new PropertyTemplateNode(NodeType.ROOT, TemplateCategory.GENERIC.getValue(), TemplateStatus.ACTIVE.getValue(), TemplateCategory.GENERIC.getLabel()), root);
 
 
-        HashMap<Template, List<PropertyTree>> dynamicObjList = templateService.findFullTemplateProperty();
+        HashMap<Template, List<PropertyTree>> fullTemplateProperty = templateService.findFullTemplateProperty();
 
         TreeNode childNode;
         PropertyTemplateNode propertyTemplateNode;
         Integer category;
 
 
-        Iterator<Map.Entry<Template, List<PropertyTree>>> templateIterator = dynamicObjList.entrySet().iterator();
+        Iterator<Map.Entry<Template, List<PropertyTree>>> templateIterator = fullTemplateProperty.entrySet().iterator();
 
         while (templateIterator.hasNext()) {
             Map.Entry<Template, List<PropertyTree>> next = templateIterator.next();
@@ -227,7 +227,7 @@ public class TreeOperation implements Serializable {
     }
 
 
-    public void cloneTemplate(String cloneTemplateName, TreeNode selectedNode, CategoryName fromCategory){
+    public void cloneTemplate(String cloneTemplateName, TreeNode selectedNode, TemplateCategory fromCategory) {
 
         PropertyTemplateNode templateNode = (PropertyTemplateNode) selectedNode.getData();
         Template selectedTemplate = new Template(templateNode.getName(), templateNode.getCategory());

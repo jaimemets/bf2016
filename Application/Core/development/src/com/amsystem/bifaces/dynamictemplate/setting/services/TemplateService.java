@@ -2,7 +2,7 @@ package com.amsystem.bifaces.dynamictemplate.setting.services;
 
 import com.amsystem.bifaces.dynamictemplate.setting.bo.PropertyTree;
 import com.amsystem.bifaces.dynamictemplate.setting.model.Template;
-import com.amsystem.bifaces.util.CategoryName;
+import com.amsystem.bifaces.util.TemplateCategory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,13 +18,15 @@ public interface TemplateService {
 
     boolean deleteTemplate(Template template);
 
-    boolean cloneTemplate(String cloneTemplateName, Template selectedTemplate, CategoryName fromCategory);
+    boolean cloneTemplate(String cloneTemplateName, Template selectedTemplate, TemplateCategory fromCategory);
 
     Template findTemplateById(Integer templateId);
 
     Template findTemplateByName(String templateName);
     
     List<Template> findAllTemplate();
+
+    List<Template> findAllTemplateByCategory(TemplateCategory templateCategory);
 
     List<Template> findAllTemplateByIdList(List templateId);
 

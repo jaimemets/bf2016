@@ -15,46 +15,26 @@ import javax.persistence.*;
 @Table(name = "PLAN")
 public class Plan {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "IDPLAN")
-    private Integer planId;
-
-    @NotEmpty
-    @Column(name = "IDPRS")
-    private Integer productId;
-
+    @EmbeddedId
+    private ProductPlanPK productPlanPK;
 
     @NotEmpty
     @Column(name = "NAME", nullable = false)
     private String name;
 
+    @Column(name = "STATUS", nullable = false)
+    private Integer status;
+
     @OneToOne
     @JoinColumn(name = "IDPCB")
     ProductConfigBehavior pcBehavior;
 
-    public Integer getPlanId() {
-        return planId;
+    public ProductPlanPK getProductPlanPK() {
+        return productPlanPK;
     }
 
-    public void setPlanId(Integer planId) {
-        this.planId = planId;
-    }
-
-    public Integer getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Integer productId) {
-        this.productId = productId;
-    }
-
-    public ProductConfigBehavior getPcBehavior() {
-        return pcBehavior;
-    }
-
-    public void setPcBehavior(ProductConfigBehavior pcBehavior) {
-        this.pcBehavior = pcBehavior;
+    public void setProductPlanPK(ProductPlanPK productPlanPK) {
+        this.productPlanPK = productPlanPK;
     }
 
     public String getName() {
@@ -65,5 +45,20 @@ public class Plan {
         this.name = name;
     }
 
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public ProductConfigBehavior getPcBehavior() {
+        return pcBehavior;
+    }
+
+    public void setPcBehavior(ProductConfigBehavior pcBehavior) {
+        this.pcBehavior = pcBehavior;
+    }
 
 }
