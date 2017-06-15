@@ -4,7 +4,6 @@ import com.amsystem.bifaces.product.setting.model.ProductTemplateLevel;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
@@ -20,7 +19,6 @@ import java.util.Set;
 public class Template implements Serializable{
 
     @Id
-    @NotNull
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "IDTR")
     private Integer templateId;
@@ -35,15 +33,13 @@ public class Template implements Serializable{
     @Column(name = "STATUS")
     private Integer status;
 
-    @NotEmpty
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "PROPERTYTEMPLATE",
             joinColumns = {@JoinColumn(name = "IDTR")},
             inverseJoinColumns = {@JoinColumn(name = "IDPROPERTY")})
     private List<Property> propertyList;
 
-    @OneToMany(mappedBy = "ptlPK.template",
-            cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.template", cascade = CascadeType.ALL)
     private Set<ProductTemplateLevel> productTemplateLevelSet = new HashSet<>();
 
     public Template() {

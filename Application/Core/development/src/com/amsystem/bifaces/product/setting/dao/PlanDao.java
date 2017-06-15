@@ -18,9 +18,11 @@ public interface PlanDao {
 
     boolean updatePlan(Plan plan);
 
-    boolean delete(String planName);
+    boolean delete(Integer idPlan);
 
-    Plan loadById(Integer planId);
+    Plan loadPlanById(Integer idPlan);
+
+    Plan loadPlanProductConfigById(Integer idPlan);
 
     List<Plan> loadAllPlan();
 

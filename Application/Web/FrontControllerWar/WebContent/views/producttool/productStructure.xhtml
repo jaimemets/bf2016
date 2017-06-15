@@ -12,7 +12,7 @@
                 selection="#{productConfigView.selectProductNode}">
 
             <p:ajax event="select"
-                    update="productSettingForm:tabProductSetting:tempTreeId"
+                    update="productSettingForm:tabProductSetting:tempTreeId productSettingForm:associateBtn productSettingForm:disassociateBtn"
                     listener="#{productConfigView.onNodeSelect}"/>
 
 
@@ -35,6 +35,9 @@
         <p:tree id="tempTreeId" value="#{productConfigView.templateRoot}" var="tempTree"
                 selectionMode="single"
                 selection="#{productConfigView.selectTemplateNode}">
+
+            <p:ajax event="select"
+                    update="productSettingForm:associateBtn productSettingForm:disassociateBtn"/>
 
             <p:treeNode>
                 <h:outputText value="#{tempTree.name}"/>

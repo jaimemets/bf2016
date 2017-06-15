@@ -3,6 +3,7 @@ package com.amsystem.bifaces.product.setting.model;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,7 +17,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "PRODUCTSTATIC")
-public class Product {
+public class Product implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,8 +31,7 @@ public class Product {
     @Column(name = "STATUS", nullable = false)
     private Integer status;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "IDPRS")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "product")
     private Set<Plan> planSet = new HashSet<>();
 
     public Integer getProductId() {

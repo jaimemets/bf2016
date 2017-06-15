@@ -3,6 +3,7 @@ package com.amsystem.bifaces.product.setting.model;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Title: Plan.java <br>
@@ -13,28 +14,44 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "PLAN")
-public class Plan {
+public class Plan implements Serializable {
 
-    @EmbeddedId
-    private ProductPlanPK productPlanPK;
+    @Id
+    @Column(name = "IDPLAN", unique = true, nullable = false)
+    private Integer planId;
+
+    @ManyToOne
+    @JoinColumn(name = "IDPRS")
+    private Product product;
 
     @NotEmpty
     @Column(name = "NAME", nullable = false)
     private String name;
 
     @Column(name = "STATUS", nullable = false)
-    private Integer status;
+    private int status;
 
-    @OneToOne
-    @JoinColumn(name = "IDPCB")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "plan")
     ProductConfigBehavior pcBehavior;
 
-    public ProductPlanPK getProductPlanPK() {
-        return productPlanPK;
+
+    public Plan() {
     }
 
-    public void setProductPlanPK(ProductPlanPK productPlanPK) {
-        this.productPlanPK = productPlanPK;
+    public Integer getPlanId() {
+        return planId;
+    }
+
+    public void setPlanId(Integer planId) {
+        this.planId = planId;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     public String getName() {
@@ -45,11 +62,11 @@ public class Plan {
         this.name = name;
     }
 
-    public Integer getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
@@ -60,5 +77,4 @@ public class Plan {
     public void setPcBehavior(ProductConfigBehavior pcBehavior) {
         this.pcBehavior = pcBehavior;
     }
-
 }

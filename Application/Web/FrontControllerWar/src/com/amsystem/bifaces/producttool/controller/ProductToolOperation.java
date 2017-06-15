@@ -6,12 +6,10 @@ import com.amsystem.bifaces.product.setting.model.Plan;
 import com.amsystem.bifaces.product.setting.model.Product;
 import com.amsystem.bifaces.product.setting.model.ProductConfigBehavior;
 import com.amsystem.bifaces.product.setting.model.ProductTemplateLevel;
+import com.amsystem.bifaces.product.setting.services.PlanService;
 import com.amsystem.bifaces.product.setting.services.ProductService;
-import com.amsystem.bifaces.producttool.view.ProductNodeData;
-import com.amsystem.bifaces.util.LevelProduct;
-import com.amsystem.bifaces.util.SymbolType;
-import com.amsystem.bifaces.util.TemplateCategory;
-import com.amsystem.bifaces.util.TreeNodeType;
+import com.amsystem.bifaces.producttool.view.TreeNodeData;
+import com.amsystem.bifaces.util.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.primefaces.model.DefaultTreeNode;
@@ -22,7 +20,10 @@ import org.springframework.stereotype.Controller;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * Title: ProductToolOperation.java <br>
@@ -45,6 +46,9 @@ public class ProductToolOperation implements Serializable {
     private TemplateService templateService;
 
     @Autowired
+    private PlanService planService;
+
+    @Autowired
     private ResourceBundle rb;
 
 
@@ -55,16 +59,16 @@ public class ProductToolOperation implements Serializable {
      */
     public TreeNode createTreeTable() {
         log.debug("**Inicio Arbol Productos Planes **");
-        TreeNode root = new DefaultTreeNode(new ProductNodeData(-1, null, null, TreeNodeType.ROOT), null);
+        TreeNode root = new DefaultTreeNode(new TreeNodeData(-1, null, null, TreeNodeType.ROOT), null);
         List<Product> productList = productService.findAllProductPlan();
-        Set<Plan> planSet = null;
+        // Set<Plan> planSet = null;
         TreeNode parentNode;
         TreeNode childNodeItem;
-        ProductNodeData dataNode;
+        TreeNodeData dataNode;
 
 
         for (Product pr : productList) {
-            parentNode = new DefaultTreeNode(TreeNodeType.PARENT.getLabel(), new ProductNodeData(pr.getProductId(), pr.getName(), pr.getStatus(), TreeNodeType.PARENT), root);
+            parentNode = new DefaultTreeNode(TreeNodeType.PARENT.getLabel(), new TreeNodeData(pr.getProductId(), pr.getName(), pr.getStatus(), TreeNodeType.PARENT), root);
             log.debug("Producto: " + pr.getName());
             if (!pr.getPlanSet().isEmpty()) {
                 Plan plan;
@@ -73,7 +77,7 @@ public class ProductToolOperation implements Serializable {
                 while (planIterator.hasNext()) {
                     plan = planIterator.next();
                     log.debug("Plan: " + plan.getName());
-                    dataNode = new ProductNodeData(plan.getProductPlanPK().getPlanId(), plan.getName(), plan.getStatus(), TreeNodeType.CHILD);
+                    dataNode = new TreeNodeData(plan.getPlanId(), plan.getName(), plan.getStatus(), TreeNodeType.CHILD);
                     childNodeItem = new DefaultTreeNode(TreeNodeType.CHILD.getLabel(), dataNode, parentNode);
 
                 }
@@ -92,52 +96,34 @@ public class ProductToolOperation implements Serializable {
         log.debug("**Inicio Arbol Estructura de Producto **");
         int idProduct = Integer.valueOf(idProdPlan.split(SymbolType.MINUS.getValue())[0]);
         int idPlan = Integer.valueOf(idProdPlan.split(SymbolType.MINUS.getValue())[1]);
-        boolean foundPlan = false;
         Plan plan = null;
         ProductConfigBehavior pcBehavior = null;
         List<ProductTemplateLevel> productTemplateLevelList = null;
 
-
-        Product product = productService.findById(Integer.valueOf(idProduct));
-        Iterator<Plan> planIterator = product.getPlanSet().iterator();
-        while (planIterator.hasNext() && !foundPlan) {
-            plan = planIterator.next();
-            if (plan.getProductPlanPK().getPlanId() == idPlan) foundPlan = true;
-
-        }
-        if (plan != null)
-            pcBehavior = plan.getPcBehavior();
-
-        if (pcBehavior != null)
-            productTemplateLevelList = new ArrayList<>(pcBehavior.getProductTemplateLevelSet());
+        Product product = productService.findProductPlanById(idPlan, idProduct);
+        plan = product.getPlanSet().iterator().next();
+        pcBehavior = plan.getPcBehavior();
+        productTemplateLevelList = new ArrayList<>(pcBehavior.getProductTemplateLevelSet());
 
 
-        TreeNode productRoot = new DefaultTreeNode(new ProductNodeData(product.getProductId(), null, null, TreeNodeType.ROOT), null);
-        //List<Product> productList = ;
+        TreeNode productRoot = new DefaultTreeNode(new TreeNodeData(product.getProductId(), null, null, TreeNodeType.ROOT), null);
         LevelProduct[] levelProducts = LevelProduct.values();
-        //Set<Plan> planSet = null;
         TreeNode parentNode;
         TreeNode childNodeItem;
-        ProductNodeData dataNode;
+        TreeNodeData dataNode;
 
 
         for (LevelProduct lp : levelProducts) {
             log.debug("Nivel: " + lp.getLabel());
-            parentNode = new DefaultTreeNode(TreeNodeType.PARENT.getLabel(), new ProductNodeData(lp.getValue(), lp.getLabel(), 1, TreeNodeType.PARENT), productRoot);
-            /*
-            if (!pr.getPlanSet().isEmpty()) {
-                Plan plan;
-                Iterator<Plan> planIterator = pr.getPlanSet().iterator();
+            parentNode = new DefaultTreeNode(TreeNodeType.PARENT.getLabel(), new TreeNodeData(lp.getValue(), lp.getLabel(), 1, TreeNodeType.PARENT), productRoot);
 
-                while (planIterator.hasNext()) {
-                    plan = planIterator.next();
-                    log.debug("Plan: " + plan.getName());
-                    dataNode = new ProductNodeData(plan.getProductPlanPK().getPlanId(), plan.getName(), plan.getStatus(), TreeNodeType.CHILD);
+            for (ProductTemplateLevel ptl : productTemplateLevelList) {
+                if (lp.getValue() == ptl.getLevel()) {
+                    dataNode = new TreeNodeData(ptl.getTemplate().getTemplateId(), ptl.getTemplate().getName(), ptl.getTemplate().getStatus(), TreeNodeType.CHILD);
                     childNodeItem = new DefaultTreeNode(TreeNodeType.CHILD.getLabel(), dataNode, parentNode);
-
                 }
             }
-            */
+
         }
         return productRoot;
     }
@@ -149,40 +135,8 @@ public class ProductToolOperation implements Serializable {
      */
     public TreeNode createTemplateTree() {
         log.debug("**Inicio Arbol Estructura de Plantillas **");
-        TreeNode templateRoot = new DefaultTreeNode(new ProductNodeData(-1, null, null, TreeNodeType.ROOT), null);
-        TreeNode parentNode = new DefaultTreeNode(TreeNodeType.PARENT.getLabel(), new ProductNodeData(0, "Plantillas", 1, TreeNodeType.PARENT), templateRoot);
-
-        /*
-        //Product product = productService.findById(Integer.valueOf(idProduct));
-        //List<Product> productList = ;
-        TemplateCategory[] templateCategories = TemplateCategory.values();
-        List<Template> allTemplate = templateService.findAllTemplate();
-        //Set<Plan> planSet = null;
-        TreeNode parentNode;
-        TreeNode childNodeItem;
-        ProductNodeData dataNode;
-        List<Template> templatesAdded = new ArrayList<>();
-
-
-        for (TemplateCategory lp : templateCategories) {
-            log.debug("Nivel: " + lp.getLabel());
-            parentNode = new DefaultTreeNode(TreeNodeType.PARENT.getLabel(), new ProductNodeData(lp.getValue(), lp.getLabel(), 1, TreeNodeType.PARENT), templateRoot);
-
-            log.debug("Size allTemplate: " + allTemplate.size());
-            for (Template template : allTemplate){
-                if(template.getCategoryId() == lp.getValue()){
-                    dataNode = new ProductNodeData(template.getTemplateId(), template.getName(), template.getStatus(), TreeNodeType.CHILD);
-                    childNodeItem = new DefaultTreeNode(TreeNodeType.CHILD.getLabel(), dataNode, parentNode);
-                    templatesAdded.add(template);
-                }
-            }
-
-            if (!templatesAdded.isEmpty()){
-                allTemplate.removeAll(templatesAdded);
-                templatesAdded.clear();
-            }
-        }
-        */
+        TreeNode templateRoot = new DefaultTreeNode(new TreeNodeData(-1, null, null, TreeNodeType.ROOT), null);
+        TreeNode parentNode = new DefaultTreeNode(TreeNodeType.PARENT.getLabel(), new TreeNodeData(0, "Plantillas", 1, TreeNodeType.PARENT), templateRoot);
         return templateRoot;
     }
 
@@ -197,11 +151,10 @@ public class ProductToolOperation implements Serializable {
      */
     public void loadTemplateByCategory(TreeNode templateRoot, TreeNode nodeSelect) {
 
+        TreeNodeData dataNode;
         TreeNode childNodeItem;
-        ProductNodeData dataNode;
-        Integer nodeId = ((ProductNodeData) nodeSelect.getData()).getId();
+        Integer nodeId = ((TreeNodeData) nodeSelect.getData()).getId();
         TemplateCategory templateCategory = TemplateCategory.valueOf(nodeId);
-
         List<Template> allTemplateByCategory = templateService.findAllTemplateByCategory(templateCategory);
 
         if (templateRoot.getChildCount() > 0) {
@@ -209,12 +162,57 @@ public class ProductToolOperation implements Serializable {
         }
 
         for (Template template : allTemplateByCategory) {
-            //if(template.getCategoryId() == lp.getValue()){
-            dataNode = new ProductNodeData(template.getTemplateId(), template.getName(), template.getStatus(), TreeNodeType.CHILD);
+            dataNode = new TreeNodeData(template.getTemplateId(), template.getName(), template.getStatus(), TreeNodeType.CHILD);
             childNodeItem = new DefaultTreeNode(TreeNodeType.CHILD.getLabel(), dataNode, templateRoot);
-            //  templatesAdded.add(template);
-            //}
         }
 
+    }
+
+    /**
+     * @param rootProductNode
+     * @param selectedTemplateNode
+     * @param plan
+     */
+    public void addChildProductTree(TreeNode rootProductNode, TreeNode selectedTemplateNode, Plan plan) {
+        TreeNode childNodeItem;
+        TreeNodeData templateNode = (TreeNodeData) selectedTemplateNode.getData();
+        TreeNodeData rootNodeData = (TreeNodeData) rootProductNode.getData();
+
+        if (rootProductNode.getChildren().isEmpty()) { //Validacion para solo una plantilla por nivel
+
+            if (planService.addTemplateConfigurationLevel(plan, templateNode.getId(), rootNodeData.getId())) {
+                MessageUtil.showMessage(NotificationType.INFO, rb.getString(NotificationType.INFO.getLabel().concat("_GRL")), rb.getString("template_save_success_TT"));
+            } else {
+                MessageUtil.showMessage(NotificationType.ERROR, rb.getString(NotificationType.ERROR.getLabel().concat("_GRL")), rb.getString("template_duplicate_TT"));
+            }
+        } else {
+            MessageUtil.showMessage(NotificationType.ERROR, rb.getString(NotificationType.ERROR.getLabel().concat("_GRL")), rb.getString("template_duplicate_TT"));
+        }
+
+    }
+
+    /**
+     * @param selectedNode
+     * @param plan
+     */
+    public void removeChildProductTree(TreeNode selectedNode, Plan plan) {
+        TreeNodeData templateNode = (TreeNodeData) selectedNode.getData();
+        TreeNodeData rootNodeData = (TreeNodeData) selectedNode.getParent().getData();
+
+        if (planService.deleteTemplateConfigurationLevel(plan, templateNode.getId(), rootNodeData.getId())) {
+            TreeNode parent = selectedNode.getParent();
+            parent.getChildren().remove(selectedNode);
+        }
+
+
+    }
+
+    /**
+     *
+     * @param idPlan
+     * @return
+     */
+    public Plan findPlanConfigById(int idPlan) {
+        return planService.findPlanById(idPlan);
     }
 }

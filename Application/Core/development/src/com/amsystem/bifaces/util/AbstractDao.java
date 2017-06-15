@@ -67,6 +67,18 @@ public abstract class AbstractDao<PK extends Serializable, T> {
         return flag;
     }
 
+    public boolean saveOrUpdate(T entity) {
+        flag = true;
+        try {
+//            T merge = (T) getSession().merge(entity);
+            getSession().saveOrUpdate(entity);
+        } catch (Exception ex) {
+            flag = false;
+            ex.printStackTrace();
+        }
+        return flag;
+    }
+
     public boolean delete(T entity) {
         flag = true;
         try {

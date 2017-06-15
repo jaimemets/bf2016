@@ -20,7 +20,9 @@ public interface ProductDao {
 
     boolean delete(String productName);
 
-    Product loadById(Integer productId);
+    Product loadOnlyProduct(Integer productId);
+
+    Product loadProductAllPlanById(Integer productId);
 
     List<Product> loadAllProductPlan();
 

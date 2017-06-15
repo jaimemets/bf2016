@@ -1,6 +1,7 @@
 package com.amsystem.bifaces.product.setting.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,20 +14,23 @@ import java.util.Set;
 
 @Entity
 @Table(name = "PRODUCTCONFIGBEHAVIOR")
-public class ProductConfigBehavior {
+public class ProductConfigBehavior implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IDPCB")
     private Integer pcbID;
 
-    @Column(name = "STATUS")
+    @OneToOne(fetch = FetchType.LAZY)
+    @PrimaryKeyJoinColumn
+    private Plan plan;
+
+    @Column(name = "STATUS", nullable = false)
     private int status;
 
-    @Column(name = "NUM_COLUMN")
-    private Integer numColumn;
+    @Column(name = "NUM_COLUMN", nullable = false)
+    private int numColumn;
 
-    @OneToMany(mappedBy = "ptlPK.productConfigBehavior",
-            cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.productConfigBehavior", cascade = CascadeType.ALL)
     private Set<ProductTemplateLevel> productTemplateLevelSet = new HashSet<>();
 
     public Integer getPcbID() {
@@ -45,12 +49,20 @@ public class ProductConfigBehavior {
         this.status = status;
     }
 
-    public Integer getNumColumn() {
+    public int getNumColumn() {
         return numColumn;
     }
 
-    public void setNumColumn(Integer numColumn) {
+    public void setNumColumn(int numColumn) {
         this.numColumn = numColumn;
+    }
+
+    public Plan getPlan() {
+        return plan;
+    }
+
+    public void setPlan(Plan plan) {
+        this.plan = plan;
     }
 
     public Set<ProductTemplateLevel> getProductTemplateLevelSet() {

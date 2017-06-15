@@ -85,23 +85,21 @@ public class TemplateServiceImpl implements TemplateService {
     }
 
     @Override
-    public Template findTemplateById(Integer templateId) {
-        Template template = templateDao.loadTemplateById(templateId);
-
-        List<Integer> propertyIdList = propertyTemplateDao.loadPropertyByTemplateId(template.getTemplateId());
-        List<Property> propertyList = propertyDao.loadPropertyListByIdList(propertyIdList);
-        template.setPropertyList(propertyList);
-
-        return template;
+    public Template findOnlyTemplateById(Integer templateId) {
+        return templateDao.loadTemplateById(templateId);
     }
 
     @Override
-    public Template findTemplateByName(String templateName) {
+    public Template findTemplatePropertiesByName(String templateName) {
         Template template = templateDao.loadTemplateByName(templateName);
 
         List<Integer> propertyIdList = propertyTemplateDao.loadPropertyByTemplateId(template.getTemplateId());
-        List<Property> propertyList = propertyDao.loadPropertyListByIdList(propertyIdList);
-        template.setPropertyList(propertyList);
+
+        if (!propertyIdList.isEmpty()) {
+            List<Property> propertyList = propertyDao.loadPropertyListByIdList(propertyIdList);
+            template.setPropertyList(propertyList);
+        }
+
 
         return template;
     }

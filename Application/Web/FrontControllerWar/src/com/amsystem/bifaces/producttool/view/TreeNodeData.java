@@ -12,7 +12,7 @@ import java.io.Serializable;
  */
 
 
-public class ProductNodeData implements Serializable {
+public class TreeNodeData implements Serializable {
 
     private Integer id;
 
@@ -22,7 +22,7 @@ public class ProductNodeData implements Serializable {
 
     private TreeNodeType treeNodeType;
 
-    public ProductNodeData(Integer id, String name, Integer status, TreeNodeType treeNodeType) {
+    public TreeNodeData(Integer id, String name, Integer status, TreeNodeType treeNodeType) {
         this.id = id;
         this.name = name;
         this.status = status;

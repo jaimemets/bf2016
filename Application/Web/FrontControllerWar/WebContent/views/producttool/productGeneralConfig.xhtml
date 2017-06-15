@@ -35,22 +35,30 @@
 
             <p:outputPanel id="opButtonsProductForm" style="text-align: center">
 
-                <!--
 
-                <p:commandButton value="#{textI18.save_GRL}" rendered="#{!userDataConfigView.saved}"
-                                 icon="ui-icon-check"
-                                 update="opButtonsProductForm productSettingForm:tabProductSetting:pgConfigProduct productSettingForm:winMessageId"
-                                 actionListener="#{userDataConfigView.saveUser}"/>
+                <p:commandButton id="associateBtn" value="#{textI18.associate_TT}"
+                                 icon="fa fa-chain"
+                                 disabled="#{empty productConfigView.selectTemplateNode or empty productConfigView.selectProductNode
+                                 or productConfigView.selectTemplateNode.type ne 'CH' or productConfigView.selectProductNode.type ne 'PA'}"
+                                 update="winMessageId productSettingForm:tabProductSetting:prTreeId"
+                                 action="#{productConfigView.associateProductTemplate}"/>
                 <p:spacer/>
 
-                <p:button id="cancelUsrBtn" value="#{textI18.cancel_GRL}" rendered="#{!userDataConfigView.saved}"
-                          href="/userTool"
-                          icon="ui-icon-cancel"/>
+                <p:commandButton id="disassociateBtn" value="#{textI18.disassociate_TT}"
+                                 icon="fa fa-chain-broken"
+                                 disabled="#{empty productConfigView.selectProductNode or productConfigView.selectProductNode.type ne 'CH'}"
+                                 update="winMessageId productSettingForm:tabProductSetting:prTreeId"
+                                 action="#{productConfigView.disassociateProductTemplate}"/>
+                <p:spacer/>
 
-                <p:button id="continueUsrBtn" value="Continuar" rendered="#{userDataConfigView.saved}"
-                          href="/userTool"
+                <p:button id="cancelBtn" value="#{textI18.cancel_GRL}"
+                          href="/productTool"
                           icon="ui-icon-cancel"/>
--->
+                <!--
+                                <p:button id="continueUsrBtn" value="Continuar" rendered="#{userDataConfigView.saved}"
+                                          href="/userTool"
+                                          icon="ui-icon-cancel"/>
+                -->
             </p:outputPanel>
 
         </h:form>

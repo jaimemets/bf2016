@@ -20,7 +20,9 @@ public interface ProductService {
 
     boolean deleteProduct(String productName);
 
-    Product findById(Integer productId);
+    Product findProductAllPlanById(Integer productId);
+
+    Product findProductPlanById(Integer idPlan, Integer idProduct);
 
     List<Product> findAllProductPlan();
 

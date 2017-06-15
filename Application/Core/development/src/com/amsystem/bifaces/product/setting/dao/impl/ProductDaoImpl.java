@@ -26,17 +26,17 @@ public class ProductDaoImpl extends AbstractDao<String, Product> implements Prod
 
     private static final Logger log = LogManager.getLogger(ProductDaoImpl.class.getName());
 
-    @Transactional(readOnly = false)
+    @Transactional
     public boolean save(Product product) {
         return persist(product);
     }
 
-    @Transactional(readOnly = false)
+    @Transactional
     public boolean updateProduct(Product product) {
         return update(product);
     }
 
-    @Transactional(readOnly = false)
+    @Transactional
     public boolean delete(String productName) {
         Product product = getByKey(productName);
         if (product != null)
@@ -45,10 +45,27 @@ public class ProductDaoImpl extends AbstractDao<String, Product> implements Prod
         return false;
     }
 
-    public Product loadById(Integer productId) {
+    @Transactional(readOnly = true)
+    public Product loadOnlyProduct(Integer productId) {
         Criteria criteria = createEntityCriteria();
         criteria.add(Restrictions.eq("productId", productId));
-        //criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);//To avoid duplicates.
+        Product product = (Product) criteria.uniqueResult();
+        //TODO: Por alguna razon inicializa los planes del producto. No es lo que se espera
+
+        if (product != null) {
+            if (Hibernate.isInitialized(product.getPlanSet())) {
+                log.error("[ERROR!!] No deberia estar inicializado los planes del producto: " + product.getName());
+
+            }
+        }
+
+        return product;
+    }
+
+    @Transactional(readOnly = true)
+    public Product loadProductAllPlanById(Integer productId) {
+        Criteria criteria = createEntityCriteria();
+        criteria.add(Restrictions.eq("productId", productId));
         Product product = (Product) criteria.uniqueResult();
         if (product != null)
             Hibernate.initialize(product.getPlanSet());
@@ -56,18 +73,20 @@ public class ProductDaoImpl extends AbstractDao<String, Product> implements Prod
         return product;
     }
 
-    @Transactional(readOnly = false)
+    @Transactional(readOnly = true)
     public List<Product> loadAllProductPlan() {
         Criteria criteria = createEntityCriteria().addOrder(Order.asc("name"));
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);//To avoid duplicates.
         List<Product> productList = (List<Product>) criteria.list();
+
         for (Product pr : productList) {
             Hibernate.initialize(pr.getPlanSet());
         }
+
         return productList;
     }
 
-    @Transactional(readOnly = false)
+    @Transactional(readOnly = true)
     public List<Product> loadAllProductByStatus(Integer status) {
         Criteria criteria = createEntityCriteria().addOrder(Order.asc("name"));
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);//To avoid duplicates.

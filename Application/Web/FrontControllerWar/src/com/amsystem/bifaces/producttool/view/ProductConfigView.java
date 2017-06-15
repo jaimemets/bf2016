@@ -1,7 +1,10 @@
 package com.amsystem.bifaces.producttool.view;
 
+import com.amsystem.bifaces.product.setting.model.Plan;
 import com.amsystem.bifaces.producttool.controller.ProductToolOperation;
 import com.amsystem.bifaces.util.OperationType;
+import com.amsystem.bifaces.util.SymbolType;
+import com.amsystem.bifaces.util.TreeNodeType;
 import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.TreeNode;
 
@@ -34,6 +37,10 @@ public class ProductConfigView implements Serializable {
     //Nodo del arbol de las plantillas seleccionado
     private TreeNode selectTemplateNode;
 
+    private String idProdPlan;
+
+    Plan plan;
+
     //Tipo de operacion en ejecucion
     private OperationType operation;
 
@@ -44,9 +51,10 @@ public class ProductConfigView implements Serializable {
     public void init() {
 
         //Para la edicion de usuario
-        String idProdPlan = (String) FacesContext.getCurrentInstance().getExternalContext().getRequestMap().get("requestProdPlan");
+        idProdPlan = (String) FacesContext.getCurrentInstance().getExternalContext().getRequestMap().get("requestProdPlan");
         operation = (OperationType) FacesContext.getCurrentInstance().getExternalContext().getRequestMap().get("operationType");
-
+        int idPlan = Integer.valueOf(idProdPlan.split(SymbolType.MINUS.getValue())[1]);
+        plan = productToolOperation.findPlanConfigById(idPlan);
 
         //Se construye la estructura de arbol del producto y la estructura inicial de arbol de plantillas
         productRoot = productToolOperation.createProductConfigTree(idProdPlan);
@@ -64,7 +72,16 @@ public class ProductConfigView implements Serializable {
      * @param event nodo seleccioado
      */
     public void onNodeSelect(NodeSelectEvent event) {
-        productToolOperation.loadTemplateByCategory(getOnlyChild(), event.getTreeNode());
+        if (event.getTreeNode().getType().equalsIgnoreCase(TreeNodeType.PARENT.getLabel()))
+            productToolOperation.loadTemplateByCategory(getOnlyChild(), event.getTreeNode());
+    }
+
+    public void associateProductTemplate() {
+        productToolOperation.addChildProductTree(selectProductNode, selectTemplateNode, plan);
+    }
+
+    public void disassociateProductTemplate() {
+        productToolOperation.removeChildProductTree(selectProductNode, plan);
     }
 
     private TreeNode getOnlyChild() {
@@ -105,6 +122,14 @@ public class ProductConfigView implements Serializable {
 
     public void setOperation(OperationType operation) {
         this.operation = operation;
+    }
+
+    public String getIdProdPlan() {
+        return idProdPlan;
+    }
+
+    public void setIdProdPlan(String idProdPlan) {
+        this.idProdPlan = idProdPlan;
     }
 
     public ProductToolOperation getProductToolOperation() {

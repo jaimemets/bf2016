@@ -58,8 +58,8 @@ public class ProductToolView implements Serializable {
         idProd = idPlan = "";
 
         if (selectedNode != null) {
-            idProd = String.valueOf(((ProductNodeData) selectedNode.getParent().getData()).getId());
-            idPlan = String.valueOf(((ProductNodeData) selectedNode.getData()).getId());
+            idProd = String.valueOf(((TreeNodeData) selectedNode.getParent().getData()).getId());
+            idPlan = String.valueOf(((TreeNodeData) selectedNode.getData()).getId());
         }
         return idProd.concat(SymbolType.MINUS.getValue()).concat(idPlan);
     }

@@ -20,9 +20,9 @@ public interface TemplateService {
 
     boolean cloneTemplate(String cloneTemplateName, Template selectedTemplate, TemplateCategory fromCategory);
 
-    Template findTemplateById(Integer templateId);
+    Template findOnlyTemplateById(Integer templateId);
 
-    Template findTemplateByName(String templateName);
+    Template findTemplatePropertiesByName(String templateName);
     
     List<Template> findAllTemplate();
 

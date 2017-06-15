@@ -65,7 +65,7 @@ public class TestGenerator implements Serializable {
     public void onTemplateChange(){
         log.debug("templateName : " + templateName);
         if(templateName != null){
-            Template loadTemplate = templateService.findTemplateByName(templateName);
+            Template loadTemplate = templateService.findTemplatePropertiesByName(templateName);
             dataTemplate = new DataTemplate(loadTemplate, PageMode.CREATE);
 
         }else dataTemplate = null;

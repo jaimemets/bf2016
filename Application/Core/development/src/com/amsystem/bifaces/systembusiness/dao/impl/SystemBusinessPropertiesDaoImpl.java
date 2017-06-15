@@ -25,19 +25,21 @@ import java.util.List;
 public class SystemBusinessPropertiesDaoImpl extends AbstractDao<String, SystemBusinessProperties> implements SystemBusinessPropertiesDao{
     private static final Logger log = LogManager.getLogger(SystemBusinessPropertiesDaoImpl.class.getName());
 
-    @Transactional(readOnly = false)
+
     @Override
+    @Transactional
     public boolean save(SystemBusinessProperties systemBusinessProperties) {
         return persist(systemBusinessProperties);
     }
 
-    @Transactional(readOnly = false)
     @Override
+    @Transactional
     public boolean updateSystemBP(SystemBusinessProperties systemBusinessProperties) {
         return update(systemBusinessProperties);
     }
 
     @Override
+    @Transactional
     public boolean delete(String codSystemBP) {
         SystemBusinessProperties systemBP = getByKey(codSystemBP);
         if(systemBP != null)
@@ -46,8 +48,8 @@ public class SystemBusinessPropertiesDaoImpl extends AbstractDao<String, SystemB
         return false;
     }
 
-    @Transactional(readOnly = false)
     @Override
+    @Transactional(readOnly = true)
     public SystemBusinessProperties loadSystemBPByCod(String codSystemBP) {
         SystemBusinessProperties systemBP = getByKey(codSystemBP);
         if(systemBP != null)
@@ -56,8 +58,9 @@ public class SystemBusinessPropertiesDaoImpl extends AbstractDao<String, SystemB
         return systemBP;
     }
 
-    @Transactional(readOnly = false)
+
     @Override
+    @Transactional(readOnly = true)
     public List<SystemBusinessProperties> loadAllSystemBP() {
         Criteria criteria = createEntityCriteria().addOrder(Order.asc("codSbp"));
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);//To avoid duplicates.
@@ -65,8 +68,9 @@ public class SystemBusinessPropertiesDaoImpl extends AbstractDao<String, SystemB
         return systemBusinessPropertiesList;
     }
 
-    @Transactional(readOnly = false)
+
     @Override
+    @Transactional(readOnly = true)
     public List<SystemBusinessProperties> loadSystemBPByModule(String codModule) {
         Criteria criteria = createEntityCriteria().addOrder(Order.asc("codSbp"));
         criteria.add(Restrictions.eq("codSm", codModule));
