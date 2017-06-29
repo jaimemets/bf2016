@@ -24,8 +24,8 @@
 
             <p:layoutUnit position="north" size="70">
                 <h:selectOneMenu style="margin-right:10px" value="#{language.localeCode}" onchange="submit()"
-                                 valueChangeListener="#{language.countryLocaleCodeChanged}">
-                    <f:selectItems value="#{language.countriesInMap}"/>
+                                 valueChangeListener="#{language.onLanguageChange}">
+                    <f:selectItems value="#{language.localeInMap}"/>
                 </h:selectOneMenu>
             </p:layoutUnit>
 

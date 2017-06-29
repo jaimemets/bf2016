@@ -1,6 +1,7 @@
 package com.amsystem.bifaces.dynamictemplate.setting.dao.impl;
 
 import com.amsystem.bifaces.dynamictemplate.setting.dao.PropertyOptionItemDao;
+import com.amsystem.bifaces.dynamictemplate.setting.model.Property;
 import com.amsystem.bifaces.dynamictemplate.setting.model.PropertyOptionItem;
 import com.amsystem.bifaces.util.AbstractDao;
 import org.apache.logging.log4j.LogManager;
@@ -45,7 +46,7 @@ public class PropertyOptionItemDaoImpl extends AbstractDao<Integer, PropertyOpti
 
         log.debug("sql: " + sql);
 
-        int rowAffected = jdbcTemplate.update(sql.toString(), optionItem.getPropertyId(),
+        int rowAffected = jdbcTemplate.update(sql.toString(), optionItem.getProperty().getPropertyId(),
                 optionItem.getDescription(), optionItem.getValue());
 
         return rowAffected > 0;
@@ -63,7 +64,7 @@ public class PropertyOptionItemDaoImpl extends AbstractDao<Integer, PropertyOpti
         log.debug("sql: " + sql);
 
         try {
-            int rowAffected = jdbcTemplate.update(sql.toString(), optionItem.getPropertyId(),
+            int rowAffected = jdbcTemplate.update(sql.toString(), optionItem.getProperty().getPropertyId(),
                     optionItem.getDescription(), optionItem.getValue());
             flag = (rowAffected > 0);
         }catch (Exception ex) {
@@ -97,7 +98,7 @@ public class PropertyOptionItemDaoImpl extends AbstractDao<Integer, PropertyOpti
                     throws SQLException {
 
                 PropertyOptionItem optionItem = propertyOptionItems.get(i);
-                ps.setInt(1, optionItem.getPropertyId());
+                ps.setInt(1, optionItem.getProperty().getPropertyId());
                 ps.setString(2, optionItem.getDescription());
                 ps.setFloat(3, optionItem.getValue());
 
@@ -124,7 +125,7 @@ public class PropertyOptionItemDaoImpl extends AbstractDao<Integer, PropertyOpti
         jdbcTemplate = new JdbcTemplate(getDataSource());
         String  sqlDelete = "DELETE FROM PROPERTYOPTIONITEM WHERE IDPOI = ? AND IDPROPERTY = ? ";
         log.debug("sqlDelete: " + sqlDelete);
-        int rowAffected = jdbcTemplate.update(sqlDelete, optionItem.getPoiId(), optionItem.getPropertyId());
+        int rowAffected = jdbcTemplate.update(sqlDelete, optionItem.getPoiId(), optionItem.getProperty().getPropertyId());
 
         log.debug("Filas eliminadas: " + rowAffected);
 
@@ -172,8 +173,11 @@ public class PropertyOptionItemDaoImpl extends AbstractDao<Integer, PropertyOpti
         List<Map<String, Object>> mapList = jdbcTemplate.queryForList(query, propertyId);
 
         for (Map<String, Object> map : mapList){
-            propertyOptionItems.add(new PropertyOptionItem((Integer) map.get("IDPOI"), (Integer) map.get("IDPROPERTY"),
-                    (Float)map.get("VALUE"), (String)map.get("DESCRIPTION"), null));
+            Property property = new Property();
+            property.setPropertyId((Integer) map.get("IDPROPERTY"));
+            PropertyOptionItem optionItem = new PropertyOptionItem((Float) map.get("VALUE"), (String) map.get("DESCRIPTION"), property);
+            optionItem.setPoiId((Integer) map.get("IDPOI"));
+            propertyOptionItems.add(optionItem);
         }
 
         return propertyOptionItems;

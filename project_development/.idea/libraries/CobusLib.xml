@@ -6,7 +6,6 @@
     <JAVADOC />
     <SOURCES>
       <root url="file://$PROJECT_DIR$/../Application/Core/lib" />
-      <root url="jar://$USER_HOME$/.ideaLibSources/spring-jdbc-4.3.1.RELEASE-sources.jar!/" />
     </SOURCES>
     <jarDirectory url="file://$PROJECT_DIR$/../Application/Core/lib" recursive="false" />
     <jarDirectory url="file://$PROJECT_DIR$/../Application/Core/lib" recursive="false" type="SOURCES" />

@@ -1,7 +1,5 @@
 package com.amsystem.bifaces.dynamictemplate.controller;
 
-import com.amsystem.bifaces.dynamictemplate.setting.model.IFProperty;
-import com.amsystem.bifaces.util.NotificationType;
 import com.amsystem.bifaces.UserInfo;
 import com.amsystem.bifaces.dynamictemplate.setting.model.Property;
 import com.amsystem.bifaces.dynamictemplate.setting.model.PropertyOptionItem;
@@ -10,14 +8,17 @@ import com.amsystem.bifaces.dynamictemplate.setting.services.PropertyService;
 import com.amsystem.bifaces.dynamictemplate.setting.services.PropertyTemplateService;
 import com.amsystem.bifaces.dynamictemplate.setting.services.TemplateService;
 import com.amsystem.bifaces.util.MessageUtil;
+import com.amsystem.bifaces.util.NotificationType;
 import com.amsystem.bifaces.util.SymbolType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -54,7 +55,7 @@ public class PropertyOperation implements Serializable{
      * @param propertyName Nombre de la nueva propiedad
      */
     public void addProperty(String propertyName) {
-        IFProperty property = new Property();
+        Property property = new Property();
         property.setName(propertyName);
         if(propertyService.addProperty(propertyName)){
             MessageUtil.showMessage(NotificationType.INFO, rb.getString(NotificationType.INFO.getLabel().concat("_GRL")), rb.getString("property_save_success_TT")) ;
@@ -68,7 +69,7 @@ public class PropertyOperation implements Serializable{
      * Actualiza en el sistema los valores de la propiedad seleccionada
      * @param selectedProp propiedad seleccionada en el sistema
      */
-    public void updateProperty(IFProperty selectedProp) {
+    public void updateProperty(Property selectedProp) {
         propertyService.updateProperty(selectedProp);
     }
 
@@ -76,7 +77,7 @@ public class PropertyOperation implements Serializable{
      * Actualiza en el sistema los valores de la propiedad seleccionada
      * @param selectedProp propiedad seleccionada en el sistema
      */
-    public void cloneProperty(String propertyCloneName, IFProperty selectedProp) {
+    public void cloneProperty(String propertyCloneName, Property selectedProp) {
         propertyService.cloneProperty(propertyCloneName, selectedProp);
     }
 
@@ -85,7 +86,7 @@ public class PropertyOperation implements Serializable{
      * mensaja indicando que no se puede eliminar. Primero debe ser desvinculada de la plantilla
      * @param selectedProperty
      */
-    public void deleteProperty(IFProperty selectedProperty){
+    public void deleteProperty(Property selectedProperty) {
 
         if(!propertyService.deleteProperty(selectedProperty)){
             List<Integer> templateListByProperty = propertyTemplateService.findTemplateListByProperty(selectedProperty.getPropertyId());
@@ -113,12 +114,12 @@ public class PropertyOperation implements Serializable{
      * Busca todas las propiedades registradas en el sistema
      * @return <tt>Lis</tt> de propiedades. Si no existe propiedades registradas, la <tt>List</tt> es vacia
      */
-    public List<IFProperty> propertyList(){
+    public List<Property> propertyList() {
         log.debug("Cargando Propiedades..");
         log.debug("Lenguaje: " + UserInfo.getLocaleUser());
         log.debug("Lenguaje_ L: " + Locale.getDefault());
         log.debug("Bundle = " + rb.getString("save_TT"));
-        List<IFProperty> propList = propertyService.findAllProperty();
+        List<Property> propList = propertyService.findAllProperty();
 
         return propList;
     }
@@ -128,9 +129,9 @@ public class PropertyOperation implements Serializable{
      * @param selectedProperty propiedad seleccionada para agregar el nuevo <tt>OptionItem</tt>
      * @param optionItem nuevo <tt>OptionItem</tt>
      */
-    public void addOptionItem(IFProperty selectedProperty, PropertyOptionItem optionItem) {
+    public void addOptionItem(Property selectedProperty, PropertyOptionItem optionItem) {
         if(propertyService.addOptionItemProperty(optionItem)){
-            selectedProperty.setPropertyOptionItems(propertyService.findPropertyOptionItem(selectedProperty.getPropertyId()));
+            selectedProperty.setPropertyOptionItems(new HashSet<>(propertyService.findPropertyOptionItem(selectedProperty.getPropertyId())));
         }else {
             //Mostrar Mensaje
         }
@@ -142,9 +143,9 @@ public class PropertyOperation implements Serializable{
      * @param selectedProperty
      * @param optionItem
      */
-    public void deleteOptionItem(IFProperty selectedProperty, PropertyOptionItem optionItem) {
+    public void deleteOptionItem(Property selectedProperty, PropertyOptionItem optionItem) {
         if(propertyService.deleteOptionItemProperty(optionItem)){
-            selectedProperty.setPropertyOptionItems(propertyService.findPropertyOptionItem(selectedProperty.getPropertyId()));
+            selectedProperty.setPropertyOptionItems(new HashSet<>(propertyService.findPropertyOptionItem(selectedProperty.getPropertyId())));
         }else {
             //Mostrar Mensaje
         }

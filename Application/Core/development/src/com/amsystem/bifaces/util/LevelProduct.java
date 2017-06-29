@@ -6,16 +6,14 @@ package com.amsystem.bifaces.util;
  * @author Jaime Aguilar (JAR)
  *         File Creation on 07/06/2017.
  */
-
-
 public enum LevelProduct {
-    PRODUCT(1, "lpPR"),
-    POLICY(2, "lpPOL"),
-    RISK_UNIT(3, "lpRU"),
-    INSURANCE_OBJECT(4, "lpIO"),
-    COVERAGE(5, "lpCOV"),
-    PARTICIPATION(6, "lpCL"),
-    SUMMARY(7, "lpSMR");
+    PRODUCT(1, "label_PR_GRL"),
+    POLICY(2, "label_POL_GRL"),
+    RISK_UNIT(3, "label_RU_GRL"),
+    INSURANCE_OBJECT(4, "label_IO_GRL"),
+    COVERAGE(5, "label_COV_GRL"),
+    PARTICIPATION(6, "label_CL_GRL"),
+    SUMMARY(7, "label_SMR_GRL");
 
     private int value;
     private String label;

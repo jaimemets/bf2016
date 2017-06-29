@@ -4,6 +4,8 @@ import com.amsystem.bifaces.dynamictemplate.setting.model.Template;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Title: TemplateLevelProduct.java <br>
@@ -24,16 +26,31 @@ public class ProductTemplateLevel implements Serializable {
     @EmbeddedId
     ProductTemplateLevelPK pk = new ProductTemplateLevelPK();
 
-    @Column(name = "LEVEL", nullable = false)
-    private Integer level;
+    @Column(name = "NUM_COLUMN")
+    private Integer numColumn;
+
+    @Column(name = "COMMUNICATION")
+    private Integer communicationType;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "COMMUNICATIONPRODUCTLEVEL",
+            joinColumns = {@JoinColumn(name = "IDPCB"),
+                    @JoinColumn(name = "LEVEL"),
+                    @JoinColumn(name = "IDTR")},
+            inverseJoinColumns = {@JoinColumn(name = "IDCB")})
+    private Set<CommunicationBridge> communicationBridgeSet = new HashSet<>(0);
+
+
 
     public ProductTemplateLevel() {
     }
 
-    public ProductTemplateLevel(ProductConfigBehavior pcb, Template t, Integer level) {
+    public ProductTemplateLevel(ProductConfigBehavior pcb, Template t, Integer level, Integer numColumn, Integer communicationType) {
         this.pk.setProductConfigBehavior(pcb);
         this.pk.setTemplate(t);
-        this.level = level;
+        this.pk.setLevel(level);
+        this.numColumn = numColumn;
+        this.communicationType = communicationType;
     }
 
     public ProductTemplateLevelPK getPk() {
@@ -62,12 +79,37 @@ public class ProductTemplateLevel implements Serializable {
         getPk().setTemplate(t);
     }
 
+    @Transient
     public Integer getLevel() {
-        return level;
+        return getPk().getLevel();
     }
 
     public void setLevel(Integer level) {
-        this.level = level;
+        getPk().setLevel(level);
+    }
+
+    public Integer getNumColumn() {
+        return numColumn;
+    }
+
+    public void setNumColumn(Integer numColumn) {
+        this.numColumn = numColumn;
+    }
+
+    public Integer getCommunicationType() {
+        return communicationType;
+    }
+
+    public void setCommunicationType(Integer communicationType) {
+        this.communicationType = communicationType;
+    }
+
+    public Set<CommunicationBridge> getCommunicationBridgeSet() {
+        return communicationBridgeSet;
+    }
+
+    public void setCommunicationBridgeSet(Set<CommunicationBridge> communicationBridgeSet) {
+        this.communicationBridgeSet = communicationBridgeSet;
     }
 
     @Override
@@ -77,16 +119,19 @@ public class ProductTemplateLevel implements Serializable {
 
         ProductTemplateLevel that = (ProductTemplateLevel) o;
 
-        if (!level.equals(that.level)) return false;
-        if (!pk.equals(that.pk)) return false;
+        if (communicationType != null ? !communicationType.equals(that.communicationType) : that.communicationType != null)
+            return false;
+        if (numColumn != null ? !numColumn.equals(that.numColumn) : that.numColumn != null) return false;
+        if (pk != null ? !pk.equals(that.pk) : that.pk != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = pk.hashCode();
-        result = 31 * result + level.hashCode();
+        int result = pk != null ? pk.hashCode() : 0;
+        result = 31 * result + (numColumn != null ? numColumn.hashCode() : 0);
+        result = 31 * result + (communicationType != null ? communicationType.hashCode() : 0);
         return result;
     }
 }

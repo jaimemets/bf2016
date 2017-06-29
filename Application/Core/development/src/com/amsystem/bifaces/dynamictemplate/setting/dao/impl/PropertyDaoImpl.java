@@ -1,7 +1,6 @@
 package com.amsystem.bifaces.dynamictemplate.setting.dao.impl;
 
 import com.amsystem.bifaces.dynamictemplate.setting.dao.PropertyDao;
-import com.amsystem.bifaces.dynamictemplate.setting.model.IFProperty;
 import com.amsystem.bifaces.dynamictemplate.setting.model.Property;
 import com.amsystem.bifaces.util.AbstractDao;
 import org.apache.logging.log4j.LogManager;
@@ -94,7 +93,7 @@ public class PropertyDaoImpl extends AbstractDao<Integer, Property> implements P
     }
 
 
-    public boolean update(IFProperty property) {
+    public boolean updateProperty(Property property) {
         log.debug("*** Begin update ****");
         jdbcTemplate = new JdbcTemplate(getDataSource());
         String updateSQL = buildUpdateQueryProperty();
@@ -116,7 +115,7 @@ public class PropertyDaoImpl extends AbstractDao<Integer, Property> implements P
     }
 
 
-    public boolean updateManualTransaction(IFProperty property){
+    public boolean updateManualTransaction(Property property) {
         log.debug("*** Begin updateManualTransaction ****");
         Connection dbConnection = null;
         PreparedStatement preparedStatement = null;
@@ -136,7 +135,7 @@ public class PropertyDaoImpl extends AbstractDao<Integer, Property> implements P
             preparedStatement.setInt(6, property.isVisible() ? 1 : 0);
             preparedStatement.setInt(7, property.isEditable() ? 1 : 0);
             preparedStatement.setInt(8, property.isRequired() ? 1 : 0);
-            preparedStatement.setString(9, property.getParent());
+            preparedStatement.setObject(9, property.getParent() != null ? property.getParent().getPropertyId() : null);
             preparedStatement.setString(10, property.getMask());
             preparedStatement.setString(11, property.getDefaultValue());
             preparedStatement.setInt(12, property.getPropertyId());
@@ -196,8 +195,8 @@ public class PropertyDaoImpl extends AbstractDao<Integer, Property> implements P
      * @param idProperty identificador de la propiedad
      * @return <tt>IFProperty</tt> si la propiedad existe. <tt>NULL</tt> En caso de que no exista
      */
-    public IFProperty loadPropertyById(Integer idProperty) {
-        IFProperty property;
+    public Property loadPropertyById(Integer idProperty) {
+        Property property;
         jdbcTemplate = new JdbcTemplate(getDataSource());
         String queryLoad = buildDynamicSelectQueryProperty(true, false);
         RowMapper<Property> rm = BeanPropertyRowMapper.newInstance(Property.class);
@@ -213,8 +212,8 @@ public class PropertyDaoImpl extends AbstractDao<Integer, Property> implements P
      * @param propertyName nombre de la propiedad
      * @return <tt>IFProperty</tt> si la propiedad existe. <tt>NULL</tt> En caso de que no exista
      */
-    public IFProperty loadPropertyByName(String propertyName){
-        IFProperty property;
+    public Property loadPropertyByName(String propertyName) {
+        Property property;
         jdbcTemplate = new JdbcTemplate(getDataSource());
         String queryLoad = buildDynamicSelectQueryProperty(false, true);
         RowMapper<Property> rm = BeanPropertyRowMapper.newInstance(Property.class);
@@ -228,20 +227,29 @@ public class PropertyDaoImpl extends AbstractDao<Integer, Property> implements P
      *
      * @return <tt>Lista</tt> de propiedades
      */
-    public List<IFProperty> loadAllProperty() {
+    public List<Property> loadAllProperty() {
 
         jdbcTemplate = new JdbcTemplate(getDataSource());
-        List<IFProperty> propertyList = new ArrayList<>();
+        List<Property> propertyList = new ArrayList<>();
         String query = "SELECT * FROM PROPERTY";
 
         List<Map<String, Object>> mapList = jdbcTemplate.queryForList(query);
 
         for (Map<String, Object> map : mapList) {
-            IFProperty property = new Property((Integer) map.get("IDPROPERTY"), (String) map.get("NAME"), (String) map.get("LABEL"),
+            Property property = new Property((String) map.get("NAME"), (String) map.get("LABEL"), (String) map.get("MASK"),
+                    (String) map.get("FORMULA"), (String) map.get("DEFAULTVALUE"), (String) map.get("EXPRESSIONVALIDATOR"),
                     (Integer) map.get("PROPERTYTYPE"), (Integer) map.get("RENDERINGTYPE"),
-                    (String) map.get("EXPRESIONVALIDATOR"), (String) map.get("FORMULA"), (String) map.get("DEFAULTVALUE"),
                     (Integer) map.get("VISIBLE") > 0 ? Boolean.TRUE : Boolean.FALSE, (Integer) map.get("EDITABLE") > 0 ? Boolean.TRUE : Boolean.FALSE,
-                    (Integer) map.get("REQUIRED") > 0 ? Boolean.TRUE : Boolean.FALSE, (String) map.get("PARENTPROPERTY"), (String) map.get("MASK"));
+                    (Integer) map.get("REQUIRED") > 0 ? Boolean.TRUE : Boolean.FALSE);
+
+            property.setPropertyId((Integer) map.get("IDPROPERTY"));
+            Integer id_parent = (Integer) map.get("ID_PARENT");
+
+            if (id_parent != null) {
+                Property parent = new Property();
+                parent.setPropertyId(id_parent);
+                property.setParent(parent);
+            }
 
             propertyList.add(property);
         }
@@ -280,9 +288,9 @@ public class PropertyDaoImpl extends AbstractDao<Integer, Property> implements P
     private String buildDynamicSelectQueryProperty(boolean propertyId, boolean propertyName){
         StringBuilder dynamicQuery = new StringBuilder();
         dynamicQuery.append("SELECT P.IDPROPERTY AS propertyId, P.NAME AS name, P.LABEL AS label, P.PROPERTYTYPE AS type, ")
-                .append("P.RENDERINGTYPE AS renderingType, P.EXPRESIONVALIDATOR AS expressionValidator, P.FORMULA AS formula, ")
+                .append("P.RENDERINGTYPE AS renderingType, P.EXPRESSIONVALIDATOR AS expressionValidator, P.FORMULA AS formula, ")
                 .append("P.DEFAULTVALUE AS defaultValue, P.VISIBLE AS visible, P.EDITABLE AS editable, P.REQUIRED AS required, ")
-                .append("P.PARENTPROPERTY AS parent, P.MASK AS mask ")
+                .append("P.ID_PARENT AS parent, P.MASK AS mask ")
                 .append("FROM PROPERTY P ")
                 .append("WHERE ");
 
@@ -305,12 +313,12 @@ public class PropertyDaoImpl extends AbstractDao<Integer, Property> implements P
                 .append("LABEL = ? ,")
                 .append("PROPERTYTYPE = ? ,")
                 .append("RENDERINGTYPE = ? ,")
-                .append("EXPRESIONVALIDATOR = ? ,")
+                .append("EXPRESSIONVALIDATOR = ? ,")
                 .append("FORMULA = ? ,")
                 .append("VISIBLE = ? ,")
                 .append("EDITABLE = ? ,")
                 .append("REQUIRED = ? ,")
-                .append("PARENTPROPERTY = ? , ")
+                .append("ID_PARENT = ? , ")
                 .append("MASK = ? , ")
                 .append("DEFAULTVALUE = ? ")
                 .append(" WHERE IDPROPERTY = ? ");

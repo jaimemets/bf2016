@@ -42,7 +42,7 @@ public abstract class AbstractDao<PK extends Serializable, T> {
 
     @SuppressWarnings("unchecked")
     public T getByKey(PK key) {
-        return (T) getSession().get(persistentClass, key);
+        return getSession().get(persistentClass, key);
     }
 
     public boolean persist(T entity) {
@@ -70,7 +70,6 @@ public abstract class AbstractDao<PK extends Serializable, T> {
     public boolean saveOrUpdate(T entity) {
         flag = true;
         try {
-//            T merge = (T) getSession().merge(entity);
             getSession().saveOrUpdate(entity);
         } catch (Exception ex) {
             flag = false;

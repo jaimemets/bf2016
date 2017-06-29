@@ -8,11 +8,11 @@
                  style=" width: 100%; border: 3px double cornflowerblue;  border-radius: 5px;  margin: 5px 0px 0px 0px;">
 
         <p:tree id="prTreeId" value="#{productConfigView.productRoot}" var="prTree"
-                selectionMode="single"
+                selectionMode="single" style="border-style: hidden"
                 selection="#{productConfigView.selectProductNode}">
 
             <p:ajax event="select"
-                    update="productSettingForm:tabProductSetting:tempTreeId productSettingForm:associateBtn productSettingForm:disassociateBtn"
+                    update="productSettingForm:tabProductSetting:tempTreeId productSettingForm:tabProductSetting:associateBtn productSettingForm:tabProductSetting:disassociateBtn"
                     listener="#{productConfigView.onNodeSelect}"/>
 
 
@@ -33,11 +33,11 @@
 
         <!-- Estructura Arbol de Plantillas -->
         <p:tree id="tempTreeId" value="#{productConfigView.templateRoot}" var="tempTree"
-                selectionMode="single"
+                selectionMode="single" style="border-style: hidden"
                 selection="#{productConfigView.selectTemplateNode}">
 
             <p:ajax event="select"
-                    update="productSettingForm:associateBtn productSettingForm:disassociateBtn"/>
+                    update="productSettingForm:tabProductSetting:associateBtn productSettingForm:tabProductSetting:disassociateBtn"/>
 
             <p:treeNode>
                 <h:outputText value="#{tempTree.name}"/>

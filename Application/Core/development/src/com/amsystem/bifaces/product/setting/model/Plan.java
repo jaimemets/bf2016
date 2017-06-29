@@ -1,6 +1,5 @@
 package com.amsystem.bifaces.product.setting.model;
 
-import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -20,16 +19,15 @@ public class Plan implements Serializable {
     @Column(name = "IDPLAN", unique = true, nullable = false)
     private Integer planId;
 
-    @ManyToOne
-    @JoinColumn(name = "IDPRS")
-    private Product product;
-
-    @NotEmpty
     @Column(name = "NAME", nullable = false)
     private String name;
 
     @Column(name = "STATUS", nullable = false)
     private int status;
+
+    @ManyToOne
+    @JoinColumn(name = "IDPRS", nullable = false)
+    private Product product;
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "plan")
     ProductConfigBehavior pcBehavior;

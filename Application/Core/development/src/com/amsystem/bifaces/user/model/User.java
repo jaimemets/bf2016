@@ -4,7 +4,6 @@ import com.amsystem.bifaces.menu.model.MenuItem;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
@@ -52,14 +51,13 @@ public class User implements Serializable{
     @Column(name = "FINALDATE", nullable = true)
     private Date expirationDate;
 
-    @NotNull
+
     @Column(name="EXPIRABLE", nullable=false)
     private int expirable;
 
     @Column(name="STATUS", nullable=false)
     private int status;
 
-    @NotEmpty
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "USER_PROFILE",
             joinColumns = {@JoinColumn(name = "IDUSER")},

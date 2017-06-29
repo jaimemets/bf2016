@@ -21,30 +21,26 @@ public class PropertyOptionItem {
     @Column(name = "IDPOI")
     private Integer poiId;
 
-    private Integer propertyId;
-
+    @Column(name = "VALUE")
     private float value;
 
+    @Column(name = "DESCRIPTION")
     private String description;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "IDPOI")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "IDPROPERTY")
+    private Property property;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "propertyOptionItem")
     private Set<PropertyOptionItemLabel> itemLabels;
 
-
-    public PropertyOptionItem(Integer propertyId, float value, String description, Set<PropertyOptionItemLabel> itemLabels) {
-        this.propertyId = propertyId;
-        this.value = value;
-        this.description = description;
-        this.itemLabels = itemLabels;
+    public PropertyOptionItem() {
     }
 
-    public PropertyOptionItem(Integer poiId, Integer propertyId, float value, String description, Set<PropertyOptionItemLabel> itemLabels) {
-        this.poiId = poiId;
-        this.propertyId = propertyId;
+    public PropertyOptionItem(float value, String description, Property property) {
         this.value = value;
         this.description = description;
-        this.itemLabels = itemLabels;
+        this.property = property;
     }
 
     public Integer getPoiId() {
@@ -55,12 +51,12 @@ public class PropertyOptionItem {
         this.poiId = poiId;
     }
 
-    public Integer getPropertyId() {
-        return propertyId;
+    public float getValue() {
+        return value;
     }
 
-    public void setPropertyId(Integer propertyId) {
-        this.propertyId = propertyId;
+    public void setValue(float value) {
+        this.value = value;
     }
 
     public String getDescription() {
@@ -71,12 +67,12 @@ public class PropertyOptionItem {
         this.description = description;
     }
 
-    public float getValue() {
-        return value;
+    public Property getProperty() {
+        return property;
     }
 
-    public void setValue(float value) {
-        this.value = value;
+    public void setProperty(Property property) {
+        this.property = property;
     }
 
     public Set<PropertyOptionItemLabel> getItemLabels() {

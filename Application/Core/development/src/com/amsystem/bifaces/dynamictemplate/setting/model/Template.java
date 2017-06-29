@@ -1,12 +1,10 @@
 package com.amsystem.bifaces.dynamictemplate.setting.model;
 
 import com.amsystem.bifaces.product.setting.model.ProductTemplateLevel;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -26,21 +24,20 @@ public class Template implements Serializable{
     @Column(name = "IDCT", nullable = false)
     private Integer categoryId;
 
-    @NotEmpty
     @Column(name = "NAME", nullable = false)
     private String name;
 
     @Column(name = "STATUS")
     private Integer status;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "PROPERTYTEMPLATE",
             joinColumns = {@JoinColumn(name = "IDTR")},
-            inverseJoinColumns = {@JoinColumn(name = "IDPROPERTY")})
-    private List<Property> propertyList;
+            inverseJoinColumns = {@JoinColumn(name = "IDPROPERTY", nullable = false, unique = false)})
+    private Set<Property> propertySet = new HashSet<>(0);
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.template", cascade = CascadeType.ALL)
-    private Set<ProductTemplateLevel> productTemplateLevelSet = new HashSet<>();
+    private Set<ProductTemplateLevel> productTemplateLevelSet = new HashSet<>(0);
 
     public Template() {
     }
@@ -97,12 +94,12 @@ public class Template implements Serializable{
         this.name = name;
     }
 
-    public List<Property> getPropertyList() {
-        return propertyList;
+    public Set<Property> getPropertySet() {
+        return propertySet;
     }
 
-    public void setPropertyList(List<Property> propertyList) {
-        this.propertyList = propertyList;
+    public void setPropertySet(Set<Property> propertySet) {
+        this.propertySet = propertySet;
     }
 
     public Set<ProductTemplateLevel> getProductTemplateLevelSet() {

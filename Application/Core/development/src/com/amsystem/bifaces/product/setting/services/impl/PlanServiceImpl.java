@@ -1,6 +1,7 @@
 package com.amsystem.bifaces.product.setting.services.impl;
 
 import com.amsystem.bifaces.dynamictemplate.setting.dao.TemplateDao;
+import com.amsystem.bifaces.dynamictemplate.setting.dao.TemplateHibDao;
 import com.amsystem.bifaces.dynamictemplate.setting.model.Template;
 import com.amsystem.bifaces.product.setting.dao.PlanDao;
 import com.amsystem.bifaces.product.setting.dao.ProductConfigBehaviorDao;
@@ -12,7 +13,6 @@ import com.amsystem.bifaces.product.setting.services.PlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -36,6 +36,9 @@ public class PlanServiceImpl implements PlanService {
     private TemplateDao templateDao;
 
     @Autowired
+    private TemplateHibDao templateHibDao;
+
+    @Autowired
     ProductTemplateDao productTemplateDao;
 
     @Override
@@ -54,34 +57,29 @@ public class PlanServiceImpl implements PlanService {
         ProductConfigBehavior pcBehavior = plan.getPcBehavior();
 
         //Agregando nuevo nivel a la configuracion
-        Template template = templateDao.loadTemplateById(idTemplate);
-        //ProductTemplateLevel newLevel = new ProductTemplateLevel(pcBehavior, template, level);
+        Template template = templateHibDao.loadTemplateById(idTemplate);
         ProductTemplateLevel newLevel = new ProductTemplateLevel();
+
+        Set<ProductTemplateLevel> productTemplateLevelSet = template.getProductTemplateLevelSet();
+
         newLevel.setProductConfigBehavior(pcBehavior);
+        newLevel.setLevel(Integer.valueOf(level));
+        newLevel.setNumColumn(Integer.valueOf(2));
+        newLevel.setCommunicationType(Integer.valueOf(0));
+
+        productTemplateLevelSet.add(newLevel);
+        template.setProductTemplateLevelSet(productTemplateLevelSet);
+
         newLevel.setTemplate(template);
-        newLevel.setLevel(level);
 
         pcBehavior.getProductTemplateLevelSet().add(newLevel);
-        pcbDao.saveUpdatePCB(pcBehavior);
-        pcBehavior.getProductTemplateLevelSet().remove(newLevel);
 
         return pcbDao.saveUpdatePCB(pcBehavior);
     }
 
     @Override
     public boolean deleteTemplateConfigurationLevel(Plan plan, Integer idTemplate, int level) {
-        //Plan plan = planDao.loadPlanProductConfigById(idPlan);
         ProductConfigBehavior pcBehavior = plan.getPcBehavior();
-
-        //Agregando nuevo nivel a la configuracion
-               /*
-        ProductTemplateLevel newLevel = new ProductTemplateLevel();
-        newLevel.setProductConfigBehavior(pcBehavior);
-        Template template = templateDao.loadTemplateById(idTemplate);
-        newLevel.setTemplate(template);
-        newLevel.setLevel(level);
-        */
-        Set<ProductTemplateLevel> updateSet = new HashSet<>();
         boolean found = false;
         Iterator<ProductTemplateLevel> templateLevelIterator = pcBehavior.getProductTemplateLevelSet().iterator();
         ProductTemplateLevel productTemplateLevel = null;
@@ -97,5 +95,11 @@ public class PlanServiceImpl implements PlanService {
 
 
         return pcbDao.saveUpdatePCB(pcBehavior);
+    }
+
+
+    @Override
+    public boolean updateProductLevel(Plan plan, ProductTemplateLevel productTemplateLevel) {
+        return false;
     }
 }

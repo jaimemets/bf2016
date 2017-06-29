@@ -1,7 +1,5 @@
 package com.amsystem.bifaces.product.setting.model;
 
-import org.hibernate.validator.constraints.NotEmpty;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -20,11 +18,10 @@ import java.util.Set;
 public class Product implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "IDPRS")
     private Integer productId;
 
-    @NotEmpty
     @Column(name = "NAME", nullable = false)
     private String name;
 
@@ -32,7 +29,8 @@ public class Product implements Serializable {
     private Integer status;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "product")
-    private Set<Plan> planSet = new HashSet<>();
+    @OrderBy("NAME asc")
+    private Set<Plan> planSet = new HashSet<>(0);
 
     public Integer getProductId() {
         return productId;

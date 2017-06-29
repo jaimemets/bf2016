@@ -24,9 +24,6 @@ and open the template in the editor.
     padding: 0px 0px;
 }
 
- .ui-widget-content{
-     border-style: none;
- }
 
 .ui-clock {
     padding: 0px 0px !important;
@@ -54,5 +51,5 @@ body {
     display: none;
 }
 
- 
+
 

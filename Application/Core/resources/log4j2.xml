@@ -3,15 +3,15 @@
 
     <Appenders>
         <!-- 1. Console Appender -->
-        <Console name="ConsoleAppender" target="System.out">
-            <PatternLayout pattern="[%5p] (%d) [%c{1}] - %m%n"/>
+        <Console name="ConsoleAppender" target="SYSTEM_OUT">
+            <PatternLayout pattern="(%d) - [%5p][%c{1}] - %m%n"/>
         </Console>
 
         <!-- 2. File Appender with file "${HOME_DOMAIN}/COTI_Log4j.log" -->
-        <RollingFile name="RollingFile" fileName="COTI_Log4j.log"
-                     filePattern="${log-path}/myexample-%d{yyyy-MM-dd}-%i.log">
+        <RollingFile name="RollingFile" fileName="AMSystem_bifaces.log"
+                     filePattern="AMSystem_bifaces-%d{yyyy-MM-dd}-%i.log">
             <PatternLayout>
-                <pattern>%d{dd/MMM/yyyy HH:mm:ss,SSS}- %c{1}: %m%n</pattern>
+                <pattern>(%d)-[%5p][%c{1}] - %m%n</pattern>
             </PatternLayout>
             <Policies>
                 <SizeBasedTriggeringPolicy size="2 MB"/>
@@ -21,16 +21,31 @@
     </Appenders>
 
     <Loggers>
-        <Logger name="com.cobus" level="TRACE" additivity="false">
-            <appender-ref ref="RollingFile" level="TRACE"/>
-            <appender-ref ref="ConsoleAppender" level="TRACE"/>
+        <Logger name="com.amsystem.bifaces" level="debug" additivity="false">
+            <appender-ref ref="RollingFile"/>
+            <appender-ref ref="ConsoleAppender"/>
         </Logger>
 
-        <Logger name="org.hibernate.sql" level="INFO" additivity="false">
-            <appender-ref ref="RollingFile" level="INFO"/>
-            <appender-ref ref="ConsoleAppender" level="INFO"/>
+        <!-- Show SQL hibernate statement -->
+        <!--
+        <Logger name="org.hibernate" level="debug">
+            <appender-ref ref="RollingFile"/>
+
         </Logger>
 
+        <Logger name="org.hibernate.sql" level="debug">
+            <appender-ref ref="RollingFile"/>
+
+        </Logger>
+        -->
+
+        <!-- Show parameter hibernate-->
+        <!--
+        <Logger name="org.hibernate.type" level="TRACE">
+            <appender-ref ref="RollingFile"/>
+            <appender-ref ref="ConsoleAppender"/>
+        </Logger>
+        -->
 
         <Root level="TRACE" additivity="false">
             <AppenderRef ref="RollingFile"/>

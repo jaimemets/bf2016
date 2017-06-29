@@ -1,15 +1,14 @@
 package com.amsystem.bifaces.dynamictemplate.setting.dao.impl;
 
-import com.amsystem.bifaces.util.AbstractDao;
 import com.amsystem.bifaces.dynamictemplate.setting.dao.PropertyTemplateDao;
 import com.amsystem.bifaces.dynamictemplate.setting.model.PropertyTemplate;
+import com.amsystem.bifaces.util.AbstractDao;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
@@ -33,7 +32,7 @@ public class PropertyTemplateDaoImpl extends AbstractDao<Integer, Integer> imple
     public boolean save(PropertyTemplate propertyTemplate) {
 
         jdbcTemplate = new JdbcTemplate(getDataSource());
-        String sql = "INSERT INTO PROPERTYTEMPLATE (IDPROPERTY, IDTR, OPERATION_DATE) VALUES (?,?,?)";
+        String sql = "INSERT INTO PROPERTYTEMPLATE (IDPROPERTY, IDTR) VALUES (?,?)";
         //Date date = new Date();
         int rowAffected = -1;
         log.debug("SAVE sql: " + sql);
@@ -50,7 +49,7 @@ public class PropertyTemplateDaoImpl extends AbstractDao<Integer, Integer> imple
             //String generateAlterAddQuery = dtm.getGenerateAlterAddQuery(propertyList);
             //log.debug("SQL Add Column: " + generateAlterAddQuery);
             //jdbcTemplate.execute(generateAlterAddQuery);
-            rowAffected = jdbcTemplate.update(sql, propertyTemplate.getPropertyId(), propertyTemplate.getTemplateId(), propertyTemplate.getOperationDate());
+            rowAffected = jdbcTemplate.update(sql, propertyTemplate.getPropertyId(), propertyTemplate.getTemplateId());
         } catch (Exception e) {
             log.error("Error: " + e.getMessage());
         }
@@ -63,8 +62,8 @@ public class PropertyTemplateDaoImpl extends AbstractDao<Integer, Integer> imple
         jdbcTemplate = new JdbcTemplate(getDataSource());
         StringBuilder sql = new StringBuilder();
         sql.append("INSERT INTO PROPERTYTEMPLATE ")
-                .append("(IDPROPERTY, IDTR, OPERATION_DATE) ")
-                .append(" VALUES (?,?,?)");
+                .append("(IDPROPERTY, IDTR) ")
+                .append(" VALUES (?,?)");
 
         log.debug("sql: " + sql);
 
@@ -77,7 +76,6 @@ public class PropertyTemplateDaoImpl extends AbstractDao<Integer, Integer> imple
                 PropertyTemplate propertyTemplate = propertyOptionItems.get(i);
                 ps.setInt(1, propertyTemplate.getPropertyId());
                 ps.setInt(2, propertyTemplate.getTemplateId());
-                ps.setDate(3, (new Date(propertyTemplate.getOperationDate().getTime())));
 
             }
 

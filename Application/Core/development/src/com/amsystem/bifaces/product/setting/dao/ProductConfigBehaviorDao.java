@@ -15,4 +15,6 @@ public interface ProductConfigBehaviorDao {
     boolean updatePCB(ProductConfigBehavior pcb);
 
     boolean saveUpdatePCB(ProductConfigBehavior pcb);
+
+    ProductConfigBehavior loadProductConfigBehaviorById(Integer pcbID);
 }

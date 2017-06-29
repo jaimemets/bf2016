@@ -1,7 +1,9 @@
 package com.amsystem.bifaces.dynamictemplate.setting.model;
 
 import javax.persistence.*;
-import java.util.List;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Title: Property.java
@@ -12,39 +14,57 @@ import java.util.List;
 
 @Entity
 @Table(name = "PROPERTY")
-public class Property implements IFProperty{
+public class Property implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IDPROPERTY")
     private Integer propertyId;
 
+    @Column(name = "NAME")
     private String name;
 
+    @Column(name = "LABEL")
     private String label;
 
-    private int type;
-
-    private int renderingType;
-
-    private String expressionValidator;
-
-    private String formula;
-
-    private String defaultValue;
-
-    private boolean visible;
-
-    private boolean editable;
-
-    private boolean required;
-
-    private String parent;
-
+    @Column(name = "MASK")
     private String mask;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "IDPROPERTY")
-    private List<PropertyOptionItem> propertyOptionItems;
+    @Column(name = "FORMULA")
+    private String formula;
+
+    @Column(name = "DEFAULTVALUE")
+    private String defaultValue;
+
+    @Column(name = "EXPRESSIONVALIDATOR")
+    private String expressionValidator;
+
+    @Column(name = "PROPERTYTYPE")
+    private Integer type;
+
+    @Column(name = "RENDERINGTYPE")
+    private Integer renderingType;
+
+    @Column(name = "VISIBLE")
+    private boolean visible;
+
+    @Column(name = "EDITABLE")
+    private boolean editable;
+
+    @Column(name = "REQUIRED")
+    private boolean required;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "ID_PARENT")
+    private Property parent;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "property")
+    private Set<PropertyOptionItem> propertyOptionItems;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "parent")
+    private Set<Property> propertySet = new HashSet<>(0);
+
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "propertySet")
+    private Set<Template> templateSet = new HashSet<>();
 
 
     public Property() { }
@@ -54,162 +74,147 @@ public class Property implements IFProperty{
         this.name = name;
     }
 
-    public Property(Integer propertyId, String name, String label, int type, int renderingType,
-                    String expressionValidator, String formula, String defaultValue,
-                    boolean visible, boolean editable, boolean required, String parent, String mask) {
-
-        this.propertyId = propertyId;
+    public Property(String name, String label, String mask, String formula, String defaultValue,
+                    String expressionValidator, Integer type, Integer renderingType, boolean visible,
+                    boolean editable, boolean required) {
         this.name = name;
         this.label = label;
-        this.type = type;
-        this.renderingType = renderingType;
-        this.expressionValidator = expressionValidator;
+        this.mask = mask;
         this.formula = formula;
         this.defaultValue = defaultValue;
+        this.expressionValidator = expressionValidator;
+        this.type = type;
+        this.renderingType = renderingType;
         this.visible = visible;
         this.editable = editable;
         this.required = required;
-        this.parent = parent;
-        this.mask = mask;
-
     }
 
-    @Override
     public Integer getPropertyId() {
         return propertyId;
     }
 
-    @Override
     public void setPropertyId(Integer propertyId) {
         this.propertyId = propertyId;
     }
 
-    @Override
     public String getName() {
         return name;
     }
 
-    @Override
     public void setName(String name) {
         this.name = name;
     }
 
-    @Override
     public String getLabel() {
         return label;
     }
 
-    @Override
     public void setLabel(String label) {
         this.label = label;
     }
 
-    @Override
-    public int getType() {
-        return type;
+    public String getMask() {
+        return mask;
     }
 
-    @Override
-    public void setType(int type) {
-        this.type = type;
+    public void setMask(String mask) {
+        this.mask = mask;
     }
 
-    @Override
-    public int getRenderingType() {
-        return renderingType;
-    }
-
-    @Override
-    public void setRenderingType(int renderingType) {
-        this.renderingType = renderingType;
-    }
-
-    @Override
-    public String getExpressionValidator() {
-        return expressionValidator;
-    }
-
-    @Override
-    public void setExpressionValidator(String expressionValidator) {
-        this.expressionValidator = expressionValidator;
-    }
-
-    @Override
     public String getFormula() {
         return formula;
     }
 
-    @Override
     public void setFormula(String formula) {
         this.formula = formula;
     }
 
-    @Override
     public String getDefaultValue() {
         return defaultValue;
     }
 
-    @Override
     public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
     }
 
-    @Override
+    public String getExpressionValidator() {
+        return expressionValidator;
+    }
+
+    public void setExpressionValidator(String expressionValidator) {
+        this.expressionValidator = expressionValidator;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public Integer getRenderingType() {
+        return renderingType;
+    }
+
+    public void setRenderingType(Integer renderingType) {
+        this.renderingType = renderingType;
+    }
+
     public boolean isVisible() {
         return visible;
     }
 
-    @Override
     public void setVisible(boolean visible) {
         this.visible = visible;
-    }
-
-    @Override
-    public boolean isRequired() {
-        return required;
-    }
-
-    @Override
-    public void setRequired(boolean required) {
-        this.required = required;
     }
 
     public boolean isEditable() {
         return editable;
     }
 
-    @Override
     public void setEditable(boolean editable) {
         this.editable = editable;
     }
 
-    @Override
-    public String getParent() {
+    public boolean isRequired() {
+        return required;
+    }
+
+    public void setRequired(boolean required) {
+        this.required = required;
+    }
+
+    public Property getParent() {
         return parent;
     }
 
-    @Override
-    public void setParent(String parent) {
+    public void setParent(Property parent) {
         this.parent = parent;
     }
 
-    @Override
-    public String getMask() {
-        return mask;
-    }
-
-    @Override
-    public void setMask(String mask) {
-        this.mask = mask;
-    }
-
-    @Override
-    public List<PropertyOptionItem> getPropertyOptionItems() {
+    public Set<PropertyOptionItem> getPropertyOptionItems() {
         return propertyOptionItems;
     }
 
-    @Override
-    public void setPropertyOptionItems(List<PropertyOptionItem> propertyOptionItems) {
+    public void setPropertyOptionItems(Set<PropertyOptionItem> propertyOptionItems) {
         this.propertyOptionItems = propertyOptionItems;
+    }
+
+    public Set<Property> getPropertySet() {
+        return propertySet;
+    }
+
+    public void setPropertySet(Set<Property> propertySet) {
+        this.propertySet = propertySet;
+    }
+
+    public Set<Template> getTemplateSet() {
+        return templateSet;
+    }
+
+    public void setTemplateSet(Set<Template> templateSet) {
+        this.templateSet = templateSet;
     }
 }

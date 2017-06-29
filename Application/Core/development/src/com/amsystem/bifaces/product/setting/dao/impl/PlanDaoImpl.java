@@ -48,7 +48,8 @@ public class PlanDaoImpl extends AbstractDao<Integer, Plan> implements PlanDao {
     public Plan loadPlanById(Integer pk) {
         Plan plan = getByKey(pk);
         if (plan != null) {
-            Hibernate.initialize(plan.getPcBehavior().getProductTemplateLevelSet());
+            Hibernate.initialize(plan.getProduct());
+            Hibernate.initialize(plan.getPcBehavior());
         }
 
         return plan;
@@ -59,8 +60,8 @@ public class PlanDaoImpl extends AbstractDao<Integer, Plan> implements PlanDao {
     public Plan loadPlanProductConfigById(Integer idPlan) {
         Plan plan = loadPlanById(idPlan);
         if (plan != null) {
-            Hibernate.initialize(plan.getPcBehavior().getProductTemplateLevelSet());
-//            Hibernate.initialize(plan.getPcBehavior().getProductTemplateLevelSet());
+            Hibernate.initialize(plan.getProduct());
+            Hibernate.initialize(plan.getPcBehavior());
         }
         return plan;
     }

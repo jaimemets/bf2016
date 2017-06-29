@@ -23,7 +23,11 @@ public interface TemplateService {
     Template findOnlyTemplateById(Integer templateId);
 
     Template findTemplatePropertiesByName(String templateName);
-    
+
+    Template findHibTemplatePropertiesByName(String templateName);
+
+    Template findHibTemplatePropertiesById(Integer idTemplate);
+
     List<Template> findAllTemplate();
 
     List<Template> findAllTemplateByCategory(TemplateCategory templateCategory);

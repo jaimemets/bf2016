@@ -2,7 +2,6 @@ package com.amsystem.bifaces.dynamictemplate.controller;
 
 
 import com.amsystem.bifaces.dynamictemplate.setting.bo.PropertyTree;
-import com.amsystem.bifaces.dynamictemplate.setting.model.IFProperty;
 import com.amsystem.bifaces.dynamictemplate.setting.model.Property;
 import com.amsystem.bifaces.dynamictemplate.setting.model.PropertyTemplate;
 import com.amsystem.bifaces.dynamictemplate.setting.model.Template;
@@ -177,8 +176,6 @@ public class TreeOperation implements Serializable {
      */
     public void deleteTemplate(TreeNode selectedNode, boolean confirmation) {
         log.debug("**** Eliminando plantilla...");
-        //RequestContext.getCurrentInstance().update("form:winMessageId");
-        //MessageUtil.showMessage(NotificationType.INFO, rb.getString(NotificationType.INFO.getLabel().concat("_GRL")), rb.getString("template_deleted_success_TT"));
 
         if (selectedNode != null) {
             //Validar si la plantilla tiene propiedades asociadas
@@ -213,13 +210,13 @@ public class TreeOperation implements Serializable {
     }
 
 
-    public void addPropertyToTemplate(TreeNode selectedNode, IFProperty selectedProp) {
+    public void addPropertyToTemplate(TreeNode selectedNode, Property selectedProp) {
         log.debug("asociando propiedad a plantilla");
 
         if (selectedNode != null) {
             PropertyTemplateNode propertyTemplateNode = new PropertyTemplateNode(selectedProp.getPropertyId(), selectedProp.getName(), NodeType.PROPERTY);
             PropertyTemplateNode templateNode = (PropertyTemplateNode) selectedNode.getData();
-            PropertyTemplate propertyTemplate = new PropertyTemplate(selectedProp.getPropertyId(), templateNode.getId(), new Date());
+            PropertyTemplate propertyTemplate = new PropertyTemplate(selectedProp.getPropertyId(), templateNode.getId());
             propertyTemplateService.addPropertyToTemplate(propertyTemplate);
             addChild(selectedNode, propertyTemplateNode, Boolean.TRUE);
 
@@ -234,14 +231,14 @@ public class TreeOperation implements Serializable {
         selectedTemplate.setStatus(templateNode.getStatus());
 
         List<TreeNode> children = selectedNode.getChildren();
-        List<Property> propertyTemplateList;
+        Set<Property> propertyTemplateList;
         if(!children.isEmpty()){
-            propertyTemplateList = new ArrayList<>();
+            propertyTemplateList = new HashSet<>();
             for(TreeNode child : children){
                 PropertyTemplateNode propertyTemplateNode = (PropertyTemplateNode)child.getData();
                 propertyTemplateList.add(new Property(propertyTemplateNode.getId(), propertyTemplateNode.getName()));
             }
-            selectedTemplate.setPropertyList(propertyTemplateList);
+            selectedTemplate.setPropertySet(propertyTemplateList);
 
         }
         templateService.cloneTemplate(cloneTemplateName, selectedTemplate, fromCategory);

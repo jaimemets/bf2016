@@ -4,7 +4,7 @@ import com.amsystem.bifaces.dynamictemplate.setting.bo.PropertyTree;
 import com.amsystem.bifaces.dynamictemplate.setting.dao.PropertyDao;
 import com.amsystem.bifaces.dynamictemplate.setting.dao.PropertyTemplateDao;
 import com.amsystem.bifaces.dynamictemplate.setting.dao.TemplateDao;
-import com.amsystem.bifaces.dynamictemplate.setting.model.IFProperty;
+import com.amsystem.bifaces.dynamictemplate.setting.dao.TemplateHibDao;
 import com.amsystem.bifaces.dynamictemplate.setting.model.Property;
 import com.amsystem.bifaces.dynamictemplate.setting.model.PropertyTemplate;
 import com.amsystem.bifaces.dynamictemplate.setting.model.Template;
@@ -15,8 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -36,6 +36,9 @@ public class TemplateServiceImpl implements TemplateService {
 
     @Autowired
     private TemplateDao templateDao;
+
+    @Autowired
+    private TemplateHibDao templateHibDao;
 
     @Autowired
     private PropertyDao propertyDao;
@@ -65,14 +68,14 @@ public class TemplateServiceImpl implements TemplateService {
 
         if(addTemplate(cloneTemplate)){
             cloneTemplate = templateDao.loadTemplateByName(cloneTemplateName);
-            List<Property> propertyList = selectedTemplate.getPropertyList();
+            List<Property> propertyList = new ArrayList<>(selectedTemplate.getPropertySet());
             List<PropertyTemplate> propertyTemplateList;
 
             if(propertyList != null && !propertyList.isEmpty()){
                 propertyTemplateList = new ArrayList<>();
 
-                for (IFProperty property : propertyList){
-                    propertyTemplateList.add(new PropertyTemplate(property.getPropertyId(), cloneTemplate.getTemplateId(), new Date()));
+                for (Property property : propertyList) {
+                    propertyTemplateList.add(new PropertyTemplate(property.getPropertyId(), cloneTemplate.getTemplateId()));
                 }
 
                 propertyTemplateDao.saveBatch(propertyTemplateList);
@@ -83,6 +86,7 @@ public class TemplateServiceImpl implements TemplateService {
         }
         return false;
     }
+
 
     @Override
     public Template findOnlyTemplateById(Integer templateId) {
@@ -97,12 +101,21 @@ public class TemplateServiceImpl implements TemplateService {
 
         if (!propertyIdList.isEmpty()) {
             List<Property> propertyList = propertyDao.loadPropertyListByIdList(propertyIdList);
-            template.setPropertyList(propertyList);
+            template.setPropertySet(new HashSet<>(propertyList));
         }
 
 
         return template;
     }
+
+    public Template findHibTemplatePropertiesByName(String templateName) {
+        return templateHibDao.loadTemplateByName(templateName);
+    }
+
+    public Template findHibTemplatePropertiesById(Integer idTemplate) {
+        return templateHibDao.loadTemplateById(idTemplate);
+    }
+
 
     @Override
     public List<Template> findAllTemplate() {
@@ -132,7 +145,7 @@ public class TemplateServiceImpl implements TemplateService {
 
             if(!propertyIdList.isEmpty()) {
                 List<Property> propertyList = propertyDao.loadPropertyListByIdList(propertyIdList);
-                for (IFProperty property : propertyList) {
+                for (Property property : propertyList) {
                     propertyTreeList.add(new PropertyTree(property.getPropertyId(), property.getName()));
                 }
             }

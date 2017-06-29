@@ -1,6 +1,7 @@
 package com.amsystem.bifaces.product.setting.services;
 
 import com.amsystem.bifaces.product.setting.model.Plan;
+import com.amsystem.bifaces.product.setting.model.ProductTemplateLevel;
 
 /**
  * Title: PlanService.java <br>
@@ -20,5 +21,5 @@ public interface PlanService {
 
     boolean deleteTemplateConfigurationLevel(Plan plan, Integer idTemplate, int level);
 
-
+    boolean updateProductLevel(Plan plan, ProductTemplateLevel productTemplateLevel);
 }

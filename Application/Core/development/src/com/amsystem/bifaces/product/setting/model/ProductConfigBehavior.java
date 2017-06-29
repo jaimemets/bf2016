@@ -31,7 +31,8 @@ public class ProductConfigBehavior implements Serializable {
     private int numColumn;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.productConfigBehavior", cascade = CascadeType.ALL)
-    private Set<ProductTemplateLevel> productTemplateLevelSet = new HashSet<>();
+    @OrderBy("LEVEL")
+    private Set<ProductTemplateLevel> productTemplateLevelSet = new HashSet<>(0);
 
     public Integer getPcbID() {
         return pcbID;

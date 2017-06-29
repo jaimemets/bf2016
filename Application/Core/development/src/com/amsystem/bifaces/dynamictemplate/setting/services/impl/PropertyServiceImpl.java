@@ -4,7 +4,6 @@ import com.amsystem.bifaces.dynamictemplate.setting.dao.PropertyDao;
 import com.amsystem.bifaces.dynamictemplate.setting.dao.PropertyItemLabelDao;
 import com.amsystem.bifaces.dynamictemplate.setting.dao.PropertyOptionItemDao;
 import com.amsystem.bifaces.dynamictemplate.setting.dao.PropertyTemplateDao;
-import com.amsystem.bifaces.dynamictemplate.setting.model.IFProperty;
 import com.amsystem.bifaces.dynamictemplate.setting.model.Property;
 import com.amsystem.bifaces.dynamictemplate.setting.model.PropertyOptionItem;
 import com.amsystem.bifaces.dynamictemplate.setting.model.PropertyOptionItemLabel;
@@ -15,10 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Title: PropertyBoImpl.java
@@ -58,7 +54,7 @@ public class PropertyServiceImpl implements PropertyService {
     }
 
 
-    public boolean deleteProperty(IFProperty property) {
+    public boolean deleteProperty(Property property) {
         boolean success = false;
         if(!isAssociate(property))
             success = propertyDao.delete(property.getName());
@@ -75,8 +71,8 @@ public class PropertyServiceImpl implements PropertyService {
     }
 
 
-    public boolean updateProperty(IFProperty property) {
-        return propertyDao.update(property);
+    public boolean updateProperty(Property property) {
+        return propertyDao.updateProperty(property);
     }
 
     public boolean updateOptionItemProperty(PropertyOptionItem propertyOptionItem) {
@@ -88,16 +84,16 @@ public class PropertyServiceImpl implements PropertyService {
     }
 
 
-    public IFProperty findPropertyById(Integer idProperty,  boolean optimize) {
-        IFProperty property = propertyDao.loadPropertyById(idProperty);
+    public Property findPropertyById(Integer idProperty, boolean optimize) {
+        Property property = propertyDao.loadPropertyById(idProperty);
 
         if(!optimize) {
             List<PropertyOptionItem> optionItemList = findPropertyOptionItem(property.getPropertyId());
             for (PropertyOptionItem poi : optionItemList){
-                List<PropertyOptionItemLabel> propertyOptionItemLabel = findPropertyOptionItemLabel(poi.getPropertyId(), property.getPropertyId());
+                List<PropertyOptionItemLabel> propertyOptionItemLabel = findPropertyOptionItemLabel(poi.getPoiId());
                 poi.setItemLabels((Set<PropertyOptionItemLabel>) propertyOptionItemLabel);
             }
-            property.setPropertyOptionItems(optionItemList);
+            property.setPropertyOptionItems(new HashSet<>(optionItemList));
         }
 
         return property;
@@ -111,25 +107,25 @@ public class PropertyServiceImpl implements PropertyService {
 
 
     @Override
-    public List<PropertyOptionItemLabel> findPropertyOptionItemLabel(Integer poiId, Integer propertyId) {
-        return propertyItemLabelDao.loadAllPropertyItemLabelById(poiId,propertyId);
+    public List<PropertyOptionItemLabel> findPropertyOptionItemLabel(Integer poiId) {
+        return propertyItemLabelDao.loadAllPropertyItemLabelById(poiId);
     }
 
 
     @Override
-    public List<IFProperty> findAllProperty() {
-        List<IFProperty> allProperty = propertyDao.loadAllProperty();
+    public List<Property> findAllProperty() {
+        List<Property> allProperty = propertyDao.loadAllProperty();
 
-        for (IFProperty property : allProperty) {
+        for (Property property : allProperty) {
             List<PropertyOptionItem> optionItemList = findPropertyOptionItem(property.getPropertyId());
 
             for (PropertyOptionItem poi : optionItemList){
-                List<PropertyOptionItemLabel> propertyOptionItemLabel = findPropertyOptionItemLabel(poi.getPropertyId(), property.getPropertyId());
+                List<PropertyOptionItemLabel> propertyOptionItemLabel = findPropertyOptionItemLabel(poi.getPoiId());
                 Set<PropertyOptionItemLabel> propertyOptionItemLabelSet = new HashSet<>(propertyOptionItemLabel);
                 poi.setItemLabels(propertyOptionItemLabelSet);
             }
 
-            property.setPropertyOptionItems(optionItemList);
+            property.setPropertyOptionItems(new HashSet<>(optionItemList));
         }
 
         return allProperty;
@@ -142,16 +138,16 @@ public class PropertyServiceImpl implements PropertyService {
     }
 
 
-    public boolean isAssociate(IFProperty selectedProp) {
+    public boolean isAssociate(Property selectedProp) {
         return propertyTemplateDao.isPropertyAssociatedToTemplate(selectedProp.getPropertyId());
     }
 
 
-    public boolean cloneProperty(String propertyCloneName, IFProperty selectedProp){
+    public boolean cloneProperty(String propertyCloneName, Property selectedProp) {
         boolean success = false;
         //1 Almacear la propiedad clonada
         if(propertyDao.saveManualTransaction(propertyCloneName)) {
-            IFProperty cloneProperty = propertyDao.loadPropertyByName(propertyCloneName);
+            Property cloneProperty = propertyDao.loadPropertyByName(propertyCloneName);
             //Actualizando valores de la propiedad clonada
             cloneProperty.setDefaultValue(selectedProp.getDefaultValue());
             cloneProperty.setEditable(selectedProp.isEditable());
@@ -165,11 +161,20 @@ public class PropertyServiceImpl implements PropertyService {
             cloneProperty.setParent(selectedProp.getParent());
 
             if(propertyDao.updateManualTransaction(cloneProperty)) {
-                List<PropertyOptionItem> optionItemSelectedList = selectedProp.getPropertyOptionItems();
+                //List<PropertyOptionItem> optionItemSelectedList = selectedProp.getPropertyOptionItems();
+                Iterator<PropertyOptionItem> optionItemIterator = null;
                 List<PropertyOptionItem> optionItemCloneList = new ArrayList<>();
 
-                for (PropertyOptionItem poi : optionItemSelectedList) {
-                    optionItemCloneList.add(new PropertyOptionItem(cloneProperty.getPropertyId(), poi.getValue(), poi.getDescription(), null));
+                if (selectedProp.getPropertyOptionItems() != null) {
+                    optionItemIterator = selectedProp.getPropertyOptionItems().iterator();
+
+                    while (optionItemIterator.hasNext()) {
+                        PropertyOptionItem optionItem = optionItemIterator.next();
+                        PropertyOptionItem optionItemClone = new PropertyOptionItem(optionItem.getValue(), optionItem.getDescription(), optionItem.getProperty());
+                        optionItemClone.setPoiId(optionItem.getPoiId());
+                        optionItemCloneList.add(optionItemClone);
+
+                    }
                 }
 
                 if(!optionItemCloneList.isEmpty()) {
@@ -178,18 +183,21 @@ public class PropertyServiceImpl implements PropertyService {
                         int indexCloneList = -1;
                         optionItemCloneList = propertyOptionItemDao.loadPropertyOptionItem(cloneProperty.getPropertyId());
 
-                        for (PropertyOptionItem poi : optionItemSelectedList) {
-                            Set<PropertyOptionItemLabel> itemLabels = poi.getItemLabels();
+                        optionItemIterator = selectedProp.getPropertyOptionItems().iterator();
+                        while (optionItemIterator.hasNext()) {
+                            PropertyOptionItem optionItem = optionItemIterator.next();
+                            Set<PropertyOptionItemLabel> itemLabels = optionItem.getItemLabels();
                             //Clonando Labels de cada Item
                             if (itemLabels != null) {
                                 Set<PropertyOptionItemLabel> itemLabelsNew = new HashSet<>();
 
                                 for (PropertyOptionItem poiClone : optionItemCloneList) {
-                                    if (poi.getDescription().equalsIgnoreCase(poiClone.getDescription())) {
+                                    if (optionItem.getDescription().equalsIgnoreCase(poiClone.getDescription())) {
 
                                         indexCloneList = optionItemCloneList.indexOf(poiClone);
                                         for (PropertyOptionItemLabel poil : itemLabels) {
-                                            itemLabelsNew.add(new PropertyOptionItemLabel(poiClone.getPoiId(), poiClone.getPropertyId(), poil.getDescription(), poil.getLocale()));
+                                            PropertyOptionItemLabel optionItemLabel = new PropertyOptionItemLabel(poil.getDescription(), poil.getLocale(), poil.getPropertyOptionItem());
+                                            itemLabelsNew.add(optionItemLabel);
                                         }
 
                                     }

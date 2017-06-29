@@ -1,6 +1,5 @@
 package com.amsystem.bifaces.dynamictemplate.setting.dao;
 
-import com.amsystem.bifaces.dynamictemplate.setting.model.IFProperty;
 import com.amsystem.bifaces.dynamictemplate.setting.model.Property;
 
 import java.util.List;
@@ -44,7 +43,7 @@ public interface PropertyDao {
      * @param property propiedad cuyos valores seran actuaizados
      * @return <tt>true</tt> Si la propiedad es actualizada con exito. <tt>false</tt> Si ocurre algun error.
      */
-    boolean update(IFProperty property);
+    boolean updateProperty(Property property);
 
     /**
      * Actualiza los valores de la propiedad que recibe por parametro.
@@ -53,7 +52,7 @@ public interface PropertyDao {
      * @param property
      * @return
      */
-    boolean updateManualTransaction(IFProperty property);
+    boolean updateManualTransaction(Property property);
 
     /**
      * Carga una propiedad de la base de datos que coincida con el identificador que recibe por parametro
@@ -61,7 +60,7 @@ public interface PropertyDao {
      * @param propertyId identificador a buscar en la base de datos
      * @return <tt>Propiedad</tt>
      */
-    IFProperty loadPropertyById(Integer propertyId);
+    Property loadPropertyById(Integer propertyId);
 
     /**
      * Carga una propiedad de la base de datos que coincida con el nombre que recibe por parametro
@@ -69,14 +68,14 @@ public interface PropertyDao {
      * @param propertyName nombre a buscar en la base de datos
      * @return <tt>Propiedad</tt>
      */
-    IFProperty loadPropertyByName(String propertyName);
+    Property loadPropertyByName(String propertyName);
 
     /**
      * Carga todas las propiedades almacenadas en la base de datos
      *
      * @return <tt>List</tt> de propiedades
      */
-    List<IFProperty> loadAllProperty();
+    List<Property> loadAllProperty();
 
     /**
      * Carga un conjunto de propiedades que coincida con la <tt>Lista</tt> de identificadores que recibe como parametro

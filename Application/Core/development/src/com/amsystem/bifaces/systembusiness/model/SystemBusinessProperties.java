@@ -30,7 +30,7 @@ public class SystemBusinessProperties {
     private String description;
 
 
-    @Column(name = "VALUE")
+    @Column(name = "VALUE", nullable = true)
     private String value;
 
     @OneToMany(cascade = CascadeType.ALL)

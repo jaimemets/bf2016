@@ -1,12 +1,144 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-    <title></title>
-</head>
-<body>
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui">
 
-</body>
-</html>
+
+    <p:selectOneMenu id="somLP" value="#{productConfigView.selectLevel}">
+        <p:ajax listener="#{productConfigView.onLevelProductChange}"
+                update="pgNumColumn pgCommunicationType apCommunicationBridge apCommunicationBridge:somWS apCommunicationBridge:somWS apCommunicationBridge:otWS"/>
+        <f:selectItem itemLabel="Seleccione Nivel" itemValue="" noSelectionOption="true"/>
+        <f:selectItems value="#{productConfigView.levelProductList}" var="lp" itemLabel="#{textI18[lp.label]}"/>
+    </p:selectOneMenu>
+
+
+    <p:panelGrid id="pgConfigProductAdv" columns="1" layout="grid"
+                 style=" width: 100%; border: 3px double cornflowerblue;  border-radius: 5px;  margin: 5px 0px 0px 0px;">
+
+
+        <h:panelGrid id="pgNumColumn" columns="2" cellpadding="5" cellspacing="5" style="margin-bottom: 10px">
+            <p:outputLabel for="ncLP" value="Columnas"/>
+            <p:inputText id="ncLP" value="#{productConfigView.numColumnLevel}"/>
+            <p:spacer/>
+            <p:slider for="ncLP" maxValue="4" minValue="2">
+                <p:ajax event="slideEnd"/>
+            </p:slider>
+        </h:panelGrid>
+
+        <h:panelGrid id="pgCommunicationType" columns="2" style="margin-bottom: 10px">
+            <p:outputLabel for="sorTC" value="Tipo de Comunicacion:"/>
+            <p:selectOneRadio id="sorTC" value="#{productConfigView.communicationType}">
+                <f:selectItem itemLabel="Ninguna" itemValue="NA"/>
+                <f:selectItem itemLabel="Servicio Web" itemValue="WS"/>
+                <f:selectItem itemLabel="Procedimientos" itemValue="PRC"/>
+            </p:selectOneRadio>
+        </h:panelGrid>
+
+
+        <p:separator/>
+
+        <p:accordionPanel id="apCommunicationBridge">
+            <p:tab id="tabCommunicationBridgeWS" title="Servicios Web">
+                <h:panelGrid
+                        style=" width: 100%; border: 3px double limegreen;  border-radius: 5px;  margin: 5px 0px 0px 0px;"
+                        cellpadding="2">
+                    <!-- CATALAGO DE SERVICIOS WEB -->
+
+                    <p:pickList id="pickListWS" value="#{productConfigView.communicationBridgeWs}"
+                                style="margin: auto"
+                                var="cb" itemLabel="#{cb.description} - #{cb.type}"
+                                itemValue="#{cb.cbId}#{cb.category}">
+                        <p:ajax event="transfer" listener="#{productConfigView.onTransferWS}" update="somWS"/>
+                        <f:facet name="sourceCaption">Disponible</f:facet>
+                        <f:facet name="targetCaption">Seleccionados</f:facet>
+                    </p:pickList>
+
+                    <p:separator/>
+
+                    <p:selectOneMenu id="somWS" value="#{productConfigView.selectWS}" style="width:150px">
+                        <p:ajax listener="#{productConfigView.onWSChange}" update="otWS"/>
+                        <f:selectItem itemLabel="Seleccione WS" itemValue="" noSelectionOption="true"/>
+                        <f:selectItems value="#{productConfigView.targetCBWSList}"
+                                       var="cbTarget" itemLabel="#{cbTarget.description} - #{cbTarget.type}"
+                                       itemValue="#{cbTarget.cbId}#{cbTarget.category}"/>
+                    </p:selectOneMenu>
+
+                    <h:outputText id="otWS"
+                                  value="Cantidad de parametros permitidos: #{productConfigView.parameterWS}"/>
+
+                    <br/>
+
+                    <!-- SECCION DE PROPIEDADES ASOCIADAS AL COMMUNICATION BRIDGE
+                    <p:pickList id="plSw" value="#{productConfigView.properties}" var="theme" effect="bounce"
+                                itemValue="#{theme}" itemLabel="#{theme}" showSourceControls="true" showTargetControls="true" showCheckbox="true" responsive="true"
+                                showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains">
+
+                        <f:facet name="sourceCaption">Disponible</f:facet>
+                        <f:facet name="targetCaption">Seleccionados</f:facet>
+
+                        <p:column style="width:90%;">
+                            <h:outputText value="#{theme}" />
+                        </p:column>
+                    </p:pickList>
+                    -->
+
+                </h:panelGrid>
+            </p:tab>
+            <p:tab title="Procedimiento">
+                <!-- CATALAGO DE PROCEDIMIENTOS -->
+                <h:panelGrid
+                        style=" width: 100%; border: 3px double limegreen;  border-radius: 5px;  margin: 5px 0px 0px 0px;"
+                        cellpadding="2">
+                    <!-- CATALAGO DE SERVICIOS WEB -->
+
+                    <p:pickList id="pickListPROC" value="#{productConfigView.communicationBridgeProc}" var="cb"
+                                style="margin: auto"
+                                itemLabel="#{cb.description} - #{cb.type}" itemValue="#{cb.cbId}">
+
+                        <p:ajax event="transfer" listener="#{productConfigView.onTransferPROC}" update="somPROC"/>
+                        <f:facet name="sourceCaption">Disponible</f:facet>
+                        <f:facet name="targetCaption">Seleccionados</f:facet>
+                    </p:pickList>
+
+                    <p:separator/>
+
+                    <p:selectOneMenu id="somPROC" value="#{productConfigView.selectPROC}" style="width:150px">
+                        <p:ajax listener="#{productConfigView.onPROChange}" update="otPROC"/>
+                        <f:selectItem itemLabel="Seleccione WS" itemValue="" noSelectionOption="true"/>
+                        <f:selectItems value="#{productConfigView.targetCBPROCList}"
+                                       var="procTarget" itemLabel="#{procTarget.description} - #{procTarget.type}"
+                                       itemValue="#{procTarget.cbId}#{procTarget.category}"/>
+                    </p:selectOneMenu>
+
+                    <h:outputText id="otPROC"
+                                  value="Cantidad de parametros permitidos: #{productConfigView.parameterPROC}"/>
+
+                    <br/>
+
+                    <!-- SECCION DE PROPIEDADES ASOCIADAS AL COMMUNICATION BRIDGE
+                    <p:pickList id="plSw" value="#{productConfigView.properties}" var="theme" effect="bounce"
+                                itemValue="#{theme}" itemLabel="#{theme}" showSourceControls="true" showTargetControls="true" showCheckbox="true" responsive="true"
+                                showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains">
+
+                        <f:facet name="sourceCaption">Disponible</f:facet>
+                        <f:facet name="targetCaption">Seleccionados</f:facet>
+
+                        <p:column style="width:90%;">
+                            <h:outputText value="#{theme}" />
+                        </p:column>
+                    </p:pickList>
+                    -->
+
+                </h:panelGrid>
+
+            </p:tab>
+
+        </p:accordionPanel>
+
+    </p:panelGrid>
+    <br/>
+
+
+</ui:composition>

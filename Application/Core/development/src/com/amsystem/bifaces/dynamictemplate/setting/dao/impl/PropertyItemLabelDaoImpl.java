@@ -1,6 +1,7 @@
 package com.amsystem.bifaces.dynamictemplate.setting.dao.impl;
 
 import com.amsystem.bifaces.dynamictemplate.setting.dao.PropertyItemLabelDao;
+import com.amsystem.bifaces.dynamictemplate.setting.model.PropertyOptionItem;
 import com.amsystem.bifaces.dynamictemplate.setting.model.PropertyOptionItemLabel;
 import com.amsystem.bifaces.util.AbstractDao;
 import org.apache.logging.log4j.LogManager;
@@ -35,12 +36,12 @@ public class PropertyItemLabelDaoImpl extends AbstractDao<Integer, Integer> impl
         jdbcTemplate = new JdbcTemplate(getDataSource());
         StringBuilder sql = new StringBuilder();
         sql.append("INSERT INTO PROPERTYOPTIONITEMLABEL ")
-                .append("(IDPOI, IDPROPERTY, VALUE, LOCALE) ")
-                .append(" VALUES (?,?,?,?)");
+                .append("(IDPOI, VALUE, LOCALE) ")
+                .append(" VALUES (?,?,?)");
 
         log.debug("sql: " + sql);
 
-        int rowAffected = jdbcTemplate.update(sql.toString(), propertyOptionItemLabel.getPoiId(), propertyOptionItemLabel.getPropertyId(),
+        int rowAffected = jdbcTemplate.update(sql.toString(), propertyOptionItemLabel.getPropertyOptionItem().getPoiId(),
                 propertyOptionItemLabel.getDescription(), propertyOptionItemLabel.getLocale());
 
         return rowAffected > 0;
@@ -51,8 +52,8 @@ public class PropertyItemLabelDaoImpl extends AbstractDao<Integer, Integer> impl
         jdbcTemplate = new JdbcTemplate(getDataSource());
         StringBuilder sql = new StringBuilder();
         sql.append("INSERT INTO PROPERTYOPTIONITEMLABEL ")
-                .append("(IDPOI, IDPROPERTY, VALUE, LOCALE) ")
-                .append(" VALUES (?,?,?,?)");
+                .append("(IDPOI, VALUE, LOCALE) ")
+                .append(" VALUES (?,?,?)");
 
         log.debug("sql: " + sql);
 
@@ -63,10 +64,9 @@ public class PropertyItemLabelDaoImpl extends AbstractDao<Integer, Integer> impl
                     throws SQLException {
 
                 PropertyOptionItemLabel optionItemLabel = (PropertyOptionItemLabel) itemLabelsList.toArray()[i];
-                ps.setInt(1, optionItemLabel.getPoiId());
-                ps.setInt(2, optionItemLabel.getPropertyId());
-                ps.setString(3, optionItemLabel.getDescription());
-                ps.setString(4, optionItemLabel.getLocale());
+                ps.setInt(1, optionItemLabel.getPropertyOptionItem().getPoiId());
+                ps.setString(2, optionItemLabel.getDescription());
+                ps.setString(3, optionItemLabel.getLocale());
 
             }
 
@@ -113,17 +113,20 @@ public class PropertyItemLabelDaoImpl extends AbstractDao<Integer, Integer> impl
     }
 
     @Override
-    public List<PropertyOptionItemLabel> loadAllPropertyItemLabelById(Integer propertyOptionItemId, Integer propertyId) {
+    public List<PropertyOptionItemLabel> loadAllPropertyItemLabelById(Integer propertyOptionItemId) {
         List<PropertyOptionItemLabel> propertyOptionItemLabels = new ArrayList<>();
         jdbcTemplate = new JdbcTemplate(getDataSource());
 
-        String query = "SELECT * FROM PROPERTYOPTIONITEMLABEL WHERE IDPOI = ? AND IDPROPERTY = ?";
+        String query = "SELECT * FROM PROPERTYOPTIONITEMLABEL WHERE IDPOI = ? ";
 
-        List<Map<String, Object>> mapList = jdbcTemplate.queryForList(query, propertyOptionItemId, propertyId);
+        List<Map<String, Object>> mapList = jdbcTemplate.queryForList(query, propertyOptionItemId);
 
         for (Map<String, Object> map : mapList){
-            propertyOptionItemLabels.add(new PropertyOptionItemLabel((Integer) map.get("IDPOIL"), (Integer) map.get("IDPOI"),
-                    (Integer) map.get("IDPROPERTY"), (String)map.get("VALUE"), (String)map.get("LOCALE")));
+            PropertyOptionItem optionItem = new PropertyOptionItem();
+            optionItem.setPoiId((Integer) map.get("IDPOI"));
+            PropertyOptionItemLabel optionItemLabel = new PropertyOptionItemLabel((String) map.get("VALUE"), (String) map.get("LOCALE"), optionItem);
+            optionItemLabel.setPoilId((Integer) map.get("IDPOIL"));
+            propertyOptionItemLabels.add(optionItemLabel);
         }
 
         return propertyOptionItemLabels;

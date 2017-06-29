@@ -2,6 +2,7 @@ package com.amsystem.bifaces.product.setting.model;
 
 import com.amsystem.bifaces.dynamictemplate.setting.model.Template;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
 import java.io.Serializable;
@@ -22,6 +23,11 @@ public class ProductTemplateLevelPK implements Serializable {
     @ManyToOne
     private Template template;
 
+    @Column(name = "LEVEL")
+    private Integer level;
+
+
+    //getter and setter
     public ProductConfigBehavior getProductConfigBehavior() {
         return productConfigBehavior;
     }
@@ -38,6 +44,14 @@ public class ProductTemplateLevelPK implements Serializable {
         this.template = template;
     }
 
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -45,16 +59,19 @@ public class ProductTemplateLevelPK implements Serializable {
 
         ProductTemplateLevelPK that = (ProductTemplateLevelPK) o;
 
-        if (!productConfigBehavior.equals(that.productConfigBehavior)) return false;
-        if (!template.equals(that.template)) return false;
+        if (level != null ? !level.equals(that.level) : that.level != null) return false;
+        if (productConfigBehavior != null ? !productConfigBehavior.equals(that.productConfigBehavior) : that.productConfigBehavior != null)
+            return false;
+        if (template != null ? !template.equals(that.template) : that.template != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = productConfigBehavior.hashCode();
-        result = 31 * result + template.hashCode();
+        int result = productConfigBehavior != null ? productConfigBehavior.hashCode() : 0;
+        result = 31 * result + (template != null ? template.hashCode() : 0);
+        result = 31 * result + (level != null ? level.hashCode() : 0);
         return result;
     }
 }

@@ -1,7 +1,7 @@
 package com.amsystem.bifaces.dynamictemplate.view;
 
 import com.amsystem.bifaces.dynamictemplate.controller.PropertyOperation;
-import com.amsystem.bifaces.dynamictemplate.setting.model.IFProperty;
+import com.amsystem.bifaces.dynamictemplate.setting.model.Property;
 import com.amsystem.bifaces.dynamictemplate.setting.model.PropertyOptionItem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,12 +44,12 @@ public class PropertySectionView implements Serializable{
     private PropertyOptionItem optionItemSelected;
 
     //Lista de propiedades
-    private List<IFProperty> properties;
+    private List<Property> properties;
 
     private String commandClicked;
 
     //Propiedad actual seleccionada en la tabla
-    private IFProperty selectedProp;
+    private Property selectedProp;
 
     @ManagedProperty("#{propertyOperation}")
     private PropertyOperation service;
@@ -105,7 +105,9 @@ public class PropertySectionView implements Serializable{
      * Agrega una nueva opciona a una propiedad seleccionada
      */
     public void addOptionItem() {
-        PropertyOptionItem item = new PropertyOptionItem(selectedProp.getPropertyId(), Float.valueOf(getOptionItemValue()), getOptionItemDescription(), null);
+        Property property = new Property();
+        property.setPropertyId(selectedProp.getPropertyId());
+        PropertyOptionItem item = new PropertyOptionItem(Float.valueOf(getOptionItemValue()), getOptionItemDescription(), property);
         log.debug("Agregando Opcion: " + item);
         service.addOptionItem(selectedProp, item);
         setOptionItemDescription(null);
@@ -170,19 +172,19 @@ public class PropertySectionView implements Serializable{
         this.optionItemValue = optionItemValue;
     }
 
-    public List<IFProperty> getProperties() {
+    public List<Property> getProperties() {
         return properties;
     }
 
-    public void setProperties(List<IFProperty> properties) {
+    public void setProperties(List<Property> properties) {
         this.properties = properties;
     }
 
-    public IFProperty getSelectedProp() {
+    public Property getSelectedProp() {
         return selectedProp;
     }
 
-    public void setSelectedProp(IFProperty selectedProp) {
+    public void setSelectedProp(Property selectedProp) {
         this.selectedProp = selectedProp;
     }
 

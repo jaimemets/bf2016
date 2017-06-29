@@ -18,27 +18,23 @@ public class PropertyOptionItemLabel {
     @Column(name = "IDPOIL")
     private Integer poilId;
 
-    private Integer poiId;
-
-    private Integer propertyId;
-
+    @Column(name = "DESCRIPTION")
     private String description;
 
+    @Column(name = "LOCLE")
     private String locale;
 
-    public PropertyOptionItemLabel(Integer poilId, Integer poiId, Integer propertyId, String description, String locale) {
-        this.poilId = poilId;
-        this.poiId = poiId;
-        this.propertyId = propertyId;
-        this.description = description;
-        this.locale = locale;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "IDPOI", nullable = false)
+    private PropertyOptionItem propertyOptionItem;
+
+    public PropertyOptionItemLabel() {
     }
 
-    public PropertyOptionItemLabel(Integer poiId, Integer propertyId, String description, String locale) {
-        this.poiId = poiId;
-        this.propertyId = propertyId;
+    public PropertyOptionItemLabel(String description, String locale, PropertyOptionItem propertyOptionItem) {
         this.description = description;
         this.locale = locale;
+        this.propertyOptionItem = propertyOptionItem;
     }
 
     public Integer getPoilId() {
@@ -47,22 +43,6 @@ public class PropertyOptionItemLabel {
 
     public void setPoilId(Integer poilId) {
         this.poilId = poilId;
-    }
-
-    public Integer getPoiId() {
-        return poiId;
-    }
-
-    public void setPoiId(Integer poiId) {
-        this.poiId = poiId;
-    }
-
-    public Integer getPropertyId() {
-        return propertyId;
-    }
-
-    public void setPropertyId(Integer propertyId) {
-        this.propertyId = propertyId;
     }
 
     public String getDescription() {
@@ -79,5 +59,13 @@ public class PropertyOptionItemLabel {
 
     public void setLocale(String locale) {
         this.locale = locale;
+    }
+
+    public PropertyOptionItem getPropertyOptionItem() {
+        return propertyOptionItem;
+    }
+
+    public void setPropertyOptionItem(PropertyOptionItem propertyOptionItem) {
+        this.propertyOptionItem = propertyOptionItem;
     }
 }

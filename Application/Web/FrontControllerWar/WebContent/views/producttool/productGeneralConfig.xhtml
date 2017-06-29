@@ -27,38 +27,38 @@
             <p:tabView id="tabProductSetting" scrollable="true" cache="false">
                 <p:tab id="tabProductStructure" title="Estructura del Producto">
                     <ui:include src="productStructure.xhtml"/>
+
+                    <p:commandButton id="associateBtn" value="#{textI18.associate_TT}"
+                                     icon="fa fa-chain"
+                                     disabled="#{empty productConfigView.selectTemplateNode or empty productConfigView.selectProductNode
+                                 or productConfigView.selectTemplateNode.type ne 'CH' or productConfigView.selectProductNode.type ne 'PA'}"
+                                     update="productSettingForm:winMessageId productSettingForm:tabProductSetting:prTreeId productSettingForm:tabProductSetting:somLP"
+                                     action="#{productConfigView.associateProductTemplate}"/>
+                    <p:spacer/>
+
+                    <p:commandButton id="disassociateBtn" value="#{textI18.disassociate_TT}"
+                                     icon="fa fa-chain-broken"
+                                     disabled="#{empty productConfigView.selectProductNode or productConfigView.selectProductNode.type ne 'CH'}"
+                                     update="productSettingForm:winMessageId productSettingForm:tabProductSetting:prTreeId productSettingForm:tabProductSetting:somLP"
+                                     action="#{productConfigView.disassociateProductTemplate}"/>
                 </p:tab>
+
                 <p:tab id="tabAdvancedConfig" title="Configuracion Avanzada">
-                    <!-- <ui:include src="productAdvancedConfig.xhtml"/> -->
+                    <ui:include src="productAdvancedConfig.xhtml"/>
+                    <p:commandButton id="saveBtn" value="#{textI18.save_GRL}"
+                                     icon="fa fa-chain"
+                                     update="productSettingForm:winMessageId productSettingForm:tabProductSetting:prTreeId"
+                                     action="#{productConfigView.saveProductTemplateLevel}"/>
                 </p:tab>
+
             </p:tabView>
 
             <p:outputPanel id="opButtonsProductForm" style="text-align: center">
 
-
-                <p:commandButton id="associateBtn" value="#{textI18.associate_TT}"
-                                 icon="fa fa-chain"
-                                 disabled="#{empty productConfigView.selectTemplateNode or empty productConfigView.selectProductNode
-                                 or productConfigView.selectTemplateNode.type ne 'CH' or productConfigView.selectProductNode.type ne 'PA'}"
-                                 update="winMessageId productSettingForm:tabProductSetting:prTreeId"
-                                 action="#{productConfigView.associateProductTemplate}"/>
-                <p:spacer/>
-
-                <p:commandButton id="disassociateBtn" value="#{textI18.disassociate_TT}"
-                                 icon="fa fa-chain-broken"
-                                 disabled="#{empty productConfigView.selectProductNode or productConfigView.selectProductNode.type ne 'CH'}"
-                                 update="winMessageId productSettingForm:tabProductSetting:prTreeId"
-                                 action="#{productConfigView.disassociateProductTemplate}"/>
-                <p:spacer/>
-
                 <p:button id="cancelBtn" value="#{textI18.cancel_GRL}"
                           href="/productTool"
                           icon="ui-icon-cancel"/>
-                <!--
-                                <p:button id="continueUsrBtn" value="Continuar" rendered="#{userDataConfigView.saved}"
-                                          href="/userTool"
-                                          icon="ui-icon-cancel"/>
-                -->
+
             </p:outputPanel>
 
         </h:form>

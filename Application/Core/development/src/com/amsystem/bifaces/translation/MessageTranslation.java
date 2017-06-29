@@ -8,7 +8,6 @@ package com.amsystem.bifaces.translation;
  */
 
 import com.amsystem.bifaces.util.i18n.case2.GenericMessageTranslation;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,7 +23,6 @@ public class MessageTranslation implements GenericMessageTranslation {
     @Id
     private MessageTranslationPK messageTranslationPK;
 
-    @NotEmpty
     @Column(name="MESSAGE", nullable=false)
     private String message;
 

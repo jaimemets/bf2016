@@ -1,6 +1,5 @@
 package com.amsystem.bifaces.generator;
 
-import com.amsystem.bifaces.dynamictemplate.setting.model.IFProperty;
 import com.amsystem.bifaces.dynamictemplate.setting.model.Property;
 
 /**
@@ -10,17 +9,17 @@ import com.amsystem.bifaces.dynamictemplate.setting.model.Property;
  *         File Creation on 09/08/2016.
  */
 public class DataProperty {
-    IFProperty property;
+    Property property;
     String value;
 
     public DataProperty() {
     }
 
-    public DataProperty(IFProperty property) {
+    public DataProperty(Property property) {
         this.property = property;
     }
 
-    public IFProperty getProperty() {
+    public Property getProperty() {
         return property;
     }
 

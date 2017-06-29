@@ -1,7 +1,6 @@
 package com.amsystem.bifaces.generator;
 
 
-import com.amsystem.bifaces.dynamictemplate.setting.model.IFProperty;
 import com.amsystem.bifaces.dynamictemplate.setting.model.Template;
 import com.amsystem.bifaces.util.PageMode;
 
@@ -27,9 +26,11 @@ public class DataTemplate {
 
     private void init() {
         dataProperties = new ArrayList<>();
+        /*
         for (IFProperty prop : template.getPropertyList()){
             dataProperties.add(new DataProperty(prop));
         }
+        */
     }
 
     public PageMode getPageMode() {

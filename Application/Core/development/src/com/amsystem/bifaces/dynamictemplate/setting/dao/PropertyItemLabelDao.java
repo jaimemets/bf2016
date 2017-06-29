@@ -49,7 +49,7 @@ public interface PropertyItemLabelDao {
      *
      * @return <tt>List</tt> de etiquetas.
      */
-    List<PropertyOptionItemLabel> loadAllPropertyItemLabelById(Integer propertyOptionItemId, Integer propertyId);
+    List<PropertyOptionItemLabel> loadAllPropertyItemLabelById(Integer propertyOptionItemId);
 
     /**
      * Carga una etiqueta de la base de datos que coincida con el identificador que recibe por parametro
