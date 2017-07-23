@@ -97,7 +97,7 @@ public class ProductToolOperation implements Serializable {
     public TreeNode createProductConfigTree(Plan plan) {
         log.debug("**Inicio Arbol Estructura de Producto **");
         ProductConfigBehavior pcBehavior = null;
-        List<ProductTemplateLevel> productTemplateLevelList = null;
+        List<TemplatePlanLevel> templatePlanLevelList = null;
 
         pcBehavior = pcbService.findProductConfigBehaviorById(plan.getPcBehavior().getPcbID());
         plan.setPcBehavior(pcBehavior);
@@ -107,15 +107,15 @@ public class ProductToolOperation implements Serializable {
         TreeNode parentNode;
         TreeNode childNodeItem;
         TreeNodeData dataNode;
-        Iterator<ProductTemplateLevel> templateLevelIterator;
+        Iterator<TemplatePlanLevel> templateLevelIterator;
 
         for (LevelProduct lp : levelProducts) {
             log.debug("Nivel: " + lp.getLabel());
             parentNode = new DefaultTreeNode(TreeNodeType.PARENT.getLabel(), new TreeNodeData(lp.getValue(), rb.getString(lp.getLabel()), 1, TreeNodeType.PARENT), productRoot);
 
-            if (!pcBehavior.getProductTemplateLevelSet().isEmpty()) {
-                templateLevelIterator = pcBehavior.getProductTemplateLevelSet().iterator();
-                ProductTemplateLevel ptl;
+            if (!pcBehavior.getTemplatePlanLevelSet().isEmpty()) {
+                templateLevelIterator = pcBehavior.getTemplatePlanLevelSet().iterator();
+                TemplatePlanLevel ptl;
                 while (templateLevelIterator.hasNext()) {
                     ptl = templateLevelIterator.next();
                     if (lp.getValue() == ptl.getLevel()) {
@@ -171,16 +171,15 @@ public class ProductToolOperation implements Serializable {
     /**
      * @param rootProductNode
      * @param selectedTemplateNode
-     * @param plan
      */
-    public void addChildProductTree(TreeNode rootProductNode, TreeNode selectedTemplateNode, Plan plan) {
+    public void addChildProductTree(TreeNode rootProductNode, TreeNode selectedTemplateNode, ProductConfigBehavior pcb) {
         TreeNode childNodeItem;
         TreeNodeData templateNode = (TreeNodeData) selectedTemplateNode.getData();
         TreeNodeData rootNodeData = (TreeNodeData) rootProductNode.getData();
 
         if (rootProductNode.getChildren().isEmpty()) { //Validacion para solo una plantilla por nivel
 
-            if (planService.addTemplateConfigurationLevel(plan, templateNode.getId(), rootNodeData.getId())) {
+            if (pcbService.addTemplateToPlanLevel(pcb, templateNode.getId(), rootNodeData.getId())) {
                 MessageUtil.showMessage(NotificationType.INFO, rb.getString(NotificationType.INFO.getLabel().concat("_GRL")), rb.getString("template_save_success_TT"));
                 childNodeItem = new DefaultTreeNode(TreeNodeType.CHILD.getLabel(), templateNode, rootProductNode);
             } else {
@@ -194,18 +193,17 @@ public class ProductToolOperation implements Serializable {
 
     /**
      * Elimina la asociacion de la plantilla con el nivel del producto
-     *
-     * @param selectedNode
-     * @param plan
+     *  @param selectedNode
+
      */
-    public void removeChildProductTree(TreeNode selectedNode, Plan plan) {
+    public void removeChildProductTree(TreeNode selectedNode, ProductConfigBehavior pcb) {
         TreeNodeData templateNode = (TreeNodeData) selectedNode.getData();
         TreeNodeData rootNodeData = (TreeNodeData) selectedNode.getParent().getData();
 
         //TODO: Validar si existen registro de negocios. Bastaria con consultar algun registro en la tabla POLICYSTATIC
         //TODO: para el producto y plan seleccionado.
 
-        if (planService.deleteTemplateConfigurationLevel(plan, templateNode.getId(), rootNodeData.getId())) {
+        if (pcbService.deleteTemplateToPlanLevel(pcb, templateNode.getId(), rootNodeData.getId())) {
             TreeNode parent = selectedNode.getParent();
             parent.getChildren().remove(selectedNode);
             MessageUtil.showMessage(NotificationType.INFO, rb.getString(NotificationType.INFO.getLabel().concat("_GRL")), rb.getString("template_deleted_success_TT"));
@@ -228,36 +226,36 @@ public class ProductToolOperation implements Serializable {
     /**
      * Busca la configuracion del nivel seleccionado
      *
-     * @param productTemplateLevelSet
+     * @param templatePlanLevelSet
      * @param level
      * @return
      */
-    public ProductTemplateLevel findProductTemplateLevel(Set<ProductTemplateLevel> productTemplateLevelSet, int level) {
+    public TemplatePlanLevel findProductTemplateLevel(Set<TemplatePlanLevel> templatePlanLevelSet, int level) {
         boolean found = false;
-        ProductTemplateLevel productTemplateLevel = null;
+        TemplatePlanLevel templatePlanLevel = null;
         log.debug("Buscando nivel..." + level);
 
-        if (!productTemplateLevelSet.isEmpty()) {
-            Iterator<ProductTemplateLevel> templateLevelIterator = productTemplateLevelSet.iterator();
+        if (!templatePlanLevelSet.isEmpty()) {
+            Iterator<TemplatePlanLevel> templateLevelIterator = templatePlanLevelSet.iterator();
 
             while (templateLevelIterator.hasNext() && !found) {
-                productTemplateLevel = templateLevelIterator.next();
-                found = (productTemplateLevel.getLevel().intValue() == level);
+                templatePlanLevel = templateLevelIterator.next();
+                found = (templatePlanLevel.getLevel().intValue() == level);
             }
         }
 
-        return productTemplateLevel;
+        return templatePlanLevel;
     }
 
-    public List<LevelProduct> getConfiguredProductLevel(Set<ProductTemplateLevel> productTemplateLevelSet) {
+    public List<LevelProduct> getConfiguredProductLevel(Set<TemplatePlanLevel> templatePlanLevelSet) {
         List<LevelProduct> configuredProductLevel = new ArrayList<>();
-        ProductTemplateLevel productTemplateLevel;
-        if (!productTemplateLevelSet.isEmpty()) {
-            Iterator<ProductTemplateLevel> templateLevelIterator = productTemplateLevelSet.iterator();
+        TemplatePlanLevel templatePlanLevel;
+        if (!templatePlanLevelSet.isEmpty()) {
+            Iterator<TemplatePlanLevel> templateLevelIterator = templatePlanLevelSet.iterator();
 
             while (templateLevelIterator.hasNext()) {
-                productTemplateLevel = templateLevelIterator.next();
-                LevelProduct levelProduct = LevelProduct.valueOf(productTemplateLevel.getLevel());
+                templatePlanLevel = templateLevelIterator.next();
+                LevelProduct levelProduct = LevelProduct.valueOf(templatePlanLevel.getLevel());
                 if (levelProduct != null)
                     configuredProductLevel.add(levelProduct);
             }
@@ -272,13 +270,13 @@ public class ProductToolOperation implements Serializable {
      */
     public List<String> findTemplatePropertyAssociateList(ProductConfigBehavior pcBehavior) {
         List<String> propertiesName = new ArrayList<>();
-        if (!pcBehavior.getProductTemplateLevelSet().isEmpty()) {
-            ProductTemplateLevel productTemplateLevel;
+        if (!pcBehavior.getTemplatePlanLevelSet().isEmpty()) {
+            TemplatePlanLevel templatePlanLevel;
             List<Integer> idTemplateList = new ArrayList<>();
-            Iterator<ProductTemplateLevel> templateLevelIterator = pcBehavior.getProductTemplateLevelSet().iterator();
+            Iterator<TemplatePlanLevel> templateLevelIterator = pcBehavior.getTemplatePlanLevelSet().iterator();
             while (templateLevelIterator.hasNext()) {
-                productTemplateLevel = templateLevelIterator.next();
-                Template template = productTemplateLevel.getTemplate();
+                templatePlanLevel = templateLevelIterator.next();
+                Template template = templatePlanLevel.getTemplate();
                 log.debug("Template : " + template.getName());
                 idTemplateList.add(template.getTemplateId());
                 template = templateService.findHibTemplatePropertiesByName(template.getName());
@@ -332,14 +330,14 @@ public class ProductToolOperation implements Serializable {
     /**
      * Carga las listas de comunicaciones configuradas (WS y Procedimientos) para el nivel seleccionado
      *
-     * @param productTemplateLevel
+     * @param templatePlanLevel
      * @param targetCBWSList
      * @param targetCBPROCList
      */
-    public void loadSettingCommunicationList(ProductTemplateLevel productTemplateLevel, List<CommunicationBridge> targetCBWSList, List<CommunicationBridge> targetCBPROCList) {
+    public void loadSettingCommunicationList(TemplatePlanLevel templatePlanLevel, List<CommunicationBridge> targetCBWSList, List<CommunicationBridge> targetCBPROCList) {
 
-        if (productTemplateLevel.getCommunicationBridgeSet() != null) {
-            Iterator<CommunicationBridge> bridgeIterator = productTemplateLevel.getCommunicationBridgeSet().iterator();
+        if (templatePlanLevel.getCommunicationBridgeSet() != null) {
+            Iterator<CommunicationBridge> bridgeIterator = templatePlanLevel.getCommunicationBridgeSet().iterator();
             CommunicationBridge communicationBridge;
             while (bridgeIterator.hasNext()) {
                 communicationBridge = bridgeIterator.next();
@@ -355,38 +353,30 @@ public class ProductToolOperation implements Serializable {
 
     /**
      * Actualiza los datos para el nivel de producto seleccionado
-     *
-     * @param plan
-     * @param productTemplateLevel
+
+     * @param templatePlanLevel
      * @param targetCBWSList
      */
-    public void saveUpdateProductLevel(Plan plan, ProductTemplateLevel productTemplateLevel, List<CommunicationBridge> targetCBWSList) {
+    public void saveUpdateProductLevel(ProductConfigBehavior pcBehavior, TemplatePlanLevel templatePlanLevel, List<CommunicationBridge> targetCBWSList) {
         boolean found = false;
-/*
-        for(CommunicationBridge cb : targetCBWSList){
-            CommunicationBridge onlyCommunication = communicationService.findOnlyCommunication(cb.getCbId());
-            onlyCommunication.getProductTemplateLevelSet().add(productTemplateLevel);
-            cb.setProductTemplateLevelSet(onlyCommunication.getProductTemplateLevelSet());
 
-        }
-*/
         Set<CommunicationBridge> cbSet = new HashSet<>(targetCBWSList);
-        productTemplateLevel.setCommunicationBridgeSet(cbSet);
+        templatePlanLevel.setCommunicationBridgeSet(cbSet);
 
-        if (pcbService.updateProductTemplateLevel(productTemplateLevel)) {
-            ProductConfigBehavior pcBehavior = plan.getPcBehavior();
+        if (pcbService.updateTemplateToPlanLevel(templatePlanLevel)) {
 
-            Iterator<ProductTemplateLevel> levelIterator = pcBehavior.getProductTemplateLevelSet().iterator();
-            ProductTemplateLevel templateLevel;
+            Iterator<TemplatePlanLevel> levelIterator = pcBehavior.getTemplatePlanLevelSet().iterator();
+            TemplatePlanLevel templateLevel;
             while (levelIterator.hasNext() && !found) {
                 templateLevel = levelIterator.next();
-                if (templateLevel.getPk().equals(productTemplateLevel.getPk())) {
+                if (templateLevel.getPk().equals(templatePlanLevel.getPk())) {
                     log.debug("Actualizando objeto ProductTemplateLevel");
-                    pcBehavior.getProductTemplateLevelSet().remove(templateLevel);
-                    pcBehavior.getProductTemplateLevelSet().add(productTemplateLevel);
+                    pcBehavior.getTemplatePlanLevelSet().remove(templateLevel);
+                    pcBehavior.getTemplatePlanLevelSet().add(templatePlanLevel);
                     found = true;
                 }
             }
+            MessageUtil.showMessage(NotificationType.INFO, rb.getString(NotificationType.ERROR.getLabel().concat("_GRL")), "Actualizacion Exitosa");
 
         } else {
             MessageUtil.showMessage(NotificationType.INFO, rb.getString(NotificationType.ERROR.getLabel().concat("_GRL")), "ERROR");

@@ -21,7 +21,7 @@ import java.util.Set;
                 joinColumns = @JoinColumn(name = "IDPCB")),
         @AssociationOverride(name = "pk.template",
                 joinColumns = @JoinColumn(name = "IDTR"))})
-public class ProductTemplateLevel implements Serializable {
+public class TemplatePlanLevel implements Serializable {
 
     @EmbeddedId
     ProductTemplateLevelPK pk = new ProductTemplateLevelPK();
@@ -34,18 +34,15 @@ public class ProductTemplateLevel implements Serializable {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "COMMUNICATIONPRODUCTLEVEL",
-            joinColumns = {@JoinColumn(name = "IDPCB"),
-                    @JoinColumn(name = "LEVEL"),
-                    @JoinColumn(name = "IDTR")},
+            joinColumns = {@JoinColumn(name = "LEVEL"), @JoinColumn(name = "IDPCB"), @JoinColumn(name = "IDTR")},
             inverseJoinColumns = {@JoinColumn(name = "IDCB")})
     private Set<CommunicationBridge> communicationBridgeSet = new HashSet<>(0);
 
 
-
-    public ProductTemplateLevel() {
+    public TemplatePlanLevel() {
     }
 
-    public ProductTemplateLevel(ProductConfigBehavior pcb, Template t, Integer level, Integer numColumn, Integer communicationType) {
+    public TemplatePlanLevel(ProductConfigBehavior pcb, Template t, Integer level, Integer numColumn, Integer communicationType) {
         this.pk.setProductConfigBehavior(pcb);
         this.pk.setTemplate(t);
         this.pk.setLevel(level);
@@ -115,9 +112,9 @@ public class ProductTemplateLevel implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ProductTemplateLevel)) return false;
+        if (!(o instanceof TemplatePlanLevel)) return false;
 
-        ProductTemplateLevel that = (ProductTemplateLevel) o;
+        TemplatePlanLevel that = (TemplatePlanLevel) o;
 
         if (communicationType != null ? !communicationType.equals(that.communicationType) : that.communicationType != null)
             return false;

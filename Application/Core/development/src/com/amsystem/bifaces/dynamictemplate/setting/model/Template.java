@@ -1,6 +1,6 @@
 package com.amsystem.bifaces.dynamictemplate.setting.model;
 
-import com.amsystem.bifaces.product.setting.model.ProductTemplateLevel;
+import com.amsystem.bifaces.product.setting.model.TemplatePlanLevel;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -37,7 +37,7 @@ public class Template implements Serializable{
     private Set<Property> propertySet = new HashSet<>(0);
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.template", cascade = CascadeType.ALL)
-    private Set<ProductTemplateLevel> productTemplateLevelSet = new HashSet<>(0);
+    private Set<TemplatePlanLevel> templatePlanLevelSet = new HashSet<>(0);
 
     public Template() {
     }
@@ -102,11 +102,35 @@ public class Template implements Serializable{
         this.propertySet = propertySet;
     }
 
-    public Set<ProductTemplateLevel> getProductTemplateLevelSet() {
-        return productTemplateLevelSet;
+    public Set<TemplatePlanLevel> getTemplatePlanLevelSet() {
+        return templatePlanLevelSet;
     }
 
-    public void setProductTemplateLevelSet(Set<ProductTemplateLevel> productTemplateLevelSet) {
-        this.productTemplateLevelSet = productTemplateLevelSet;
+    public void setTemplatePlanLevelSet(Set<TemplatePlanLevel> templatePlanLevelSet) {
+        this.templatePlanLevelSet = templatePlanLevelSet;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Template)) return false;
+
+        Template template = (Template) o;
+
+        if (categoryId != null ? !categoryId.equals(template.categoryId) : template.categoryId != null) return false;
+        if (name != null ? !name.equals(template.name) : template.name != null) return false;
+        if (status != null ? !status.equals(template.status) : template.status != null) return false;
+        if (templateId != null ? !templateId.equals(template.templateId) : template.templateId != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = templateId != null ? templateId.hashCode() : 0;
+        result = 31 * result + (categoryId != null ? categoryId.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (status != null ? status.hashCode() : 0);
+        return result;
     }
 }

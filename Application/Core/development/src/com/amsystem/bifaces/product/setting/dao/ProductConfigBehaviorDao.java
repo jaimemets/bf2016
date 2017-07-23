@@ -12,7 +12,7 @@ import com.amsystem.bifaces.product.setting.model.ProductConfigBehavior;
 
 public interface ProductConfigBehaviorDao {
 
-    boolean updatePCB(ProductConfigBehavior pcb);
+    void updatePCB(ProductConfigBehavior pcb);
 
     boolean saveUpdatePCB(ProductConfigBehavior pcb);
 

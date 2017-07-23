@@ -29,7 +29,7 @@ public class TemplateHibDaoImpl extends AbstractDao<Integer, Template> implement
         Template template = getByKey(idTr);
         if (template != null) {
             Hibernate.initialize(template.getPropertySet());
-            Hibernate.initialize(template.getProductTemplateLevelSet());
+            Hibernate.initialize(template.getTemplatePlanLevelSet());
         }
 
         return template;
@@ -44,7 +44,7 @@ public class TemplateHibDaoImpl extends AbstractDao<Integer, Template> implement
         Template template = (Template) criteria.uniqueResult();
         if (template != null) {
             Hibernate.initialize(template.getPropertySet());
-            Hibernate.initialize(template.getProductTemplateLevelSet());
+            Hibernate.initialize(template.getTemplatePlanLevelSet());
         }
         return template;
     }

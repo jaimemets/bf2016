@@ -32,7 +32,7 @@ public class ProductConfigBehavior implements Serializable {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.productConfigBehavior", cascade = CascadeType.ALL)
     @OrderBy("LEVEL")
-    private Set<ProductTemplateLevel> productTemplateLevelSet = new HashSet<>(0);
+    private Set<TemplatePlanLevel> templatePlanLevelSet = new HashSet<>();
 
     public Integer getPcbID() {
         return pcbID;
@@ -66,11 +66,35 @@ public class ProductConfigBehavior implements Serializable {
         this.plan = plan;
     }
 
-    public Set<ProductTemplateLevel> getProductTemplateLevelSet() {
-        return productTemplateLevelSet;
+    public Set<TemplatePlanLevel> getTemplatePlanLevelSet() {
+        return templatePlanLevelSet;
     }
 
-    public void setProductTemplateLevelSet(Set<ProductTemplateLevel> productTemplateLevelSet) {
-        this.productTemplateLevelSet = productTemplateLevelSet;
+    public void setTemplatePlanLevelSet(Set<TemplatePlanLevel> templatePlanLevelSet) {
+        this.templatePlanLevelSet = templatePlanLevelSet;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ProductConfigBehavior)) return false;
+
+        ProductConfigBehavior that = (ProductConfigBehavior) o;
+
+        if (numColumn != that.numColumn) return false;
+        if (status != that.status) return false;
+        if (!pcbID.equals(that.pcbID)) return false;
+        if (!plan.equals(that.plan)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = pcbID.hashCode();
+        result = 31 * result + plan.hashCode();
+        result = 31 * result + status;
+        result = 31 * result + numColumn;
+        return result;
     }
 }

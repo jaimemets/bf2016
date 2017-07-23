@@ -1,15 +1,21 @@
 package com.amsystem.bifaces.product.setting.services.impl;
 
+import com.amsystem.bifaces.dynamictemplate.setting.dao.TemplateHibDao;
+import com.amsystem.bifaces.dynamictemplate.setting.model.Template;
 import com.amsystem.bifaces.product.setting.dao.ProductConfigBehaviorDao;
-import com.amsystem.bifaces.product.setting.dao.ProductTemplateDao;
+import com.amsystem.bifaces.product.setting.dao.TemplatePlanLevelDao;
 import com.amsystem.bifaces.product.setting.model.ProductConfigBehavior;
-import com.amsystem.bifaces.product.setting.model.ProductTemplateLevel;
 import com.amsystem.bifaces.product.setting.model.ProductTemplateLevelPK;
+import com.amsystem.bifaces.product.setting.model.TemplatePlanLevel;
 import com.amsystem.bifaces.product.setting.services.PCBService;
+import com.amsystem.bifaces.util.CommunicationType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.NonUniqueObjectException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Iterator;
 
 /**
  * Title: PCBServiceImpl.java <br>
@@ -21,17 +27,83 @@ import org.springframework.stereotype.Service;
 @Service("pcbService")
 public class PCBServiceImpl implements PCBService {
 
-    private static final Logger log = LogManager.getLogger(ProductServiceImpl.class.getName());
+    private static final Logger log = LogManager.getLogger(PCBServiceImpl.class.getName());
 
     @Autowired
     private ProductConfigBehaviorDao pcbDao;
 
     @Autowired
-    private ProductTemplateDao productTemplateDao;
+    private TemplatePlanLevelDao tplDao;
+
+    @Autowired
+    private TemplateHibDao templateHibDao;
 
     @Override
     public boolean updatePCB(ProductConfigBehavior pcb) {
-        return pcbDao.updatePCB(pcb);
+        boolean flag = true;
+        try {
+            pcbDao.updatePCB(pcb);
+        } catch (Exception ex) {
+            flag = false;
+            if (ex instanceof NonUniqueObjectException) {
+                log.error("JRA - NUOE: " + ex.getMessage());
+            } else {
+                log.error("JRA: " + ex.getMessage());
+            }
+        }
+        return flag;
+    }
+
+
+    @Override
+    public boolean addTemplateToPlanLevel(ProductConfigBehavior pcb, Integer idTemplate, int level) {
+        boolean flag = false;
+        try {
+            //Agregando nuevo nivel a la configuracion
+            Template template = templateHibDao.loadTemplateById(idTemplate);
+
+            if (template != null) {
+                TemplatePlanLevel ptl = new TemplatePlanLevel(pcb, template, Integer.valueOf(level), Integer.valueOf(2), CommunicationType.NOT_ANY.getValue());
+                flag = tplDao.saveTemplateToPlanLevel(ptl);
+                //pcbDao.updatePCB(pcb);
+                pcb.getTemplatePlanLevelSet().add(ptl);
+                template.getTemplatePlanLevelSet().add(ptl);
+            }
+        } catch (Exception ex) {
+            flag = false;
+            log.error("JRA: " + ex.getMessage());
+        }
+
+        return flag;
+    }
+
+    @Override
+    public boolean deleteTemplateToPlanLevel(ProductConfigBehavior pcb, Integer idTemplate, int level) {
+        boolean found = false;
+        boolean flag = false;
+
+        Iterator<TemplatePlanLevel> templateLevelIterator = pcb.getTemplatePlanLevelSet().iterator();
+        TemplatePlanLevel templatePlanLevel;
+
+        while (templateLevelIterator.hasNext() && !found) {
+            templatePlanLevel = templateLevelIterator.next();
+            if (templatePlanLevel.getLevel() == level &&
+                    templatePlanLevel.getTemplate().getTemplateId() == idTemplate) {
+
+                try {
+                    flag = tplDao.deleteProductTemplate(templatePlanLevel.getPk());
+                    pcb.getTemplatePlanLevelSet().remove(templatePlanLevel);
+
+                } catch (Exception ex) {
+                    flag = false;
+                    log.error("[ERROR]  : " + ex.getMessage());
+                }
+
+            }
+        }
+
+
+        return flag;
     }
 
     @Override
@@ -39,32 +111,29 @@ public class PCBServiceImpl implements PCBService {
         return pcbDao.loadProductConfigBehaviorById(pcbID);
     }
 
-    @Override
-    public boolean deleteProductTemplate(ProductTemplateLevelPK pk) {
-        return productTemplateDao.deleteProductTemplate(pk);
-    }
+
 
     @Override
-    public boolean saveUpdate(ProductTemplateLevel productTemplateLevel) {
-        ProductTemplateLevel entity = productTemplateDao.loadProductTemplateLevel(productTemplateLevel.getPk());
+    public boolean saveUpdate(TemplatePlanLevel templatePlanLevel) {
+        TemplatePlanLevel entity = tplDao.loadProductTemplateLevel(templatePlanLevel.getPk());
         boolean flag = false;
         if (entity != null) {
             log.debug("Actualizando registros de PTL");
-            entity.setCommunicationBridgeSet(productTemplateLevel.getCommunicationBridgeSet());
-            entity.setCommunicationType(productTemplateLevel.getCommunicationType());
-            entity.setNumColumn(productTemplateLevel.getNumColumn());
+            entity.setCommunicationBridgeSet(templatePlanLevel.getCommunicationBridgeSet());
+            entity.setCommunicationType(templatePlanLevel.getCommunicationType());
+            entity.setNumColumn(templatePlanLevel.getNumColumn());
             flag = true;
         }
         return flag;
     }
 
     @Override
-    public boolean updateProductTemplateLevel(ProductTemplateLevel productTemplateLevel) {
-        return productTemplateDao.updateProductTemplate(productTemplateLevel);
+    public boolean updateTemplateToPlanLevel(TemplatePlanLevel templatePlanLevel) {
+        return tplDao.updateProductTemplate(templatePlanLevel);
     }
 
     @Override
-    public ProductTemplateLevel findProductTemplateLevelByPk(ProductTemplateLevelPK pk) {
-        return productTemplateDao.loadProductTemplateLevel(pk);
+    public TemplatePlanLevel findTemplatePlanLevelByPk(ProductTemplateLevelPK pk) {
+        return tplDao.loadProductTemplateLevel(pk);
     }
 }

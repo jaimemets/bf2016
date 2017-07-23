@@ -71,6 +71,17 @@ public class User implements Serializable{
             inverseJoinColumns = {@JoinColumn(name = "ID_MENU"), @JoinColumn(name = "ID_MI")})
     private Set<MenuItem> menuItems = new HashSet<>();
 
+    public User() {
+    }
+
+    public User(String userName, String firstName, String lastName, String email, Date expeditionDate) {
+        this.userName = userName;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.expeditionDate = expeditionDate;
+    }
+
     public Integer getUserId() {
         return userId;
     }

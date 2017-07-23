@@ -19,9 +19,9 @@
       <sourceFolder url="file://$MODULE_DIR$/development/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/development/test" isTestSource="true" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="1.8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="CobusLib" level="project" />
+    <orderEntry type="library" exported="" name="CobusLib" level="project" />
     <orderEntry type="library" name="ExternalCobusLib" level="project" />
   </component>
 </module>

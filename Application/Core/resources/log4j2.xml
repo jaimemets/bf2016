@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="TRACE">
+<Configuration status="debug">
+
+    <Properties>
+
+        <Property name="log-path">C:/Oracle/Middleware/Oracle_Home/logs</Property>
+
+    </Properties>
 
     <Appenders>
         <!-- 1. Console Appender -->
@@ -8,8 +14,8 @@
         </Console>
 
         <!-- 2. File Appender with file "${HOME_DOMAIN}/COTI_Log4j.log" -->
-        <RollingFile name="RollingFile" fileName="AMSystem_bifaces.log"
-                     filePattern="AMSystem_bifaces-%d{yyyy-MM-dd}-%i.log">
+        <RollingFile name="RollingFile" fileName="${log-path}/AMSystem_bifaces.log"
+                     filePattern="${log-path}/AMSystem_bifaces-%d{yyyy-MM-dd}-%i.log">
             <PatternLayout>
                 <pattern>(%d)-[%5p][%c{1}] - %m%n</pattern>
             </PatternLayout>
@@ -21,7 +27,7 @@
     </Appenders>
 
     <Loggers>
-        <Logger name="com.amsystem.bifaces" level="debug" additivity="false">
+        <Logger name="com.amsystem.bifaces" level="info" additivity="false">
             <appender-ref ref="RollingFile"/>
             <appender-ref ref="ConsoleAppender"/>
         </Logger>
@@ -47,7 +53,7 @@
         </Logger>
         -->
 
-        <Root level="TRACE" additivity="false">
+        <Root level="INFO" additivity="false">
             <AppenderRef ref="RollingFile"/>
             <AppenderRef ref="ConsoleAppender"/>
         </Root>

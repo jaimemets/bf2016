@@ -6,20 +6,22 @@
         xmlns:p="http://primefaces.org/ui">
 
 
-    <p:selectOneMenu id="somLP" value="#{productConfigView.selectLevel}">
-        <p:ajax listener="#{productConfigView.onLevelProductChange}"
-                update="pgNumColumn pgCommunicationType apCommunicationBridge apCommunicationBridge:somWS apCommunicationBridge:somWS apCommunicationBridge:otWS"/>
-        <f:selectItem itemLabel="Seleccione Nivel" itemValue="" noSelectionOption="true"/>
-        <f:selectItems value="#{productConfigView.levelProductList}" var="lp" itemLabel="#{textI18[lp.label]}"/>
-    </p:selectOneMenu>
-
+    <h:panelGrid id="pgAssociatedTemplateProduct" columns="2" cellpadding="5" cellspacing="5">
+        <p:outputLabel for="somLP" value="#{textI18.label_productLevels_PT} :"/>
+        <p:selectOneMenu id="somLP" value="#{productConfigView.selectLevel}">
+            <p:ajax listener="#{productConfigView.onLevelProductChange}"
+                    update="pgNumColumn pgCommunicationType apCommunicationBridge apCommunicationBridge:somWS apCommunicationBridge:somWS apCommunicationBridge:otWS"/>
+            <f:selectItem itemLabel="--#{textI18.label_select_GRL}--" itemValue="" noSelectionOption="true"/>
+            <f:selectItems value="#{productConfigView.levelProductList}" var="lp" itemLabel="#{textI18[lp.label]}"/>
+        </p:selectOneMenu>
+    </h:panelGrid>
 
     <p:panelGrid id="pgConfigProductAdv" columns="1" layout="grid"
                  style=" width: 100%; border: 3px double cornflowerblue;  border-radius: 5px;  margin: 5px 0px 0px 0px;">
 
 
         <h:panelGrid id="pgNumColumn" columns="2" cellpadding="5" cellspacing="5" style="margin-bottom: 10px">
-            <p:outputLabel for="ncLP" value="Columnas"/>
+            <p:outputLabel for="ncLP" value="#{textI18.label_columnsLevels_PT}"/>
             <p:inputText id="ncLP" value="#{productConfigView.numColumnLevel}"/>
             <p:spacer/>
             <p:slider for="ncLP" maxValue="4" minValue="2">
@@ -28,11 +30,11 @@
         </h:panelGrid>
 
         <h:panelGrid id="pgCommunicationType" columns="2" style="margin-bottom: 10px">
-            <p:outputLabel for="sorTC" value="Tipo de Comunicacion:"/>
+            <p:outputLabel for="sorTC" value="#{textI18.label_communicationType_PT}:"/>
             <p:selectOneRadio id="sorTC" value="#{productConfigView.communicationType}">
-                <f:selectItem itemLabel="Ninguna" itemValue="NA"/>
-                <f:selectItem itemLabel="Servicio Web" itemValue="WS"/>
-                <f:selectItem itemLabel="Procedimientos" itemValue="PRC"/>
+                <f:selectItem itemLabel="#{textI18.label_notAny_GRL}" itemValue="NA"/>
+                <f:selectItem itemLabel="#{textI18.label_webServices_GRL}" itemValue="WS"/>
+                <f:selectItem itemLabel="#{textI18.label_procedure_GRL}" itemValue="PRC"/>
             </p:selectOneRadio>
         </h:panelGrid>
 
@@ -40,7 +42,7 @@
         <p:separator/>
 
         <p:accordionPanel id="apCommunicationBridge">
-            <p:tab id="tabCommunicationBridgeWS" title="Servicios Web">
+            <p:tab id="tabCommunicationBridgeWS" title="#{textI18.label_webServices_GRL}">
                 <h:panelGrid
                         style=" width: 100%; border: 3px double limegreen;  border-radius: 5px;  margin: 5px 0px 0px 0px;"
                         cellpadding="2">
@@ -59,14 +61,15 @@
 
                     <p:selectOneMenu id="somWS" value="#{productConfigView.selectWS}" style="width:150px">
                         <p:ajax listener="#{productConfigView.onWSChange}" update="otWS"/>
-                        <f:selectItem itemLabel="Seleccione WS" itemValue="" noSelectionOption="true"/>
+                        <f:selectItem itemLabel="--#{textI18.label_select_GRL}--" itemValue=""
+                                      noSelectionOption="true"/>
                         <f:selectItems value="#{productConfigView.targetCBWSList}"
                                        var="cbTarget" itemLabel="#{cbTarget.description} - #{cbTarget.type}"
                                        itemValue="#{cbTarget.cbId}#{cbTarget.category}"/>
                     </p:selectOneMenu>
 
                     <h:outputText id="otWS"
-                                  value="Cantidad de parametros permitidos: #{productConfigView.parameterWS}"/>
+                                  value="#{textI18.label_numberAllowedParameter_PT}: #{productConfigView.parameterWS}"/>
 
                     <br/>
 
@@ -86,7 +89,7 @@
 
                 </h:panelGrid>
             </p:tab>
-            <p:tab title="Procedimiento">
+            <p:tab title="#{textI18.label_procedure_GRL}">
                 <!-- CATALAGO DE PROCEDIMIENTOS -->
                 <h:panelGrid
                         style=" width: 100%; border: 3px double limegreen;  border-radius: 5px;  margin: 5px 0px 0px 0px;"
@@ -98,22 +101,23 @@
                                 itemLabel="#{cb.description} - #{cb.type}" itemValue="#{cb.cbId}">
 
                         <p:ajax event="transfer" listener="#{productConfigView.onTransferPROC}" update="somPROC"/>
-                        <f:facet name="sourceCaption">Disponible</f:facet>
-                        <f:facet name="targetCaption">Seleccionados</f:facet>
+                        <f:facet name="sourceCaption">#{textI18.available_GRL}</f:facet>
+                        <f:facet name="targetCaption">#{textI18.selected_GRL}</f:facet>
                     </p:pickList>
 
                     <p:separator/>
 
                     <p:selectOneMenu id="somPROC" value="#{productConfigView.selectPROC}" style="width:150px">
                         <p:ajax listener="#{productConfigView.onPROChange}" update="otPROC"/>
-                        <f:selectItem itemLabel="Seleccione WS" itemValue="" noSelectionOption="true"/>
+                        <f:selectItem itemLabel="--#{textI18.label_select_GRL}--" itemValue=""
+                                      noSelectionOption="true"/>
                         <f:selectItems value="#{productConfigView.targetCBPROCList}"
                                        var="procTarget" itemLabel="#{procTarget.description} - #{procTarget.type}"
                                        itemValue="#{procTarget.cbId}#{procTarget.category}"/>
                     </p:selectOneMenu>
 
                     <h:outputText id="otPROC"
-                                  value="Cantidad de parametros permitidos: #{productConfigView.parameterPROC}"/>
+                                  value="#{textI18.label_numberAllowedParameter_PT}: #{productConfigView.parameterPROC}"/>
 
                     <br/>
 

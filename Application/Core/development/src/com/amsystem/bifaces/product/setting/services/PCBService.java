@@ -1,8 +1,8 @@
 package com.amsystem.bifaces.product.setting.services;
 
 import com.amsystem.bifaces.product.setting.model.ProductConfigBehavior;
-import com.amsystem.bifaces.product.setting.model.ProductTemplateLevel;
 import com.amsystem.bifaces.product.setting.model.ProductTemplateLevelPK;
+import com.amsystem.bifaces.product.setting.model.TemplatePlanLevel;
 
 /**
  * Title: PCBService.java <br>
@@ -18,11 +18,13 @@ public interface PCBService {
 
     ProductConfigBehavior findProductConfigBehaviorById(Integer pcbID);
 
-    boolean deleteProductTemplate(ProductTemplateLevelPK pk);
+    boolean addTemplateToPlanLevel(ProductConfigBehavior pcb, Integer idTemplate, int level);
 
-    boolean saveUpdate(ProductTemplateLevel productTemplateLevel);
+    boolean deleteTemplateToPlanLevel(ProductConfigBehavior pcb, Integer idTemplate, int level);
 
-    ProductTemplateLevel findProductTemplateLevelByPk(ProductTemplateLevelPK pk);
+    boolean updateTemplateToPlanLevel(TemplatePlanLevel templatePlanLevel);
 
-    boolean updateProductTemplateLevel(ProductTemplateLevel productTemplateLevel);
+    boolean saveUpdate(TemplatePlanLevel templatePlanLevel);
+
+    TemplatePlanLevel findTemplatePlanLevelByPk(ProductTemplateLevelPK pk);
 }

@@ -29,7 +29,6 @@ public class Product implements Serializable {
     private Integer status;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "product")
-    @OrderBy("NAME asc")
     private Set<Plan> planSet = new HashSet<>(0);
 
     public Integer getProductId() {

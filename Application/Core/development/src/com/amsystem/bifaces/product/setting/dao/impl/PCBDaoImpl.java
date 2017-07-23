@@ -2,7 +2,7 @@ package com.amsystem.bifaces.product.setting.dao.impl;
 
 import com.amsystem.bifaces.product.setting.dao.ProductConfigBehaviorDao;
 import com.amsystem.bifaces.product.setting.model.ProductConfigBehavior;
-import com.amsystem.bifaces.product.setting.model.ProductTemplateLevel;
+import com.amsystem.bifaces.product.setting.model.TemplatePlanLevel;
 import com.amsystem.bifaces.util.AbstractDao;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,8 +26,16 @@ public class PCBDaoImpl extends AbstractDao<Integer, ProductConfigBehavior> impl
 
     @Override
     @Transactional
-    public boolean updatePCB(ProductConfigBehavior pcb) {
-        return update(pcb);
+    public void updatePCB(ProductConfigBehavior pcb) {
+        ProductConfigBehavior entity = loadProductConfigBehaviorById(pcb.getPcbID());
+
+        if (entity != null) {
+            entity.setStatus(pcb.getStatus());
+            entity.setNumColumn(pcb.getNumColumn());
+            entity.getTemplatePlanLevelSet().clear();
+            entity.setTemplatePlanLevelSet(pcb.getTemplatePlanLevelSet());
+        }
+
     }
 
     @Override
@@ -41,11 +49,11 @@ public class PCBDaoImpl extends AbstractDao<Integer, ProductConfigBehavior> impl
     public ProductConfigBehavior loadProductConfigBehaviorById(Integer pcbID) {
         ProductConfigBehavior productConfigBehavior = getByKey(pcbID);
         if (productConfigBehavior != null) {
-            Hibernate.initialize(productConfigBehavior.getProductTemplateLevelSet());
+            Hibernate.initialize(productConfigBehavior.getTemplatePlanLevelSet());
 
-            if (!productConfigBehavior.getProductTemplateLevelSet().isEmpty()) {
-                Iterator<ProductTemplateLevel> levelIterator = productConfigBehavior.getProductTemplateLevelSet().iterator();
-                ProductTemplateLevel templateLevel;
+            if (!productConfigBehavior.getTemplatePlanLevelSet().isEmpty()) {
+                Iterator<TemplatePlanLevel> levelIterator = productConfigBehavior.getTemplatePlanLevelSet().iterator();
+                TemplatePlanLevel templateLevel;
                 while (levelIterator.hasNext()) {
                     templateLevel = levelIterator.next();
                     Hibernate.initialize(templateLevel.getProductConfigBehavior());

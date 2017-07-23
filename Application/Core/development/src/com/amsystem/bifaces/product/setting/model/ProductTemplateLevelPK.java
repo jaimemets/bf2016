@@ -2,6 +2,7 @@ package com.amsystem.bifaces.product.setting.model;
 
 import com.amsystem.bifaces.dynamictemplate.setting.model.Template;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
@@ -17,10 +18,10 @@ import java.io.Serializable;
 @Embeddable
 public class ProductTemplateLevelPK implements Serializable {
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private ProductConfigBehavior productConfigBehavior;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Template template;
 
     @Column(name = "LEVEL")

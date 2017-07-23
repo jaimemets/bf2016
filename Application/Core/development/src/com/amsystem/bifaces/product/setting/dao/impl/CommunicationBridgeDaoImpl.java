@@ -4,6 +4,7 @@ import com.amsystem.bifaces.product.setting.dao.CommunicationBridgeDao;
 import com.amsystem.bifaces.product.setting.model.CommunicationBridge;
 import com.amsystem.bifaces.util.AbstractDao;
 import org.hibernate.Criteria;
+import org.hibernate.Hibernate;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
@@ -60,7 +61,8 @@ public class CommunicationBridgeDaoImpl extends AbstractDao<Integer, Communicati
     public CommunicationBridge loadCommunicationAndParameter(Integer csId) {
         CommunicationBridge communicationBridge = loadOnlyCommunication(csId);
         if (communicationBridge != null) {
-            //   Hibernate.initialize(communicationBridge.getProductTemplateLevelSet());
+            //Hibernate.initialize(communicationBridge.getCommunicationBridgeSet());
+            Hibernate.initialize(communicationBridge.getPropertyCommunicationLevelSet());
             //Inicializar propiedades asociadas
         }
         return communicationBridge;

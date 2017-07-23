@@ -1,5 +1,7 @@
 package com.amsystem.bifaces.util;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -19,13 +21,16 @@ public abstract class AbstractDao<PK extends Serializable, T> {
 
     private final Class<T> persistentClass;
 
-    private boolean flag;
+    public boolean flag;
 
     @Autowired
     private SessionFactory sessionFactory;
 
     @Autowired
     private DataSource dataSource;
+
+    private static final Logger log = LogManager.getLogger(AbstractDao.class.getName());
+
 
     @SuppressWarnings("unchecked")
     public AbstractDao(){
@@ -51,7 +56,7 @@ public abstract class AbstractDao<PK extends Serializable, T> {
             getSession().persist(entity);
         } catch (Exception ex) {
             flag = false;
-            ex.printStackTrace();
+            log.error("ERROR - JRA : " + ex.getMessage());
         }
         return flag;
     }
@@ -60,9 +65,14 @@ public abstract class AbstractDao<PK extends Serializable, T> {
         flag = true;
         try {
             getSession().update(entity);
+            getSession().flush();
         }catch (Exception ex) {
             flag = false;
-            ex.printStackTrace();
+            log.error("ERROR : " + ex.getMessage());
+
+        } finally {
+            log.debug("Hibernate haciendo roollback");
+            // closeSession();
         }
         return flag;
     }
@@ -73,7 +83,8 @@ public abstract class AbstractDao<PK extends Serializable, T> {
             getSession().saveOrUpdate(entity);
         } catch (Exception ex) {
             flag = false;
-            ex.printStackTrace();
+            log.error("ERROR : " + ex.getMessage());
+            return flag;
         }
         return flag;
     }
@@ -84,13 +95,20 @@ public abstract class AbstractDao<PK extends Serializable, T> {
             getSession().delete(entity);
         } catch (Exception ex) {
             flag = false;
-            ex.printStackTrace();
+            log.error("ERROR : " + ex.getMessage());
+            return flag;
         }
         return flag;
     }
 
     protected Criteria createEntityCriteria(){
         return getSession().createCriteria(persistentClass);
+    }
+
+    private void closeSession() {
+        if (getSession().isOpen()) {
+            getSession().close();
+        }
     }
 
 

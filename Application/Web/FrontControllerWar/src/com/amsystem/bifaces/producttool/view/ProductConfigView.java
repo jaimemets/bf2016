@@ -3,7 +3,8 @@ package com.amsystem.bifaces.producttool.view;
 import com.amsystem.bifaces.dynamictemplate.setting.model.Property;
 import com.amsystem.bifaces.product.setting.model.CommunicationBridge;
 import com.amsystem.bifaces.product.setting.model.Plan;
-import com.amsystem.bifaces.product.setting.model.ProductTemplateLevel;
+import com.amsystem.bifaces.product.setting.model.ProductConfigBehavior;
+import com.amsystem.bifaces.product.setting.model.TemplatePlanLevel;
 import com.amsystem.bifaces.producttool.controller.ProductToolOperation;
 import com.amsystem.bifaces.util.*;
 import org.apache.logging.log4j.LogManager;
@@ -110,7 +111,7 @@ public class ProductConfigView implements Serializable {
     private DualListModel<Property> propertiesProc;
 
     //Plan del producto seleccionado
-    private Plan plan;
+    private ProductConfigBehavior productConfigBehavior;
 
     //Identificador concatenado del producto y plan (PROD-PLAN)
     private String idProdPlan;
@@ -119,7 +120,7 @@ public class ProductConfigView implements Serializable {
     private OperationType operation;
 
     //Nivel cargado en la vista
-    private ProductTemplateLevel productTemplateLevel;
+    private TemplatePlanLevel templatePlanLevel;
 
     private HashMap<String, CommunicationBridge> communicationBridgeMap;
 
@@ -135,7 +136,8 @@ public class ProductConfigView implements Serializable {
         idProdPlan = (String) FacesContext.getCurrentInstance().getExternalContext().getRequestMap().get("requestProdPlan");
         operation = (OperationType) FacesContext.getCurrentInstance().getExternalContext().getRequestMap().get("operationType");
         int idPlan = Integer.valueOf(idProdPlan.split(SymbolType.MINUS.getValue())[1]);
-        plan = productToolOperation.findPlanConfigById(idPlan);
+        Plan plan = productToolOperation.findPlanConfigById(idPlan);
+        productConfigBehavior = plan.getPcBehavior();
 
         //Se construye la estructura de arbol del producto y la estructura inicial de arbol de plantillas
         productRoot = productToolOperation.createProductConfigTree(plan);
@@ -149,11 +151,11 @@ public class ProductConfigView implements Serializable {
         communicationBridgeMap = new HashMap<>();
 
 
-        productTemplateLevel = productToolOperation.findProductTemplateLevel(plan.getPcBehavior().getProductTemplateLevelSet(), selectLevel.getValue());
-        if (productTemplateLevel != null) {
-            numColumnLevel = productTemplateLevel.getNumColumn();
-            communicationType = CommunicationType.valueOf(productTemplateLevel.getCommunicationType()).getLabel();
-            productToolOperation.loadSettingCommunicationList(productTemplateLevel, targetCBWSList, targetCBPROCList);
+        templatePlanLevel = productToolOperation.findProductTemplateLevel(productConfigBehavior.getTemplatePlanLevelSet(), selectLevel.getValue());
+        if (templatePlanLevel != null) {
+            numColumnLevel = templatePlanLevel.getNumColumn();
+            communicationType = CommunicationType.valueOf(templatePlanLevel.getCommunicationType()).getLabel();
+            productToolOperation.loadSettingCommunicationList(templatePlanLevel, targetCBWSList, targetCBPROCList);
         }
 
         //Cargando lista de WS y Proc
@@ -197,14 +199,14 @@ public class ProductConfigView implements Serializable {
      * Asocia un plantilla al nivel del arbol seleccionado
      */
     public void associateProductTemplate() {
-        productToolOperation.addChildProductTree(selectProductNode, selectTemplateNode, plan);
+        productToolOperation.addChildProductTree(selectProductNode, selectTemplateNode, productConfigBehavior);
     }
 
     /**
      * Desasocia la plantilla del nivel seleccionado
      */
     public void disassociateProductTemplate() {
-        productToolOperation.removeChildProductTree(selectProductNode, plan);
+        productToolOperation.removeChildProductTree(selectProductNode, productConfigBehavior);
     }
 
     /**
@@ -212,15 +214,9 @@ public class ProductConfigView implements Serializable {
      */
     public void saveProductTemplateLevel() {
 
-        productTemplateLevel.setCommunicationType(CommunicationType.stringValueOf(communicationType).getValue());
-        productTemplateLevel.setNumColumn(numColumnLevel);
-
-
-        log.debug("productTemplateLevel - PCB : " + productTemplateLevel.getPk().getProductConfigBehavior().getPcbID());
-        log.debug("productTemplateLevel - Template Id : " + productTemplateLevel.getPk().getTemplate().getTemplateId());
-        log.debug("productTemplateLevel - Level : " + productTemplateLevel.getPk().getLevel());
-
-        productToolOperation.saveUpdateProductLevel(plan, productTemplateLevel, targetCBWSList);
+        templatePlanLevel.setCommunicationType(CommunicationType.stringValueOf(communicationType).getValue());
+        templatePlanLevel.setNumColumn(numColumnLevel);
+        productToolOperation.saveUpdateProductLevel(productConfigBehavior, templatePlanLevel, targetCBWSList);
 
     }
 
@@ -230,7 +226,7 @@ public class ProductConfigView implements Serializable {
      * @return
      */
     public List<LevelProduct> getLevelProductList() {
-        return productToolOperation.getConfiguredProductLevel(plan.getPcBehavior().getProductTemplateLevelSet());
+        return productToolOperation.getConfiguredProductLevel(productConfigBehavior.getTemplatePlanLevelSet());
 
         //return plan.getPcBehavior().getProductTemplateLevelSet();
     }
@@ -241,17 +237,16 @@ public class ProductConfigView implements Serializable {
      * <p>Por defecto aparece visualizado en primera instancia el nivel del producto</p>
      */
     public void onLevelProductChange() {
-        System.out.println("Seleccionado : " + selectLevel);
         targetCBWSList.clear();
         targetCBPROCList.clear();
         sourceCBWSList.clear();
         sourceCBPROCList.clear();
-        productTemplateLevel = null;
-        productTemplateLevel = productToolOperation.findProductTemplateLevel(plan.getPcBehavior().getProductTemplateLevelSet(), selectLevel.getValue());
-        if (productTemplateLevel != null) {
-            numColumnLevel = productTemplateLevel.getNumColumn();
-            communicationType = CommunicationType.valueOf(productTemplateLevel.getCommunicationType()).getLabel();
-            productToolOperation.loadSettingCommunicationList(productTemplateLevel, targetCBWSList, targetCBPROCList);
+        templatePlanLevel = null;
+        templatePlanLevel = productToolOperation.findProductTemplateLevel(productConfigBehavior.getTemplatePlanLevelSet(), selectLevel.getValue());
+        if (templatePlanLevel != null) {
+            numColumnLevel = templatePlanLevel.getNumColumn();
+            communicationType = CommunicationType.valueOf(templatePlanLevel.getCommunicationType()).getLabel();
+            productToolOperation.loadSettingCommunicationList(templatePlanLevel, targetCBWSList, targetCBPROCList);
         }
 
         productToolOperation.loadCommunicationList(communicationBridgeMap, sourceCBWSList, sourceCBPROCList, targetCBWSList, targetCBPROCList);
@@ -511,12 +506,12 @@ public class ProductConfigView implements Serializable {
         this.propertiesProc = propertiesProc;
     }
 
-    public Plan getPlan() {
-        return plan;
+    public ProductConfigBehavior getProductConfigBehavior() {
+        return productConfigBehavior;
     }
 
-    public void setPlan(Plan plan) {
-        this.plan = plan;
+    public void setProductConfigBehavior(ProductConfigBehavior productConfigBehavior) {
+        this.productConfigBehavior = productConfigBehavior;
     }
 
     public String getIdProdPlan() {
@@ -535,12 +530,12 @@ public class ProductConfigView implements Serializable {
         this.operation = operation;
     }
 
-    public ProductTemplateLevel getProductTemplateLevel() {
-        return productTemplateLevel;
+    public TemplatePlanLevel getTemplatePlanLevel() {
+        return templatePlanLevel;
     }
 
-    public void setProductTemplateLevel(ProductTemplateLevel productTemplateLevel) {
-        this.productTemplateLevel = productTemplateLevel;
+    public void setTemplatePlanLevel(TemplatePlanLevel templatePlanLevel) {
+        this.templatePlanLevel = templatePlanLevel;
     }
 
     public ProductToolOperation getProductToolOperation() {
