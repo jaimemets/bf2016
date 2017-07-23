@@ -17,14 +17,14 @@ import java.util.Set;
 @Entity
 @Table(name = "PRODUCTTEMPLATELEVEL")
 @AssociationOverrides({
-        @AssociationOverride(name = "pk.productConfigBehavior",
+        @AssociationOverride(name = "pk.planConfigBehavior",
                 joinColumns = @JoinColumn(name = "IDPCB")),
         @AssociationOverride(name = "pk.template",
                 joinColumns = @JoinColumn(name = "IDTR"))})
 public class TemplatePlanLevel implements Serializable {
 
     @EmbeddedId
-    ProductTemplateLevelPK pk = new ProductTemplateLevelPK();
+    PlanTemplateLevelPK pk = new PlanTemplateLevelPK();
 
     @Column(name = "NUM_COLUMN")
     private Integer numColumn;
@@ -42,29 +42,29 @@ public class TemplatePlanLevel implements Serializable {
     public TemplatePlanLevel() {
     }
 
-    public TemplatePlanLevel(ProductConfigBehavior pcb, Template t, Integer level, Integer numColumn, Integer communicationType) {
-        this.pk.setProductConfigBehavior(pcb);
+    public TemplatePlanLevel(PlanConfigBehavior pcb, Template t, Integer level, Integer numColumn, Integer communicationType) {
+        this.pk.setPlanConfigBehavior(pcb);
         this.pk.setTemplate(t);
         this.pk.setLevel(level);
         this.numColumn = numColumn;
         this.communicationType = communicationType;
     }
 
-    public ProductTemplateLevelPK getPk() {
+    public PlanTemplateLevelPK getPk() {
         return pk;
     }
 
-    public void setPk(ProductTemplateLevelPK pk) {
+    public void setPk(PlanTemplateLevelPK pk) {
         this.pk = pk;
     }
 
     @Transient
-    public ProductConfigBehavior getProductConfigBehavior() {
-        return getPk().getProductConfigBehavior();
+    public PlanConfigBehavior getProductConfigBehavior() {
+        return getPk().getPlanConfigBehavior();
     }
 
-    public void setProductConfigBehavior(ProductConfigBehavior pcb) {
-        getPk().setProductConfigBehavior(pcb);
+    public void setProductConfigBehavior(PlanConfigBehavior pcb) {
+        getPk().setPlanConfigBehavior(pcb);
     }
 
     @Transient

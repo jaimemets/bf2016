@@ -30,7 +30,7 @@ public class Plan implements Serializable {
     private Product product;
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "plan")
-    ProductConfigBehavior pcBehavior;
+    PlanConfigBehavior pcBehavior;
 
 
     public Plan() {
@@ -68,11 +68,11 @@ public class Plan implements Serializable {
         this.status = status;
     }
 
-    public ProductConfigBehavior getPcBehavior() {
+    public PlanConfigBehavior getPcBehavior() {
         return pcBehavior;
     }
 
-    public void setPcBehavior(ProductConfigBehavior pcBehavior) {
+    public void setPcBehavior(PlanConfigBehavior pcBehavior) {
         this.pcBehavior = pcBehavior;
     }
 }

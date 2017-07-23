@@ -20,7 +20,7 @@ public class PropertyCommunicationLevelPK implements Serializable {
     private CommunicationBridge communicationBridge;
 
 
-    private ProductTemplateLevelPK productTemplateLevelPK;
+    private PlanTemplateLevelPK planTemplateLevelPK;
 
     @ManyToOne
     private Property property;
@@ -33,12 +33,12 @@ public class PropertyCommunicationLevelPK implements Serializable {
         this.communicationBridge = communicationBridge;
     }
 
-    public ProductTemplateLevelPK getProductTemplateLevelPK() {
-        return productTemplateLevelPK;
+    public PlanTemplateLevelPK getPlanTemplateLevelPK() {
+        return planTemplateLevelPK;
     }
 
-    public void setProductTemplateLevelPK(ProductTemplateLevelPK productTemplateLevelPK) {
-        this.productTemplateLevelPK = productTemplateLevelPK;
+    public void setPlanTemplateLevelPK(PlanTemplateLevelPK planTemplateLevelPK) {
+        this.planTemplateLevelPK = planTemplateLevelPK;
     }
 
     public Property getProperty() {
@@ -58,7 +58,7 @@ public class PropertyCommunicationLevelPK implements Serializable {
 
         if (communicationBridge != null ? !communicationBridge.equals(that.communicationBridge) : that.communicationBridge != null)
             return false;
-        if (productTemplateLevelPK != null ? !productTemplateLevelPK.equals(that.productTemplateLevelPK) : that.productTemplateLevelPK != null)
+        if (planTemplateLevelPK != null ? !planTemplateLevelPK.equals(that.planTemplateLevelPK) : that.planTemplateLevelPK != null)
             return false;
         if (property != null ? !property.equals(that.property) : that.property != null) return false;
 
@@ -68,7 +68,7 @@ public class PropertyCommunicationLevelPK implements Serializable {
     @Override
     public int hashCode() {
         int result = communicationBridge != null ? communicationBridge.hashCode() : 0;
-        result = 31 * result + (productTemplateLevelPK != null ? productTemplateLevelPK.hashCode() : 0);
+        result = 31 * result + (planTemplateLevelPK != null ? planTemplateLevelPK.hashCode() : 0);
         result = 31 * result + (property != null ? property.hashCode() : 0);
         return result;
     }

@@ -5,7 +5,7 @@ import com.amsystem.bifaces.configuration.HibernateConfiguration;
 import com.amsystem.bifaces.configuration.PrincipalConf;
 import com.amsystem.bifaces.dynamictemplate.setting.services.TemplateService;
 import com.amsystem.bifaces.product.setting.model.CommunicationBridge;
-import com.amsystem.bifaces.product.setting.model.ProductConfigBehavior;
+import com.amsystem.bifaces.product.setting.model.PlanConfigBehavior;
 import com.amsystem.bifaces.product.setting.model.TemplatePlanLevel;
 import com.amsystem.bifaces.product.setting.services.CommunicationService;
 import com.amsystem.bifaces.product.setting.services.PCBService;
@@ -55,7 +55,7 @@ public class PlanConfigBehaviorTest {
     public void addTemplateToPlanLevel() {
         log.info("** JRA Iniciando Metodo de Prueba para agregar plantilla a nivel ***");
 
-        ProductConfigBehavior pcb = pcbService.findProductConfigBehaviorById(Integer.valueOf(1));
+        PlanConfigBehavior pcb = pcbService.findProductConfigBehaviorById(Integer.valueOf(1));
         Assert.assertNotNull(pcb);
 
         //Plantilla Cliente Gral
@@ -73,7 +73,7 @@ public class PlanConfigBehaviorTest {
     public void removeTemplateToPlanLevel() {
         log.info("** JRA Iniciando Metodo de Prueba para agregar plantilla a nivel ***");
 
-        ProductConfigBehavior pcb = pcbService.findProductConfigBehaviorById(Integer.valueOf(1));
+        PlanConfigBehavior pcb = pcbService.findProductConfigBehaviorById(Integer.valueOf(1));
         Assert.assertNotNull(pcb);
 
         //Plantilla Cliente Gral
@@ -92,7 +92,7 @@ public class PlanConfigBehaviorTest {
     @Test
     public void addCommunicationToPlanLevel() {
 
-        ProductConfigBehavior pcb = pcbService.findProductConfigBehaviorById(1);
+        PlanConfigBehavior pcb = pcbService.findProductConfigBehaviorById(1);
         List<TemplatePlanLevel> levelList = new ArrayList<>(pcb.getTemplatePlanLevelSet());
 
         //Buscando una plantilla en un nivel especifico
@@ -115,7 +115,7 @@ public class PlanConfigBehaviorTest {
     @Test
     public void deleteCommunicationProductLevel() {
 
-        ProductConfigBehavior pcb = pcbService.findProductConfigBehaviorById(1);
+        PlanConfigBehavior pcb = pcbService.findProductConfigBehaviorById(1);
         //Certificanco que carga el pcb
         Assert.assertNotNull(pcb);
         List<TemplatePlanLevel> levelList = new ArrayList<>(pcb.getTemplatePlanLevelSet());

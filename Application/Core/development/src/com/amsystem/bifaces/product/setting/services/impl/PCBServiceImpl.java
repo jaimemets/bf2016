@@ -2,10 +2,10 @@ package com.amsystem.bifaces.product.setting.services.impl;
 
 import com.amsystem.bifaces.dynamictemplate.setting.dao.TemplateHibDao;
 import com.amsystem.bifaces.dynamictemplate.setting.model.Template;
-import com.amsystem.bifaces.product.setting.dao.ProductConfigBehaviorDao;
+import com.amsystem.bifaces.product.setting.dao.PlanConfigBehaviorDao;
 import com.amsystem.bifaces.product.setting.dao.TemplatePlanLevelDao;
-import com.amsystem.bifaces.product.setting.model.ProductConfigBehavior;
-import com.amsystem.bifaces.product.setting.model.ProductTemplateLevelPK;
+import com.amsystem.bifaces.product.setting.model.PlanConfigBehavior;
+import com.amsystem.bifaces.product.setting.model.PlanTemplateLevelPK;
 import com.amsystem.bifaces.product.setting.model.TemplatePlanLevel;
 import com.amsystem.bifaces.product.setting.services.PCBService;
 import com.amsystem.bifaces.util.CommunicationType;
@@ -30,7 +30,7 @@ public class PCBServiceImpl implements PCBService {
     private static final Logger log = LogManager.getLogger(PCBServiceImpl.class.getName());
 
     @Autowired
-    private ProductConfigBehaviorDao pcbDao;
+    private PlanConfigBehaviorDao pcbDao;
 
     @Autowired
     private TemplatePlanLevelDao tplDao;
@@ -39,7 +39,7 @@ public class PCBServiceImpl implements PCBService {
     private TemplateHibDao templateHibDao;
 
     @Override
-    public boolean updatePCB(ProductConfigBehavior pcb) {
+    public boolean updatePCB(PlanConfigBehavior pcb) {
         boolean flag = true;
         try {
             pcbDao.updatePCB(pcb);
@@ -56,7 +56,7 @@ public class PCBServiceImpl implements PCBService {
 
 
     @Override
-    public boolean addTemplateToPlanLevel(ProductConfigBehavior pcb, Integer idTemplate, int level) {
+    public boolean addTemplateToPlanLevel(PlanConfigBehavior pcb, Integer idTemplate, int level) {
         boolean flag = false;
         try {
             //Agregando nuevo nivel a la configuracion
@@ -78,7 +78,7 @@ public class PCBServiceImpl implements PCBService {
     }
 
     @Override
-    public boolean deleteTemplateToPlanLevel(ProductConfigBehavior pcb, Integer idTemplate, int level) {
+    public boolean deleteTemplateToPlanLevel(PlanConfigBehavior pcb, Integer idTemplate, int level) {
         boolean found = false;
         boolean flag = false;
 
@@ -107,7 +107,7 @@ public class PCBServiceImpl implements PCBService {
     }
 
     @Override
-    public ProductConfigBehavior findProductConfigBehaviorById(Integer pcbID) {
+    public PlanConfigBehavior findProductConfigBehaviorById(Integer pcbID) {
         return pcbDao.loadProductConfigBehaviorById(pcbID);
     }
 
@@ -133,7 +133,7 @@ public class PCBServiceImpl implements PCBService {
     }
 
     @Override
-    public TemplatePlanLevel findTemplatePlanLevelByPk(ProductTemplateLevelPK pk) {
+    public TemplatePlanLevel findTemplatePlanLevelByPk(PlanTemplateLevelPK pk) {
         return tplDao.loadProductTemplateLevel(pk);
     }
 }

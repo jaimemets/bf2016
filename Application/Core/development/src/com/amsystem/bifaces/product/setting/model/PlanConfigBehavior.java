@@ -14,7 +14,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "PRODUCTCONFIGBEHAVIOR")
-public class ProductConfigBehavior implements Serializable {
+public class PlanConfigBehavior implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IDPCB")
@@ -30,7 +30,7 @@ public class ProductConfigBehavior implements Serializable {
     @Column(name = "NUM_COLUMN", nullable = false)
     private int numColumn;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.productConfigBehavior", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.planConfigBehavior", cascade = CascadeType.ALL)
     @OrderBy("LEVEL")
     private Set<TemplatePlanLevel> templatePlanLevelSet = new HashSet<>();
 
@@ -77,9 +77,9 @@ public class ProductConfigBehavior implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ProductConfigBehavior)) return false;
+        if (!(o instanceof PlanConfigBehavior)) return false;
 
-        ProductConfigBehavior that = (ProductConfigBehavior) o;
+        PlanConfigBehavior that = (PlanConfigBehavior) o;
 
         if (numColumn != that.numColumn) return false;
         if (status != that.status) return false;

@@ -1,6 +1,6 @@
 package com.amsystem.bifaces.product.setting.dao;
 
-import com.amsystem.bifaces.product.setting.model.ProductTemplateLevelPK;
+import com.amsystem.bifaces.product.setting.model.PlanTemplateLevelPK;
 import com.amsystem.bifaces.product.setting.model.TemplatePlanLevel;
 
 /**
@@ -17,7 +17,7 @@ public interface TemplatePlanLevelDao {
 
     boolean updateProductTemplate(TemplatePlanLevel templatePlanLevel);
 
-    boolean deleteProductTemplate(ProductTemplateLevelPK pk);
+    boolean deleteProductTemplate(PlanTemplateLevelPK pk);
 
-    TemplatePlanLevel loadProductTemplateLevel(ProductTemplateLevelPK pk);
+    TemplatePlanLevel loadProductTemplateLevel(PlanTemplateLevelPK pk);
 }

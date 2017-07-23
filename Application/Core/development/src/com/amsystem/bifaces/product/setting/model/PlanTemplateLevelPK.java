@@ -16,10 +16,10 @@ import java.io.Serializable;
  */
 
 @Embeddable
-public class ProductTemplateLevelPK implements Serializable {
+public class PlanTemplateLevelPK implements Serializable {
 
     @ManyToOne(cascade = CascadeType.ALL)
-    private ProductConfigBehavior productConfigBehavior;
+    private PlanConfigBehavior planConfigBehavior;
 
     @ManyToOne(cascade = CascadeType.ALL)
     private Template template;
@@ -29,12 +29,12 @@ public class ProductTemplateLevelPK implements Serializable {
 
 
     //getter and setter
-    public ProductConfigBehavior getProductConfigBehavior() {
-        return productConfigBehavior;
+    public PlanConfigBehavior getPlanConfigBehavior() {
+        return planConfigBehavior;
     }
 
-    public void setProductConfigBehavior(ProductConfigBehavior productConfigBehavior) {
-        this.productConfigBehavior = productConfigBehavior;
+    public void setPlanConfigBehavior(PlanConfigBehavior planConfigBehavior) {
+        this.planConfigBehavior = planConfigBehavior;
     }
 
     public Template getTemplate() {
@@ -56,12 +56,12 @@ public class ProductTemplateLevelPK implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ProductTemplateLevelPK)) return false;
+        if (!(o instanceof PlanTemplateLevelPK)) return false;
 
-        ProductTemplateLevelPK that = (ProductTemplateLevelPK) o;
+        PlanTemplateLevelPK that = (PlanTemplateLevelPK) o;
 
         if (level != null ? !level.equals(that.level) : that.level != null) return false;
-        if (productConfigBehavior != null ? !productConfigBehavior.equals(that.productConfigBehavior) : that.productConfigBehavior != null)
+        if (planConfigBehavior != null ? !planConfigBehavior.equals(that.planConfigBehavior) : that.planConfigBehavior != null)
             return false;
         if (template != null ? !template.equals(that.template) : that.template != null) return false;
 
@@ -70,7 +70,7 @@ public class ProductTemplateLevelPK implements Serializable {
 
     @Override
     public int hashCode() {
-        int result = productConfigBehavior != null ? productConfigBehavior.hashCode() : 0;
+        int result = planConfigBehavior != null ? planConfigBehavior.hashCode() : 0;
         result = 31 * result + (template != null ? template.hashCode() : 0);
         result = 31 * result + (level != null ? level.hashCode() : 0);
         return result;

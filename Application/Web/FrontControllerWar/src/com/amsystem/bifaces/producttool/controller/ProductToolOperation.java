@@ -96,7 +96,7 @@ public class ProductToolOperation implements Serializable {
      */
     public TreeNode createProductConfigTree(Plan plan) {
         log.debug("**Inicio Arbol Estructura de Producto **");
-        ProductConfigBehavior pcBehavior = null;
+        PlanConfigBehavior pcBehavior = null;
         List<TemplatePlanLevel> templatePlanLevelList = null;
 
         pcBehavior = pcbService.findProductConfigBehaviorById(plan.getPcBehavior().getPcbID());
@@ -172,7 +172,7 @@ public class ProductToolOperation implements Serializable {
      * @param rootProductNode
      * @param selectedTemplateNode
      */
-    public void addChildProductTree(TreeNode rootProductNode, TreeNode selectedTemplateNode, ProductConfigBehavior pcb) {
+    public void addChildProductTree(TreeNode rootProductNode, TreeNode selectedTemplateNode, PlanConfigBehavior pcb) {
         TreeNode childNodeItem;
         TreeNodeData templateNode = (TreeNodeData) selectedTemplateNode.getData();
         TreeNodeData rootNodeData = (TreeNodeData) rootProductNode.getData();
@@ -196,7 +196,7 @@ public class ProductToolOperation implements Serializable {
      *  @param selectedNode
 
      */
-    public void removeChildProductTree(TreeNode selectedNode, ProductConfigBehavior pcb) {
+    public void removeChildProductTree(TreeNode selectedNode, PlanConfigBehavior pcb) {
         TreeNodeData templateNode = (TreeNodeData) selectedNode.getData();
         TreeNodeData rootNodeData = (TreeNodeData) selectedNode.getParent().getData();
 
@@ -219,8 +219,12 @@ public class ProductToolOperation implements Serializable {
      * @param idPlan
      * @return
      */
-    public Plan findPlanConfigById(int idPlan) {
+    public Plan findPlanById(int idPlan) {
         return planService.findPlanById(idPlan);
+    }
+
+    public PlanConfigBehavior findPlanConfigBehaviorById(Integer pcbId) {
+        return pcbService.findProductConfigBehaviorById(pcbId);
     }
 
     /**
@@ -247,6 +251,10 @@ public class ProductToolOperation implements Serializable {
         return templatePlanLevel;
     }
 
+    /**
+     * @param templatePlanLevelSet
+     * @return
+     */
     public List<LevelProduct> getConfiguredProductLevel(Set<TemplatePlanLevel> templatePlanLevelSet) {
         List<LevelProduct> configuredProductLevel = new ArrayList<>();
         TemplatePlanLevel templatePlanLevel;
@@ -256,7 +264,7 @@ public class ProductToolOperation implements Serializable {
             while (templateLevelIterator.hasNext()) {
                 templatePlanLevel = templateLevelIterator.next();
                 LevelProduct levelProduct = LevelProduct.valueOf(templatePlanLevel.getLevel());
-                if (levelProduct != null)
+                if (levelProduct != null && !configuredProductLevel.contains(levelProduct))
                     configuredProductLevel.add(levelProduct);
             }
         }
@@ -268,7 +276,7 @@ public class ProductToolOperation implements Serializable {
      * @param pcBehavior
      * @return
      */
-    public List<String> findTemplatePropertyAssociateList(ProductConfigBehavior pcBehavior) {
+    public List<String> findTemplatePropertyAssociateList(PlanConfigBehavior pcBehavior) {
         List<String> propertiesName = new ArrayList<>();
         if (!pcBehavior.getTemplatePlanLevelSet().isEmpty()) {
             TemplatePlanLevel templatePlanLevel;
@@ -357,7 +365,7 @@ public class ProductToolOperation implements Serializable {
      * @param templatePlanLevel
      * @param targetCBWSList
      */
-    public void saveUpdateProductLevel(ProductConfigBehavior pcBehavior, TemplatePlanLevel templatePlanLevel, List<CommunicationBridge> targetCBWSList) {
+    public void saveUpdateProductLevel(PlanConfigBehavior pcBehavior, TemplatePlanLevel templatePlanLevel, List<CommunicationBridge> targetCBWSList) {
         boolean found = false;
 
         Set<CommunicationBridge> cbSet = new HashSet<>(targetCBWSList);
