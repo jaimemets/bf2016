@@ -19,7 +19,7 @@ import java.util.List;
  *         File Creation on 21/06/2017.
  */
 
-@Repository("communicationServiceDao")
+@Repository("commBridgeDao")
 public class CommunicationBridgeDaoImpl extends AbstractDao<Integer, CommunicationBridge> implements CommunicationBridgeDao {
 
     @Override
@@ -51,7 +51,7 @@ public class CommunicationBridgeDaoImpl extends AbstractDao<Integer, Communicati
         criteria.add(Restrictions.eq("cbId", csId));
         CommunicationBridge communicationBridge = (CommunicationBridge) criteria.uniqueResult();
         if (communicationBridge != null) {
-            //  Hibernate.initialize(communicationBridge.getProductTemplateLevelSet());
+            Hibernate.initialize(communicationBridge.getPropertyCommunicationLevelSet());
         }
         return communicationBridge;
     }

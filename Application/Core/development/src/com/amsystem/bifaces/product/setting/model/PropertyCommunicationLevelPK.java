@@ -19,11 +19,20 @@ public class PropertyCommunicationLevelPK implements Serializable {
     @ManyToOne
     private CommunicationBridge communicationBridge;
 
+    @ManyToOne
+    private Property property;
 
     private PlanTemplateLevelPK planTemplateLevelPK;
 
-    @ManyToOne
-    private Property property;
+
+    public PropertyCommunicationLevelPK() {
+    }
+
+    public PropertyCommunicationLevelPK(CommunicationBridge communicationBridge, Property property, PlanTemplateLevelPK planTemplateLevelPK) {
+        this.communicationBridge = communicationBridge;
+        this.property = property;
+        this.planTemplateLevelPK = planTemplateLevelPK;
+    }
 
     public CommunicationBridge getCommunicationBridge() {
         return communicationBridge;

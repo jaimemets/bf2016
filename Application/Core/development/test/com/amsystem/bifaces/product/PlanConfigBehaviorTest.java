@@ -3,10 +3,11 @@ package com.amsystem.bifaces.product;
 import com.amsystem.bifaces.configuration.AppRootConfig;
 import com.amsystem.bifaces.configuration.HibernateConfiguration;
 import com.amsystem.bifaces.configuration.PrincipalConf;
+import com.amsystem.bifaces.dynamictemplate.setting.model.Property;
+import com.amsystem.bifaces.dynamictemplate.setting.services.PropertyService;
 import com.amsystem.bifaces.dynamictemplate.setting.services.TemplateService;
-import com.amsystem.bifaces.product.setting.model.CommunicationBridge;
-import com.amsystem.bifaces.product.setting.model.PlanConfigBehavior;
-import com.amsystem.bifaces.product.setting.model.TemplatePlanLevel;
+import com.amsystem.bifaces.product.setting.model.*;
+import com.amsystem.bifaces.product.setting.services.CommunicationParameterService;
 import com.amsystem.bifaces.product.setting.services.CommunicationService;
 import com.amsystem.bifaces.product.setting.services.PCBService;
 import com.amsystem.bifaces.util.LevelProduct;
@@ -45,6 +46,12 @@ public class PlanConfigBehaviorTest {
 
     @Autowired
     CommunicationService communicationService;
+
+    @Autowired
+    PropertyService propertyService;
+
+    @Autowired
+    CommunicationParameterService communicationParameterService;
 
 
     /**
@@ -100,11 +107,11 @@ public class PlanConfigBehaviorTest {
         Assert.assertNotNull(templatePlanLevel);
 
         //Cargando un puente de comunicacion existente en el sistema
-        CommunicationBridge communication = communicationService.findOnlyCommunication(8);
+        CommunicationBridge communication = communicationService.findOnlyCommunication(3);
         Assert.assertNotNull(communication);
 
         templatePlanLevel.getCommunicationBridgeSet().add(communication);
-        pcbService.updateTemplateToPlanLevel(templatePlanLevel);
+        pcbService.updateTemplateToPlanLevel(templatePlanLevel, null);
 
     }
 
@@ -129,7 +136,54 @@ public class PlanConfigBehaviorTest {
         Assert.assertNotNull(communication);
 
         templatePlanLevel.getCommunicationBridgeSet().remove(communication);
-        pcbService.updateTemplateToPlanLevel(templatePlanLevel);
+        pcbService.updateTemplateToPlanLevel(templatePlanLevel, null);
+
+    }
+
+
+    @Test
+    public void addParameterToCommunicationLevel() {
+
+        PlanConfigBehavior pcb = pcbService.findProductConfigBehaviorById(1);
+        //Certificanco que carga el pcb
+        Assert.assertNotNull(pcb);
+        List<TemplatePlanLevel> levelList = new ArrayList<>(pcb.getTemplatePlanLevelSet());
+
+        //Buscando una plantilla en un nivel especifico
+        TemplatePlanLevel templatePlanLevel = levelList.get(LevelProduct.PRODUCT.getValue());
+        Assert.assertNotNull(templatePlanLevel);
+
+
+        CommunicationBridge cb = (CommunicationBridge) templatePlanLevel.getCommunicationBridgeSet().toArray()[0];
+        Assert.assertNotNull(cb);
+
+        CommunicationBridge newCb = communicationService.findCommunicationAndParameter(cb.getCbId());
+
+        Property property = propertyService.findPropertyById(46, true);
+        PropertyCommunicationLevelPK pclPK = new PropertyCommunicationLevelPK(cb, property, templatePlanLevel.getPk());
+        PropertyCommunicationLevel pcl;
+        //Agregar
+        pcl = new PropertyCommunicationLevel(pclPK);
+        newCb.getPropertyCommunicationLevelSet().add(pcl);
+        templatePlanLevel.getCommunicationBridgeSet().clear();
+        templatePlanLevel.getCommunicationBridgeSet().add(newCb);
+
+        //Eliminar
+        /*
+        pcl = communicationParameterService.findCommunicationParameterByPK(pclPK);
+        Set<PropertyCommunicationLevel> propertyCommunicationLevelSet = newCb.getPropertyCommunicationLevelSet();
+        for (PropertyCommunicationLevel p : propertyCommunicationLevelSet){
+            if(p.compareTo(pcl)>0){
+                System.out.println("Eliminando PCL...");
+                newCb.getPropertyCommunicationLevelSet()
+                        .remove(p);
+            }
+        }
+        */
+
+        //boolean flag = pcbService.updatePropertyToCommunicationBridge(templatePlanLevel, propertyListAndWSMap);
+        // Assert.assertTrue("No se pudo actualizar el pueten de comunicacion", flag);
+
 
     }
 

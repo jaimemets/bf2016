@@ -36,7 +36,6 @@ public class CommunicationBridge implements Serializable {
     @Column(name = "DESCRIPTION")
     private String description;
 
-
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.communicationBridge", cascade = CascadeType.ALL)
     private Set<PropertyCommunicationLevel> propertyCommunicationLevelSet = new HashSet<>();
 
@@ -90,16 +89,6 @@ public class CommunicationBridge implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
-
-    /*
-    public Set<ProductTemplateLevel> getCommunicationBridgeSet() {
-        return communicationBridgeSet;
-    }
-
-    public void setCommunicationBridgeSet(Set<ProductTemplateLevel> communicationBridgeSet) {
-        this.communicationBridgeSet = communicationBridgeSet;
-    }
-    */
 
     public Set<PropertyCommunicationLevel> getPropertyCommunicationLevelSet() {
         return propertyCommunicationLevelSet;

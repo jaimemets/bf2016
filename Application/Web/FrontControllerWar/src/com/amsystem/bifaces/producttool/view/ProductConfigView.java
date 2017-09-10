@@ -21,6 +21,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -75,16 +76,16 @@ public class ProductConfigView implements Serializable {
     private int parameterPROC;
 
     //Lista de Web Service Disponibles
-    private List<CommunicationBridge> sourceCBWSList;
+    private List<CommunicationBridge> sourceWSList;
 
     //Lista de Web Service Disponibles
-    private List<CommunicationBridge> targetCBWSList;
+    private List<CommunicationBridge> targetWSList;
 
     //Lista de Procedimientos Disponibles
-    private List<CommunicationBridge> sourceCBPROCList;
+    private List<CommunicationBridge> sourcePROCList;
 
     //Lista de Procedimientos Disponibles
-    private List<CommunicationBridge> targetCBPROCList;
+    private List<CommunicationBridge> targetPROCList;
 
     //Listado de los servicios web disponibles y configurados
     private DualListModel<CommunicationBridge> communicationBridgeWs;
@@ -92,17 +93,17 @@ public class ProductConfigView implements Serializable {
     //Listado de los procedimientos disponibles y configurados
     private DualListModel<CommunicationBridge> communicationBridgeProc;
 
-    //Lista de propiedades disponibles para el WS seleccionado
-    private List<Property> sourcePROPWSList;
+    //Lista de propiedades disponibles para el plan seleccionado
+    private List<Property> sourcePropertyWSList;
+
+    //Lista de propiedades disponibles para el plan seleccionado
+    private List<Property> sourcePropertyPROCList;
 
     //Lista de propiedades configuradas para el WS seleccionado
-    private List<Property> targetPROPWSList;
-
-    //Lista de propiedades disponibles para el Proc seleccionado
-    private List<Property> sourcePROPRList;
+    private List<Property> targetPropertyWSList;
 
     //Lista de propiedades configuradas para el Proc seleccionado
-    private List<Property> targetPROPRList;
+    private List<Property> targetPropertyPROCList;
 
     //Lista de propiedades de todas las plantillas asociadas al producto disponibles y configurdas
     private DualListModel<Property> propertiesWs;
@@ -124,13 +125,14 @@ public class ProductConfigView implements Serializable {
 
     private HashMap<String, CommunicationBridge> communicationBridgeMap;
 
-    private HashMap<Integer, CommunicationBridge> cbProcMap;
+    private HashMap<Integer, List<Property>> propertyListAndWSMap;
 
     @ManagedProperty("#{productToolOperation}")
     private ProductToolOperation productToolOperation;
 
     @PostConstruct
     public void init() {
+        log.debug("JRA Entrando al Init...");
 
         //Para la edicion de usuario
         idProdPlan = (String) FacesContext.getCurrentInstance().getExternalContext().getRequestMap().get("requestProdPlan");
@@ -146,28 +148,35 @@ public class ProductConfigView implements Serializable {
 
         selectLevel = LevelProduct.PRODUCT; //Nivel seleccionado para cargar por defecto
         communicationType = CommunicationType.NOT_ANY.getLabel();
-        targetCBWSList = new ArrayList<>();
-        targetCBPROCList = new ArrayList<>();
+        sourcePropertyPROCList = new ArrayList<>();
+        sourcePropertyWSList = new ArrayList<>();
+        targetPropertyWSList = new ArrayList<>();
+        targetPropertyPROCList = new ArrayList<>();
+
+        targetWSList = new ArrayList<>();
+        targetPROCList = new ArrayList<>();
         communicationBridgeMap = new HashMap<>();
+        propertyListAndWSMap = new HashMap<>();
 
-
+/*
         templatePlanLevel = productToolOperation.findProductTemplateLevel(planConfigBehavior.getTemplatePlanLevelSet(), selectLevel.getValue());
         if (templatePlanLevel != null) {
             numColumnLevel = templatePlanLevel.getNumColumn();
             communicationType = CommunicationType.valueOf(templatePlanLevel.getCommunicationType()).getLabel();
-            productToolOperation.loadSettingCommunicationList(templatePlanLevel, targetCBWSList, targetCBPROCList);
+            productToolOperation.loadConfigCommunicationBridge(templatePlanLevel, targetWSList, targetPROCList);
         }
-
+*/
         //Cargando lista de WS y Proc
-        sourceCBWSList = new ArrayList<>();
-        sourceCBPROCList = new ArrayList<>();
-        productToolOperation.loadCommunicationList(communicationBridgeMap, sourceCBWSList, sourceCBPROCList, targetCBWSList, targetCBPROCList);
+        sourceWSList = new ArrayList<>();
+        sourcePROCList = new ArrayList<>();
+        //productToolOperation.loadCommunicationList(communicationBridgeMap, sourceWSList, sourcePROCList, targetWSList, targetPROCList);
 
-        communicationBridgeWs = new DualListModel<>(sourceCBWSList, targetCBWSList);
-        communicationBridgeProc = new DualListModel<>(sourceCBPROCList, targetCBPROCList);
+        communicationBridgeWs = new DualListModel<>(sourceWSList, targetWSList);
+        communicationBridgeProc = new DualListModel<>(sourcePROCList, targetPROCList);
+        propertiesWs = new DualListModel<>(sourcePropertyWSList, targetPropertyWSList);
 
-        List<String> propertiesSource = new ArrayList<>();
-        List<String> propertiesTarget = new ArrayList<>();
+        // List<String> propertiesSource = new ArrayList<>();
+        //  List<String> propertiesTarget = new ArrayList<>();
 
 
         //propertiesSource = productToolOperation.findTemplatePropertyAssociateList(plan.getPcBehavior());
@@ -188,6 +197,7 @@ public class ProductConfigView implements Serializable {
 
     /**
      * Recarga el arbol de plantillas cada ve que se selecciona un nodo del arbol de producto
+     *
      * @param event nodo seleccioado
      */
     public void onNodeSelect(NodeSelectEvent event) {
@@ -216,7 +226,7 @@ public class ProductConfigView implements Serializable {
 
         templatePlanLevel.setCommunicationType(CommunicationType.stringValueOf(communicationType).getValue());
         templatePlanLevel.setNumColumn(numColumnLevel);
-        productToolOperation.saveUpdateProductLevel(planConfigBehavior, templatePlanLevel, targetCBWSList);
+        productToolOperation.saveUpdateProductLevel(planConfigBehavior, templatePlanLevel, targetWSList, propertyListAndWSMap);
 
     }
 
@@ -227,8 +237,6 @@ public class ProductConfigView implements Serializable {
      */
     public List<LevelProduct> getLevelProductList() {
         return productToolOperation.getConfiguredProductLevel(planConfigBehavior.getTemplatePlanLevelSet());
-
-        //return plan.getPcBehavior().getProductTemplateLevelSet();
     }
 
 
@@ -237,35 +245,45 @@ public class ProductConfigView implements Serializable {
      * <p>Por defecto aparece visualizado en primera instancia el nivel del producto</p>
      */
     public void onLevelProductChange() {
-        targetCBWSList.clear();
-        targetCBPROCList.clear();
-        sourceCBWSList.clear();
-        sourceCBPROCList.clear();
+        targetWSList.clear();
+        targetPROCList.clear();
+        sourceWSList.clear();
+        sourcePROCList.clear();
+        sourcePropertyWSList.clear();
+        targetPropertyWSList.clear();
         templatePlanLevel = null;
         templatePlanLevel = productToolOperation.findProductTemplateLevel(planConfigBehavior.getTemplatePlanLevelSet(), selectLevel.getValue());
         if (templatePlanLevel != null) {
             numColumnLevel = templatePlanLevel.getNumColumn();
             communicationType = CommunicationType.valueOf(templatePlanLevel.getCommunicationType()).getLabel();
-            productToolOperation.loadSettingCommunicationList(templatePlanLevel, targetCBWSList, targetCBPROCList);
+            productToolOperation.loadConfigCommunicationBridge(templatePlanLevel, targetWSList, targetPROCList);
         }
 
-        productToolOperation.loadCommunicationList(communicationBridgeMap, sourceCBWSList, sourceCBPROCList, targetCBWSList, targetCBPROCList);
+        productToolOperation.loadCommunicationList(communicationBridgeMap, sourceWSList, sourcePROCList, targetWSList, targetPROCList);
 
-        communicationBridgeWs = new DualListModel<>(sourceCBWSList, targetCBWSList);
-        communicationBridgeProc = new DualListModel<>(sourceCBPROCList, targetCBPROCList);
+        communicationBridgeWs = new DualListModel<>(sourceWSList, targetWSList);
+        communicationBridgeProc = new DualListModel<>(sourcePROCList, targetPROCList);
     }
 
     /**
      * Carga los parametros configurados por cada <tt>CommunicationBridge</tt> WS seleccionado
      */
     public void onWSChange() {
-        //og.debug("ID componente: " + event.getComponent().getId());
+        log.debug("ID componente: " + selectWS);
         if (selectWS != null && !selectWS.isEmpty()) {
-            CommunicationBridge communicationBridge = getCommunicationById(selectWS.toString());
+            CommunicationBridge communicationBridge = findCommunicationById(selectWS.toString());
             parameterWS = communicationBridge.getNumParameter();
+            productToolOperation.loadConfigCommunicationBridgeProperty(planConfigBehavior.getTemplatePlanLevelSet(), communicationBridge, sourcePropertyWSList, targetPropertyWSList, propertyListAndWSMap);
         } else {
             parameterWS = 0;
+            sourcePropertyWSList.clear();
+            targetPropertyWSList.clear();
+            propertiesWs.setSource(sourcePropertyWSList);
+            propertiesWs.setTarget(targetPropertyWSList);
+
         }
+
+
     }
 
     /**
@@ -273,7 +291,7 @@ public class ProductConfigView implements Serializable {
      */
     public void onPROChange() {
         if (selectPROC != null) {
-            CommunicationBridge communicationBridge = getCommunicationById(selectPROC.toString());
+            CommunicationBridge communicationBridge = findCommunicationById(selectPROC.toString());
             parameterPROC = communicationBridge.getNumParameter();
         } else {
             parameterPROC = 0;
@@ -286,20 +304,18 @@ public class ProductConfigView implements Serializable {
      * @param cbID Identificador compuesto por el ID del objeto concatenado con la categoria (WS o Proc)
      * @return
      */
-    private CommunicationBridge getCommunicationById(String cbID) {
+    private CommunicationBridge findCommunicationById(String cbID) {
         //cbID = cbID.substring(1,cbID.length()-1);
         return communicationBridgeMap.get(cbID.trim());
     }
 
     /**
      * Actualiza la lista de Comunicaciones disponible de WS o Proc.
-     *
-     * @param event
      */
-    public void onTransferWS(TransferEvent event) {
+    public void onTransferWS() {
         log.debug("Transf WS...");
-        targetCBWSList.clear();
-        targetCBPROCList.clear();
+        targetWSList.clear();
+        targetPROCList.clear();
         CommunicationBridge communicationBridge;
         String strTarget = communicationBridgeWs.getTarget().toString();
         strTarget = strTarget.substring(1, strTarget.length() - 1);
@@ -309,13 +325,47 @@ public class ProductConfigView implements Serializable {
                 log.debug("CB : " + cb);
                 communicationBridge = communicationBridgeMap.get(cb.trim());
                 if (communicationBridge != null)//Identificar el componente WS o Proc
-                    targetCBWSList.add(communicationBridge);
-                //else{communicationBridge != null && comparar con el id del componente de Proc}
-                //targetCBPROCList.add(communicationBridge);
+                    targetWSList.add(communicationBridge);
+
             }
 
         }
-        log.debug("List target : " + targetCBWSList.size());
+        log.debug("List target : " + targetWSList.size());
+    }
+
+
+    /**
+     * Actualiza la lista de Comunicaciones disponible de WS o Proc.
+     */
+    public void onTransferPropertyWS(TransferEvent event) {
+        log.debug("Transf Propiedad a CB_WS...");
+        String strTarget = propertiesWs.getTarget().toString();
+        strTarget = strTarget.substring(1, strTarget.length() - 1);
+
+        if (strTarget.isEmpty()) {
+            targetPropertyWSList.clear();
+
+        } else {
+            List<String> strTargetPropId = Arrays.asList(strTarget.split(", "));
+            List<String> strTransferPropId = (List<String>) event.getItems();
+
+            for (String propId : strTransferPropId) {
+                //Agregando nuevo elemento
+                Property property = productToolOperation.findAndLoadPropertyById(Integer.parseInt(propId));
+                Property propBean = new Property(property.getPropertyId(), property.getName());
+                if (strTargetPropId.contains(propId)) {
+                    targetPropertyWSList.add(propBean);
+                    log.debug("Agregando PropId Event: " + propId + " en Target");
+                } else {
+                    log.debug("Eliminando PropId Event: " + propId + " en Target");
+                    targetPropertyWSList.remove(propBean);
+                }
+            }
+        }
+        log.debug("targetPropertyWSList size: " + targetPropertyWSList.size());
+        CommunicationBridge communicationBridge = findCommunicationById(selectWS);
+        propertyListAndWSMap.put(communicationBridge.getCbId(), new ArrayList<>(targetPropertyWSList));
+
     }
 
 
@@ -410,36 +460,36 @@ public class ProductConfigView implements Serializable {
         this.parameterPROC = parameterPROC;
     }
 
-    public List<CommunicationBridge> getSourceCBWSList() {
-        return sourceCBWSList;
+    public List<CommunicationBridge> getSourceWSList() {
+        return sourceWSList;
     }
 
-    public void setSourceCBWSList(List<CommunicationBridge> sourceCBWSList) {
-        this.sourceCBWSList = sourceCBWSList;
+    public void setSourceWSList(List<CommunicationBridge> sourceWSList) {
+        this.sourceWSList = sourceWSList;
     }
 
-    public List<CommunicationBridge> getTargetCBWSList() {
-        return targetCBWSList;
+    public List<CommunicationBridge> getTargetWSList() {
+        return targetWSList;
     }
 
-    public void setTargetCBWSList(List<CommunicationBridge> targetCBWSList) {
-        this.targetCBWSList = targetCBWSList;
+    public void setTargetWSList(List<CommunicationBridge> targetWSList) {
+        this.targetWSList = targetWSList;
     }
 
-    public List<CommunicationBridge> getSourceCBPROCList() {
-        return sourceCBPROCList;
+    public List<CommunicationBridge> getSourcePROCList() {
+        return sourcePROCList;
     }
 
-    public void setSourceCBPROCList(List<CommunicationBridge> sourceCBPROCList) {
-        this.sourceCBPROCList = sourceCBPROCList;
+    public void setSourcePROCList(List<CommunicationBridge> sourcePROCList) {
+        this.sourcePROCList = sourcePROCList;
     }
 
-    public List<CommunicationBridge> getTargetCBPROCList() {
-        return targetCBPROCList;
+    public List<CommunicationBridge> getTargetPROCList() {
+        return targetPROCList;
     }
 
-    public void setTargetCBPROCList(List<CommunicationBridge> targetCBPROCList) {
-        this.targetCBPROCList = targetCBPROCList;
+    public void setTargetPROCList(List<CommunicationBridge> targetPROCList) {
+        this.targetPROCList = targetPROCList;
     }
 
     public DualListModel<CommunicationBridge> getCommunicationBridgeWs() {
@@ -458,36 +508,36 @@ public class ProductConfigView implements Serializable {
         this.communicationBridgeProc = communicationBridgeProc;
     }
 
-    public List<Property> getSourcePROPWSList() {
-        return sourcePROPWSList;
+    public List<Property> getSourcePropertyWSList() {
+        return sourcePropertyWSList;
     }
 
-    public void setSourcePROPWSList(List<Property> sourcePROPWSList) {
-        this.sourcePROPWSList = sourcePROPWSList;
+    public void setSourcePropertyWSList(List<Property> sourcePropertyWSList) {
+        this.sourcePropertyWSList = sourcePropertyWSList;
     }
 
-    public List<Property> getTargetPROPWSList() {
-        return targetPROPWSList;
+    public List<Property> getSourcePropertyPROCList() {
+        return sourcePropertyPROCList;
     }
 
-    public void setTargetPROPWSList(List<Property> targetPROPWSList) {
-        this.targetPROPWSList = targetPROPWSList;
+    public void setSourcePropertyPROCList(List<Property> sourcePropertyPROCList) {
+        this.sourcePropertyPROCList = sourcePropertyPROCList;
     }
 
-    public List<Property> getSourcePROPRList() {
-        return sourcePROPRList;
+    public List<Property> getTargetPropertyWSList() {
+        return targetPropertyWSList;
     }
 
-    public void setSourcePROPRList(List<Property> sourcePROPRList) {
-        this.sourcePROPRList = sourcePROPRList;
+    public void setTargetPropertyWSList(List<Property> targetPropertyWSList) {
+        this.targetPropertyWSList = targetPropertyWSList;
     }
 
-    public List<Property> getTargetPROPRList() {
-        return targetPROPRList;
+    public List<Property> getTargetPropertyPROCList() {
+        return targetPropertyPROCList;
     }
 
-    public void setTargetPROPRList(List<Property> targetPROPRList) {
-        this.targetPROPRList = targetPROPRList;
+    public void setTargetPropertyPROCList(List<Property> targetPropertyPROCList) {
+        this.targetPropertyPROCList = targetPropertyPROCList;
     }
 
     public DualListModel<Property> getPropertiesWs() {

@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
  *         File Creation on 15/06/2017.
  */
 
-@Repository("productTemplateDao")
+@Repository("templatePlanLevelDao")
 public class TemplatePlanLevelDaoImpl extends AbstractDao<PlanTemplateLevelPK, TemplatePlanLevel> implements TemplatePlanLevelDao {
 
     private static final Logger log = LogManager.getLogger(TemplatePlanLevelDaoImpl.class.getName());
@@ -45,8 +45,9 @@ public class TemplatePlanLevelDaoImpl extends AbstractDao<PlanTemplateLevelPK, T
     @Transactional
     public boolean deleteProductTemplate(PlanTemplateLevelPK pk) {
         TemplatePlanLevel ptl = getByKey(pk);
-        if (ptl != null)
+        if (ptl != null) {
             return delete(ptl);
+        }
 
         return false;
     }

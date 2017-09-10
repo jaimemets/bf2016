@@ -90,6 +90,49 @@ public class Property implements Serializable {
         this.required = required;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Property)) return false;
+
+        Property property = (Property) o;
+
+        if (editable != property.editable) return false;
+        if (required != property.required) return false;
+        if (visible != property.visible) return false;
+        if (defaultValue != null ? !defaultValue.equals(property.defaultValue) : property.defaultValue != null)
+            return false;
+        if (expressionValidator != null ? !expressionValidator.equals(property.expressionValidator) : property.expressionValidator != null)
+            return false;
+        if (formula != null ? !formula.equals(property.formula) : property.formula != null) return false;
+        if (label != null ? !label.equals(property.label) : property.label != null) return false;
+        if (mask != null ? !mask.equals(property.mask) : property.mask != null) return false;
+        if (!name.equals(property.name)) return false;
+        if (!propertyId.equals(property.propertyId)) return false;
+        if (renderingType != null ? !renderingType.equals(property.renderingType) : property.renderingType != null)
+            return false;
+        if (type != null ? !type.equals(property.type) : property.type != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = propertyId.hashCode();
+        result = 31 * result + name.hashCode();
+        result = 31 * result + (label != null ? label.hashCode() : 0);
+        result = 31 * result + (mask != null ? mask.hashCode() : 0);
+        result = 31 * result + (formula != null ? formula.hashCode() : 0);
+        result = 31 * result + (defaultValue != null ? defaultValue.hashCode() : 0);
+        result = 31 * result + (expressionValidator != null ? expressionValidator.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (renderingType != null ? renderingType.hashCode() : 0);
+        result = 31 * result + (visible ? 1 : 0);
+        result = 31 * result + (editable ? 1 : 0);
+        result = 31 * result + (required ? 1 : 0);
+        return result;
+    }
+
     public Integer getPropertyId() {
         return propertyId;
     }

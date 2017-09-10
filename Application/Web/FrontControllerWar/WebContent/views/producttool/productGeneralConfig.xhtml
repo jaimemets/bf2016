@@ -41,6 +41,10 @@
                                      disabled="#{empty productConfigView.selectProductNode or productConfigView.selectProductNode.type ne 'CH'}"
                                      update="productSettingForm:winMessageId productSettingForm:tabProductSetting:prTreeId productSettingForm:tabProductSetting:somLP"
                                      action="#{productConfigView.disassociateProductTemplate}"/>
+
+                    <p:button id="confCancelBtn" value="#{textI18.cancel_GRL}"
+                              href="/productTool"
+                              icon="ui-icon-cancel"/>
                 </p:tab>
 
                 <p:tab id="tabAdvancedConfig" title="Configuracion Avanzada">
@@ -49,17 +53,15 @@
                                      icon="fa fa-chain"
                                      update="productSettingForm:winMessageId productSettingForm:tabProductSetting:prTreeId"
                                      action="#{productConfigView.saveProductTemplateLevel}"/>
+
+                    <p:button id="advacedConfCancelBtn" value="#{textI18.cancel_GRL}"
+                              href="/productTool"
+                              icon="ui-icon-cancel"/>
                 </p:tab>
 
             </p:tabView>
 
-            <p:outputPanel id="opButtonsProductForm" style="text-align: center">
 
-                <p:button id="cancelBtn" value="#{textI18.cancel_GRL}"
-                          href="/productTool"
-                          icon="ui-icon-cancel"/>
-
-            </p:outputPanel>
 
         </h:form>
     </ui:define>

@@ -70,9 +70,6 @@ public abstract class AbstractDao<PK extends Serializable, T> {
             flag = false;
             log.error("ERROR : " + ex.getMessage());
 
-        } finally {
-            log.debug("Hibernate haciendo roollback");
-            // closeSession();
         }
         return flag;
     }

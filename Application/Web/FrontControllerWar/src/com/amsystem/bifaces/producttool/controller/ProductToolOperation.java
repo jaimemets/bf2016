@@ -2,6 +2,7 @@ package com.amsystem.bifaces.producttool.controller;
 
 import com.amsystem.bifaces.dynamictemplate.setting.model.Property;
 import com.amsystem.bifaces.dynamictemplate.setting.model.Template;
+import com.amsystem.bifaces.dynamictemplate.setting.services.PropertyService;
 import com.amsystem.bifaces.dynamictemplate.setting.services.TemplateService;
 import com.amsystem.bifaces.product.setting.model.*;
 import com.amsystem.bifaces.product.setting.services.CommunicationService;
@@ -47,6 +48,9 @@ public class ProductToolOperation implements Serializable {
 
     @Autowired
     private PCBService pcbService;
+
+    @Autowired
+    private PropertyService propertyService;
 
     @Autowired
     private CommunicationService communicationService;
@@ -342,7 +346,7 @@ public class ProductToolOperation implements Serializable {
      * @param targetCBWSList
      * @param targetCBPROCList
      */
-    public void loadSettingCommunicationList(TemplatePlanLevel templatePlanLevel, List<CommunicationBridge> targetCBWSList, List<CommunicationBridge> targetCBPROCList) {
+    public void loadConfigCommunicationBridge(TemplatePlanLevel templatePlanLevel, List<CommunicationBridge> targetCBWSList, List<CommunicationBridge> targetCBPROCList) {
 
         if (templatePlanLevel.getCommunicationBridgeSet() != null) {
             Iterator<CommunicationBridge> bridgeIterator = templatePlanLevel.getCommunicationBridgeSet().iterator();
@@ -360,35 +364,91 @@ public class ProductToolOperation implements Serializable {
     }
 
     /**
-     * Actualiza los datos para el nivel de producto seleccionado
-
+     * Actualiza los datos del nivel seleccionado en el plan
+     * @param pcBehavior
      * @param templatePlanLevel
      * @param targetCBWSList
+     * @param propertyListAndWSMap
      */
-    public void saveUpdateProductLevel(PlanConfigBehavior pcBehavior, TemplatePlanLevel templatePlanLevel, List<CommunicationBridge> targetCBWSList) {
+    public void saveUpdateProductLevel(PlanConfigBehavior pcBehavior, TemplatePlanLevel templatePlanLevel, List<CommunicationBridge> targetCBWSList, HashMap<Integer, List<Property>> propertyListAndWSMap) {
         boolean found = false;
 
         Set<CommunicationBridge> cbSet = new HashSet<>(targetCBWSList);
         templatePlanLevel.setCommunicationBridgeSet(cbSet);
 
-        if (pcbService.updateTemplateToPlanLevel(templatePlanLevel)) {
+        if (pcbService.updateTemplateToPlanLevel(templatePlanLevel, propertyListAndWSMap)) {
 
             Iterator<TemplatePlanLevel> levelIterator = pcBehavior.getTemplatePlanLevelSet().iterator();
             TemplatePlanLevel templateLevel;
             while (levelIterator.hasNext() && !found) {
                 templateLevel = levelIterator.next();
                 if (templateLevel.getPk().equals(templatePlanLevel.getPk())) {
-                    log.debug("Actualizando objeto ProductTemplateLevel");
+                    log.debug("JRA Actualizando objeto ProductTemplateLevel");
                     pcBehavior.getTemplatePlanLevelSet().remove(templateLevel);
                     pcBehavior.getTemplatePlanLevelSet().add(templatePlanLevel);
                     found = true;
                 }
             }
-            MessageUtil.showMessage(NotificationType.INFO, rb.getString(NotificationType.ERROR.getLabel().concat("_GRL")), "Actualizacion Exitosa");
+            MessageUtil.showMessage(NotificationType.INFO, rb.getString(NotificationType.INFO.getLabel().concat("_GRL")), "Actualizacion Exitosa");
 
         } else {
             MessageUtil.showMessage(NotificationType.INFO, rb.getString(NotificationType.ERROR.getLabel().concat("_GRL")), "ERROR");
         }
 
+    }
+
+
+    /**
+     * @param templatePlanLevelSet Conjunto de plantillas vinculadas al plan
+     * @param communicationBridge  Puente de comunicacion seleccionado
+     * @param sourcePropertyList   Lista de propiedades de todas las plantillas vinculadas al plan
+     * @param targetPropertyWsList Lista de propiedades asociadas al puente de comunicacion seleccionado
+     * @param cbPropertyMap
+     */
+    public void loadConfigCommunicationBridgeProperty(Set<TemplatePlanLevel> templatePlanLevelSet, CommunicationBridge communicationBridge, List<Property> sourcePropertyList, List<Property> targetPropertyWsList, HashMap<Integer, List<Property>> cbPropertyMap) {
+
+        //Cargando propiedades por cada plantilla vinculada al plan
+        if (!templatePlanLevelSet.isEmpty()) {
+            Iterator<TemplatePlanLevel> templatePlanLevelIterator = templatePlanLevelSet.iterator();
+
+            while (templatePlanLevelIterator.hasNext()) {
+                TemplatePlanLevel templatePlanLevel = templatePlanLevelIterator.next();
+                Template template = templateService.findHibTemplatePropertiesById(templatePlanLevel.getTemplate().getTemplateId());
+                if (template != null) {
+                    Iterator<Property> propertyIterator = template.getPropertySet().iterator();
+                    while (propertyIterator.hasNext()) {
+                        Property nextProperty = propertyIterator.next();
+                        sourcePropertyList.add(new Property(nextProperty.getPropertyId(), nextProperty.getName()));
+                    }
+                }
+
+            }
+
+
+            List<Property> propertyCBList = cbPropertyMap.get(communicationBridge.getCbId());
+            //Consultando si la lista de propiedades del CB seleccionado ya se encuentra en el mapa
+            if (propertyCBList == null || propertyCBList.isEmpty()) {
+                communicationBridge = communicationService.findCommunicationAndParameter(communicationBridge.getCbId());
+                if (!communicationBridge.getPropertyCommunicationLevelSet().isEmpty()) {
+
+                    for (PropertyCommunicationLevel pcl : communicationBridge.getPropertyCommunicationLevelSet()) {
+                        Property prop = new Property(pcl.getProperty().getPropertyId(), pcl.getProperty().getName());
+                        sourcePropertyList.remove(prop);
+                        targetPropertyWsList.add(prop);
+
+                    }
+                    cbPropertyMap.put(communicationBridge.getCbId(), targetPropertyWsList);
+
+                }
+            } else {
+                sourcePropertyList.removeAll(propertyCBList);
+                targetPropertyWsList.addAll(propertyCBList);
+            }
+        }
+
+    }
+
+    public Property findAndLoadPropertyById(int propertyId) {
+        return propertyService.findPropertyById(propertyId, Boolean.TRUE);
     }
 }

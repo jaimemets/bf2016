@@ -10,7 +10,7 @@
         <p:outputLabel for="somLP" value="#{textI18.label_productLevels_PT} :"/>
         <p:selectOneMenu id="somLP" value="#{productConfigView.selectLevel}">
             <p:ajax listener="#{productConfigView.onLevelProductChange}"
-                    update="pgNumColumn pgCommunicationType apCommunicationBridge apCommunicationBridge:somWS apCommunicationBridge:somWS apCommunicationBridge:otWS"/>
+                    update="pgNumColumn pgCommunicationType apCommunicationBridge apCommunicationBridge:somWS apCommunicationBridge:somWS apCommunicationBridge:otWS apCommunicationBridge:pickListWSParam"/>
             <f:selectItem itemLabel="--#{textI18.label_select_GRL}--" itemValue="" noSelectionOption="true"/>
             <f:selectItems value="#{productConfigView.levelProductList}" var="lp" itemLabel="#{textI18[lp.label]}"/>
         </p:selectOneMenu>
@@ -60,10 +60,10 @@
                     <p:separator/>
 
                     <p:selectOneMenu id="somWS" value="#{productConfigView.selectWS}" style="width:150px">
-                        <p:ajax listener="#{productConfigView.onWSChange}" update="otWS"/>
+                        <p:ajax listener="#{productConfigView.onWSChange}" update="otWS pickListWSParam"/>
                         <f:selectItem itemLabel="--#{textI18.label_select_GRL}--" itemValue=""
                                       noSelectionOption="true"/>
-                        <f:selectItems value="#{productConfigView.targetCBWSList}"
+                        <f:selectItems value="#{productConfigView.targetWSList}"
                                        var="cbTarget" itemLabel="#{cbTarget.description} - #{cbTarget.type}"
                                        itemValue="#{cbTarget.cbId}#{cbTarget.category}"/>
                     </p:selectOneMenu>
@@ -73,19 +73,17 @@
 
                     <br/>
 
-                    <!-- SECCION DE PROPIEDADES ASOCIADAS AL COMMUNICATION BRIDGE
-                    <p:pickList id="plSw" value="#{productConfigView.properties}" var="theme" effect="bounce"
-                                itemValue="#{theme}" itemLabel="#{theme}" showSourceControls="true" showTargetControls="true" showCheckbox="true" responsive="true"
-                                showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains">
+                    <!-- SECCION DE PROPIEDADES ASOCIADAS AL COMMUNICATION BRIDGE -->
+                    <p:pickList id="pickListWSParam" value="#{productConfigView.propertiesWs}"
+                                style="margin: auto"
+                                var="propWs" effect="bounce"
+                                itemValue="#{propWs.propertyId}" itemLabel="#{propWs.name}">
 
+                        <p:ajax event="transfer" listener="#{productConfigView.onTransferPropertyWS}"/>
                         <f:facet name="sourceCaption">Disponible</f:facet>
                         <f:facet name="targetCaption">Seleccionados</f:facet>
-
-                        <p:column style="width:90%;">
-                            <h:outputText value="#{theme}" />
-                        </p:column>
                     </p:pickList>
-                    -->
+
 
                 </h:panelGrid>
             </p:tab>
@@ -111,7 +109,7 @@
                         <p:ajax listener="#{productConfigView.onPROChange}" update="otPROC"/>
                         <f:selectItem itemLabel="--#{textI18.label_select_GRL}--" itemValue=""
                                       noSelectionOption="true"/>
-                        <f:selectItems value="#{productConfigView.targetCBPROCList}"
+                        <f:selectItems value="#{productConfigView.targetPROCList}"
                                        var="procTarget" itemLabel="#{procTarget.description} - #{procTarget.type}"
                                        itemValue="#{procTarget.cbId}#{procTarget.category}"/>
                     </p:selectOneMenu>

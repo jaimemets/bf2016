@@ -1,5 +1,7 @@
 package com.amsystem.bifaces.product.setting.model;
 
+import com.amsystem.bifaces.dynamictemplate.setting.model.Property;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -17,15 +19,50 @@ import java.io.Serializable;
                 joinColumns = @JoinColumn(name = "IDCB")),
         @AssociationOverride(name = "pk.property",
                 joinColumns = @JoinColumn(name = "IDPROPERTY")),
-        @AssociationOverride(name = "pk.productTemplateLevelPK.productConfigBehavior",
+        @AssociationOverride(name = "pk.planTemplateLevelPK.planConfigBehavior",
                 joinColumns = @JoinColumn(name = "IDPCB")),
-        @AssociationOverride(name = "pk.productTemplateLevelPK.template",
+        @AssociationOverride(name = "pk.planTemplateLevelPK.template",
                 joinColumns = @JoinColumn(name = "IDTR")),
-        @AssociationOverride(name = "pk.productTemplateLevelPK.level",
+        @AssociationOverride(name = "pk.planTemplateLevelPK.level",
                 joinColumns = @JoinColumn(name = "LEVEL"))})
-public class PropertyCommunicationLevel implements Serializable {
+public class PropertyCommunicationLevel implements Serializable, Comparable<PropertyCommunicationLevel> {
     @EmbeddedId
     PropertyCommunicationLevelPK pk = new PropertyCommunicationLevelPK();
+
+
+    public PropertyCommunicationLevel() {
+    }
+
+    public PropertyCommunicationLevel(PropertyCommunicationLevelPK pk) {
+        this.pk = pk;
+    }
+
+    @Override
+    public int compareTo(PropertyCommunicationLevel o) {
+        return (this.pk.getCommunicationBridge().getCbId().intValue() == o.pk.getCommunicationBridge().getCbId().intValue()
+                && this.pk.getProperty().getPropertyId().intValue() == o.pk.getProperty().getPropertyId().intValue()
+                && this.pk.getPlanTemplateLevelPK().getPlanConfigBehavior().getPcbID().intValue() == o.pk.getPlanTemplateLevelPK().getPlanConfigBehavior().getPcbID().intValue()
+                && this.pk.getPlanTemplateLevelPK().getTemplate().getTemplateId().intValue() == o.pk.getPlanTemplateLevelPK().getTemplate().getTemplateId().intValue()
+                && this.pk.getPlanTemplateLevelPK().getLevel().intValue() == o.pk.getPlanTemplateLevelPK().getLevel().intValue()) ? 1 : -1;
+    }
+
+    public PropertyCommunicationLevelPK getPk() {
+        return pk;
+    }
+
+    public void setPk(PropertyCommunicationLevelPK pk) {
+        this.pk = pk;
+    }
+
+    @Transient
+    public Property getProperty() {
+        return getPk().getProperty();
+    }
+
+    public void setProperty(Property property) {
+        getPk().setProperty(property);
+    }
+
 
     @Override
     public boolean equals(Object o) {

@@ -1,8 +1,12 @@
 package com.amsystem.bifaces.product.setting.services;
 
+import com.amsystem.bifaces.dynamictemplate.setting.model.Property;
 import com.amsystem.bifaces.product.setting.model.PlanConfigBehavior;
 import com.amsystem.bifaces.product.setting.model.PlanTemplateLevelPK;
 import com.amsystem.bifaces.product.setting.model.TemplatePlanLevel;
+
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Title: PCBService.java <br>
@@ -22,9 +26,11 @@ public interface PCBService {
 
     boolean deleteTemplateToPlanLevel(PlanConfigBehavior pcb, Integer idTemplate, int level);
 
-    boolean updateTemplateToPlanLevel(TemplatePlanLevel templatePlanLevel);
+    boolean updateTemplateToPlanLevel(TemplatePlanLevel templatePlanLevel, HashMap<Integer, List<Property>> propertyListAndWSMap);
 
     boolean saveUpdate(TemplatePlanLevel templatePlanLevel);
 
     TemplatePlanLevel findTemplatePlanLevelByPk(PlanTemplateLevelPK pk);
+
+    boolean updatePropertyToCommunicationBridge(TemplatePlanLevel templatePlanLevel, HashMap<Integer, List<Property>> propertyListAndWSMap);
 }

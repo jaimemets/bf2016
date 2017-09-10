@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="debug">
+<Configuration status="DEBUG">
 
     <Properties>
 
@@ -27,7 +27,7 @@
     </Appenders>
 
     <Loggers>
-        <Logger name="com.amsystem.bifaces" level="info" additivity="false">
+        <Logger name="com.amsystem.bifaces" level="DEBUG" additivity="false">
             <appender-ref ref="RollingFile"/>
             <appender-ref ref="ConsoleAppender"/>
         </Logger>
