@@ -7,10 +7,10 @@
 
     <ul class="sidebar-menu">
         <li>
-            <p:link href="/index.xhtml">
-                <i class="fa fa-home"></i>
-                <span>Home</span>
-            </p:link>
+
+            <a href="${request.contextPath}/home">
+                <i class="fa fa-home"/><span>Home</span>
+            </a>
         </li>
         <li>
             <p:link href="/docs/index.html" target="_blank">
@@ -21,20 +21,10 @@
         <li class="header">
             General
         </li>
-        <li>
-            <p:link href="/pages/exception/exception.xhtml">
-                <i class="fa fa-stack-overflow"></i>
-                <span>Exceptions</span>
-            </p:link>
-        </li>
-        <li>
-            <p:link href="/pages/form/forms.xhtml">
-                <i class="fa fa-edit"></i>
-                <span>Forms</span>
-            </p:link>
-        </li>
 
         <sec:authorize access="hasRole('ADMIN')">
+
+
         <li>
             <a href="${request.contextPath}/userTool">
                 <i class="fa fa-users"/><span>Cuentas y protección de </span><br/>
@@ -42,6 +32,13 @@
             </a>
         </li>
         </sec:authorize>
+
+        <li>
+            <a href="${request.contextPath}/systemOperation">
+                <i class="fa fa-cogs"/><span>Operaciones</span>
+            </a>
+        </li>
+
 
         <li class="treeview">
             <a href="#">

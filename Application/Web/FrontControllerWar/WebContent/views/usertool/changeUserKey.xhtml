@@ -1,0 +1,62 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                template="/views/template/template.xhtml">
+
+    <ui:define name="title">
+        #{textI18.title_userTool_UT}
+    </ui:define>
+
+    <ui:define name="description"/>
+    <ui:define name="content-header"/>
+
+    <ui:define name="renderBreadCrumb">
+        <ol class="breadcrumb">
+            <li><a href="#{request.contextPath}/"><i class="fa fa-dashboard"></i>#{textI18.label_home_GRL}</a></li>
+            <li><a href="#{request.contextPath}/userTool">#{textI18.title_userTool_UT}</a></li>
+            <li class="active">${operation}</li>
+        </ol>
+    </ui:define>
+
+    <ui:define name="body">
+        <h:form id="userKeyForm">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            <p:growl id="winMessageId" showDetail="true" sticky="true"/>
+            <h:panelGrid id="pgUserKeyData"
+                         style=" width: 100%; border: 3px double cornflowerblue;  border-radius: 5px;  margin: 5px 0px 0px 0px;"
+                         columns="2" cellpadding="5">
+
+                <!--Campo para registrar la clave del usuario-->
+                <p:outputLabel for="passw" value="#{textI18.label_password_UT}:"/>
+                <p:password id="passw" style="width:75%" value="#{changeUserKey.userData.password}" match="password"
+
+                            label="Clave"
+                            feedback="true" required="true">
+                </p:password>
+
+                <!--Campo para confirmar el registro de la clave del usuario-->
+                <p:outputLabel for="password" value="#{textI18.label_passwordConfirmation_UT}:"/>
+                <p:password id="password" value="#{changeUserKey.userData.password}" style="width:75%"
+
+                            label="Confirme Clave" feedback="true"
+                            required="true">
+                </p:password>
+
+            </h:panelGrid>
+
+            <br/>
+
+            <p:commandButton value="#{textI18.save_GRL}"
+                             icon="ui-icon-check"
+                             update="userKeyForm:winMessageId"
+                             actionListener="#{changeUserKey.updateUser}"/>
+            <p:spacer/>
+
+            <p:button id="cancelUsrBtn" value="#{textI18.cancel_GRL}"
+                      href="/userTool"
+                      icon="ui-icon-cancel"/>
+
+        </h:form>
+    </ui:define>
+</ui:composition>

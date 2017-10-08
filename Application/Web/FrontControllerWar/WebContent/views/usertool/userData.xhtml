@@ -44,21 +44,6 @@
             <f:validateLength minimum="6"/>
         </p:inputText>
 
-        <!--Campo para registrar la clave del usuario-->
-        <p:outputLabel for="passw" value="#{textI18.label_password_UT}:"/>
-        <p:password id="passw" style="width:75%" value="#{userDataConfigView.userData.password}" match="password"
-                    disabled="#{userDataConfigView.saved}"
-                    label="Clave"
-                    feedback="true" required="true">
-        </p:password>
-
-        <!--Campo para confirmar el registro de la clave del usuario-->
-        <p:outputLabel for="password" value="#{textI18.label_passwordConfirmation_UT}:"/>
-        <p:password id="password" value="#{userDataConfigView.userData.password}" style="width:75%"
-                    disabled="#{userDataConfigView.saved}"
-                    label="Confirme Clave" feedback="true"
-                    required="true">
-        </p:password>
 
         <!--Campo para registrar el Rol del Usuario-->
         <p:outputLabel for="profile" value="#{textI18.label_roleGroup_UT}:"/>

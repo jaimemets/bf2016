@@ -10,6 +10,7 @@
     </ui:define>
 
     <ui:define name="description"/>
+    <ui:define name="content-header"/>
 
     <ui:define name="renderBreadCrumb">
         <ol class="breadcrumb">
@@ -30,7 +31,7 @@
                          selection="#{userToolView.selectedUser}" selectionMode="single"
                          rowKey="#{user.userId}" scrollable="true" scrollHeight="300">
 
-                <p:ajax event="rowSelect" update="editUsrBtn cloneUsrBtn deleteUsrBtn"/>
+                <p:ajax event="rowSelect" update="pswUsrBtn editUsrBtn cloneUsrBtn deleteUsrBtn"/>
 
                 <f:facet name="header">
                     <p:outputPanel style="text-align: right">
@@ -66,6 +67,12 @@
                               icon="ui-icon-plusthick"/>
 
                     <p:spacer styleClass="vertical-separator" style="width: 2px; height: 22px"/>
+
+                    <p:button id="pswUsrBtn" process="userDT" value="Clave"
+                              href="/pswUser-#{userToolView.selectedUser.userName}"
+                              disabled="#{empty userToolView.selectedUser}"
+                              icon="fa fa-key"/>
+
 
                     <p:button id="editUsrBtn" process="userDT" value="#{textI18.edit_GRL}"
                               href="/editUser-#{userToolView.selectedUser.userName}"

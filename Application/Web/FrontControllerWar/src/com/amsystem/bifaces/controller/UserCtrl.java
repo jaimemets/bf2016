@@ -146,5 +146,16 @@ public class UserCtrl extends GeneralCtrl{
     }
 
 
+    @RequestMapping(value = {"/pswUser-{userName}"}, method = RequestMethod.GET)
+    public String changePswUser(@PathVariable String userName, ModelMap model) {
+        model.addAttribute("requestUsrName", userName);
+        model.addAttribute("operation", rb.getString("registryUpdate_GRL"));
+        model.addAttribute("operationType", OperationType.EDIT_PSW);
+
+        model.addAttribute("loggedinuser", getPrincipal());
+        return "usertool/changeUserKey";
+    }
+
+
 
 }

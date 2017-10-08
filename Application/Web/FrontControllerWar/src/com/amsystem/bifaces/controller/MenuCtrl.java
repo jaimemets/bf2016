@@ -42,6 +42,15 @@ public class MenuCtrl extends GeneralCtrl {
         return "usertool/userTool";
     }
 
+    /**
+     * This method will provide the medium to add a new user.
+     */
+    @RequestMapping(value = {"/systemOperation"}, method = RequestMethod.GET)
+    public String systemOperation(ModelMap model) {
+        model.addAttribute("loggedinuser", getPrincipal());
+        return "dashboard/system-operation";
+    }
+
 
     /**
      * This method will provide the medium to add a new user.

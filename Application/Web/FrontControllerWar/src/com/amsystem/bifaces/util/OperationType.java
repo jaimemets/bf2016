@@ -10,7 +10,8 @@ package com.amsystem.bifaces.util;
 public enum OperationType {
     CREATE(0, "C"),
     EDIT(1, "E"),
-    DELETE(2, "D");
+    DELETE(2, "D"),
+    EDIT_PSW(3, "EP");
 
     private int value;
     private String label;
