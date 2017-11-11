@@ -15,6 +15,8 @@ public interface ProfileService {
 
     boolean saveProfile(Profile profile);
 
+    boolean updateProfile(Profile profile);
+
     boolean deleteProfileById(Integer profileId);
 
     Profile findProfileById(Integer profileId);

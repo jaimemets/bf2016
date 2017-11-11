@@ -21,6 +21,8 @@ public interface ProfileDao {
      */
     boolean saveRecord(Profile profile);
 
+    boolean updateRecord(Profile profile);
+
     boolean deleteById(Integer profileId);
 
     Profile loadById(Integer profileId);

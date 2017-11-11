@@ -27,6 +27,11 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
+    public boolean updateProfile(Profile profile) {
+        return profileDao.updateRecord(profile);
+    }
+
+    @Override
     public boolean deleteProfileById(Integer profileId) {
         return profileDao.deleteById(profileId);
     }

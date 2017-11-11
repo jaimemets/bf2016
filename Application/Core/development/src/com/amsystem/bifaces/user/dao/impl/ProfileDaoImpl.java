@@ -22,12 +22,19 @@ import java.util.List;
 @Repository("userProfileDao")
 public class ProfileDaoImpl extends AbstractDao<Integer, Profile> implements ProfileDao {
 
+    @Override
     @Transactional(readOnly = false)
     public boolean saveRecord(Profile profile) {
         return persist(profile);
     }
 
+    @Override
+    @Transactional(readOnly = false)
+    public boolean updateRecord(Profile profile) {
+        return update(profile);
+    }
 
+    @Override
     @Transactional(readOnly = false)
     public boolean deleteById(Integer profileId) {
         Profile profile = getByKey(profileId);
@@ -38,12 +45,13 @@ public class ProfileDaoImpl extends AbstractDao<Integer, Profile> implements Pro
 
     }
 
-
+    @Override
     @Transactional(readOnly = true)
     public Profile loadById(Integer profileId) {
         return getByKey(profileId);
     }
 
+    @Override
     @Transactional(readOnly = true)
     public Profile loadFullById(Integer profileId) {
         Profile profile = getByKey(profileId);
@@ -53,7 +61,7 @@ public class ProfileDaoImpl extends AbstractDao<Integer, Profile> implements Pro
         return profile;
     }
 
-
+    @Override
     @Transactional(readOnly = true)
     public List<Profile> loadAll() {
         Criteria criteria = createEntityCriteria();
@@ -61,7 +69,7 @@ public class ProfileDaoImpl extends AbstractDao<Integer, Profile> implements Pro
         return (List<Profile>) criteria.list();
     }
 
-
+    @Override
     @Transactional(readOnly = true)
     public List<Profile> loadByIdList(List<Integer> profileId) {
         Criteria criteria = createEntityCriteria();

@@ -10,26 +10,36 @@
 
     <!-- <h:panelGrid style=" border: 3px double cornflowerblue;  border-radius: 5px;  margin: 5px 0px 0px 0px;" columns="4" cellpadding="5"> -->
     <p:dataTable id="profileDT" var="prof" value="#{profileToolView.allProfile}"
+                 editable="true" widgetVar="widProfileDT"
                  selection="#{profileToolView.selectedProfile}" selectionMode="single" rowKey="#{prof.idProfile}"
                  scrollable="true" scrollHeight="150">
 
-        <p:ajax event="rowSelect" update="deleteBtn"/>
+        <p:ajax event="rowEdit" listener="#{profileToolView.onRowEdit}" update=":apUserProfile:growl"/>
 
-        <p:column headerText="#{textI18.description_TT}">
+        <p:column filterBy="#{prof.name}" footerText="in" filterMatchMode="in">
+            <f:facet name="filter">
+                <p:selectCheckboxMenu label="Roles" onchange="PF('widProfileDT').filter()" panelStyle="width:125px"
+                                      scrollHeight="150">
+                    <f:selectItems value="#{profileToolView.allProfile}" var="pf" itemValue="#{pf.name}"
+                                   itemLabel="#{pf.name}"/>
+                </p:selectCheckboxMenu>
+            </f:facet>
             <h:outputText value="#{prof.name}"/>
         </p:column>
 
-        <p:column headerText="#{textI18.value_TT}">
-            <h:outputText value="#{prof.description}"/>
+        <p:column headerText="Descripcion">
+            <p:cellEditor>
+                <f:facet name="output"><h:outputText value="#{prof.description}"/></f:facet>
+                <f:facet name="input"><p:inputText id="valueInput" value="#{prof.description}"
+                                                   style="width:100%"/></f:facet>
+            </p:cellEditor>
+
         </p:column>
 
-        <f:facet name="footer">
-            <p:button id="deleteBtn" icon="ui-icon-minusthick" value="#{textI18.delete_GRL}"
-                      disabled="#{empty profileToolView.selectedProfile}"
-                      process="profileDT"
-                      actionListener="#{userToolView.deleteUser}"/>
+        <p:column style="width:32px">
+            <p:rowEditor/>
+        </p:column>
 
-        </f:facet>
 
     </p:dataTable>
 

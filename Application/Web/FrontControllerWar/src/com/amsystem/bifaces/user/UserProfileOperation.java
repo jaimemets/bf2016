@@ -88,6 +88,14 @@ public class UserProfileOperation implements Serializable {
         return success;
     }
 
+    public void updateProfile(Profile profile) {
+        if (profileService.updateProfile(profile)) {
+            MessageUtil.showMessage(NotificationType.INFO, rb.getString(NotificationType.INFO.getLabel().concat("_GRL")), "Perfil actualizado exitosamente");
+        } else {
+            MessageUtil.showMessage(NotificationType.ERROR, rb.getString(NotificationType.ERROR.getLabel().concat("_GRL")), "Error actualizando perfil");
+        }
+    }
+
     /**
      *
      * @param selectedUser
@@ -233,7 +241,7 @@ public class UserProfileOperation implements Serializable {
         if (profileService.saveProfile(profile)) {
             addChildProfile(root, profile);
             MessageUtil.showMessage(NotificationType.INFO, rb.getString(NotificationType.INFO.getLabel().concat("_GRL")), "Perfil ingresado exitosamente");
-            ComponentOperation.updateComponent("apUserProfile:formProfile:profileTree");
+            ComponentOperation.updateComponent("apUserProfile:formUserProfile:profileTree");
         } else {
             MessageUtil.showModalMessage(NotificationType.INFO, "Error");
 
@@ -258,4 +266,6 @@ public class UserProfileOperation implements Serializable {
 
 
     }
+
+
 }

@@ -7,6 +7,7 @@ import com.amsystem.bifaces.util.NodeType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.primefaces.event.NodeSelectEvent;
+import org.primefaces.event.RowEditEvent;
 import org.primefaces.model.TreeNode;
 
 import javax.annotation.PostConstruct;
@@ -71,7 +72,7 @@ public class ProfileToolView implements Serializable {
 
     public void addProfile() {
         log.debug("Agregando el Perfil: " + nameProfile);
-        Profile profile = new Profile(nameProfile);
+        Profile profile = new Profile(nameProfile.toUpperCase());
         userProfileOperation.addProfile(getFirstChild(), profile);
         setNameProfile(null);
 
@@ -95,6 +96,11 @@ public class ProfileToolView implements Serializable {
         }
         log.debug("allUserProfile size: " + allUserProfile.size());
 
+    }
+
+    public void onRowEdit(RowEditEvent event) {
+        Profile profile = (Profile) event.getObject();
+        userProfileOperation.updateProfile(profile);
     }
 
 
