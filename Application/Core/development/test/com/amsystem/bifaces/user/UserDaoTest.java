@@ -3,9 +3,9 @@ package com.amsystem.bifaces.user;
 import com.amsystem.bifaces.configuration.AppRootConfig;
 import com.amsystem.bifaces.configuration.HibernateConfiguration;
 import com.amsystem.bifaces.configuration.PrincipalConf;
+import com.amsystem.bifaces.user.model.Profile;
 import com.amsystem.bifaces.user.model.User;
-import com.amsystem.bifaces.user.model.UserProfile;
-import com.amsystem.bifaces.user.service.UserProfileService;
+import com.amsystem.bifaces.user.service.ProfileService;
 import com.amsystem.bifaces.user.service.UserService;
 import org.junit.Assert;
 import org.junit.Test;
@@ -33,7 +33,7 @@ public class UserDaoTest {
     UserService userService;
 
     @Autowired
-    UserProfileService userProfileService;
+    ProfileService profileService;
 
 
     @Test
@@ -42,7 +42,7 @@ public class UserDaoTest {
     public void testAddUser() {
         User user = new User("testUnit", "Test", "Unit", "testunit@example.com", new Date());
         user.setPassword("123456");
-        user.setUserProfiles(null);
+        user.setProfiles(null);
         user.setMenuItems(null);
 
         userService.saveUser(user);
@@ -57,11 +57,11 @@ public class UserDaoTest {
     @Test
     public void testGetUserById() {
         User user = userService.findById(17);
-        UserProfile profile = userProfileService.findByCod("USER");
+        Profile profile = profileService.findProfileById(1);
 
         //user.getUserProfiles().add(profile);
 
-        user.getUserProfiles().remove(profile);
+        user.getProfiles().remove(profile);
 
         boolean flag = userService.updateUser(user);
         Assert.assertTrue("No se pudo agregar el perfil al usuario", flag);

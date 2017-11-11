@@ -1,0 +1,53 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                template="/views/template/template.xhtml">
+
+    <ui:define name="title">
+        #{textI18.title_userTool_UT}
+    </ui:define>
+
+    <ui:define name="description"/>
+    <ui:define name="content-header"/>
+
+    <ui:define name="renderBreadCrumb">
+        <ol class="breadcrumb">
+            <li><a href="#{request.contextPath}/"><i class="fa fa-dashboard"></i>#{textI18.label_home_GRL}</a></li>
+            <li class="active">#{textI18.title_userTool_UT}</li>
+        </ol>
+    </ui:define>
+
+    <ui:define name="body">
+        <p:accordionPanel id="apUserProfile">
+            <p:tab id="tabUser" title="Usuarios">
+                <h:form id="formUser">
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    <p:growl id="growl" showDetail="true" autoUpdate="true" sticky="true"/>
+                    <ui:include src="userListTool.xhtml"/>
+
+                </h:form>
+            </p:tab>
+
+            <p:tab id="tabUserProfile" title="Roles">
+                <h:form id="formUserProfile">
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    <p:growl id="grow3" showDetail="true" autoUpdate="true" sticky="true"/>
+                    <ui:include src="profileManagement.xhtml"/>
+
+                </h:form>
+            </p:tab>
+
+            <p:tab id="tabProfile" title="Descripción de Roles">
+                <h:form id="formProfile">
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    <p:growl id="grow2" showDetail="true" autoUpdate="true" sticky="true"/>
+                    <ui:include src="profileDescriptionList.xhtml"/>
+
+                </h:form>
+            </p:tab>
+
+        </p:accordionPanel>
+
+    </ui:define>
+</ui:composition>

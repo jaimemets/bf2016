@@ -1,0 +1,121 @@
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui">
+
+
+    <p:layout style="min-width:100px;min-height:300px;">
+        <p:layoutUnit position="west" resizable="true" size="310" minSize="100" maxSize="400">
+            <p:outputPanel>
+                <p:inputText id="profileName"
+                             placeholder="Nombre del Rol"
+                             required="true"
+                             value="#{profileToolView.nameProfile}">
+                    <f:validateRegex pattern="^[a-zA-Z]+$"/>
+                    <f:validateLength minimum="5" maximum="15"/>
+                </p:inputText>
+                <p:commandButton id="addProfileBtn" value="#{textI18.save_GRL}"
+                                 style=" margin-right: 2%"
+                                 icon="ui-icon-plusthick"
+                                 disabled="#{empty profileToolView.selectedNode or profileToolView.selectedNode.type ne 'default'}"
+                                 process="@this profileName profileTree"
+                                 action="#{profileToolView.addProfile}"
+                                 update="profileTree profileName apUserProfile:formUserProfile:grow3"/>
+            </p:outputPanel>
+
+            <br/>
+
+            <p:outputPanel>
+                <p:tree id="profileTree" value="#{profileToolView.root}" var="tree"
+                        selectionMode="single"
+                        selection="#{profileToolView.selectedNode}">
+
+                    <p:ajax event="select"
+
+                            update="apUserProfile:formUserProfile:addProfileBtn apUserProfile:formUserProfile:userProfileDT"
+                            listener="#{profileToolView.onNodeSelect}"/>
+
+                    <p:treeNode>
+                        <h:outputText value="#{tree.name}"/>
+                    </p:treeNode>
+
+                    <p:treeNode type="PROP" icon="ui-icon-video">
+                        <h:outputText value="#{tree.name}"/>
+                    </p:treeNode>
+
+                </p:tree>
+            </p:outputPanel>
+
+        </p:layoutUnit>
+
+        <p:layoutUnit position="center">
+            <p:outputPanel>
+                <p:inputText id="userName" label="#{textI18.property_name_TT}"
+                             placeholder="#{textI18.property_name_TT}"
+                             required="true"
+                             value="#{profileToolView.userStr}">
+                    <f:validateRegex pattern="^[a-zA-Z]+$"/>
+                    <f:validateLength minimum="2"/>
+                </p:inputText>
+
+                <p:commandButton value="#{textI18.save_GRL}"
+                                 icon="ui-icon-plusthick"
+                                 process="@this userName userProfileDT"
+                                 action="#{profileToolView.addUser}"
+                                 update="userProfileDT userName">
+                </p:commandButton>
+            </p:outputPanel>
+
+            <br/>
+
+            <p:outputPanel>
+                <p:dataTable id="userProfileDT" var="usr" value="#{profileToolView.userProfile}"
+                             selection="#{profileToolView.selectedUser}" selectionMode="single"
+                             rowKey="#{usr.userId}" scrollable="true" scrollHeight="250">
+
+                    <p:ajax event="rowSelect" update="apUserProfile:formUserProfile:deleteProfileBtn"/>
+
+                    <p:column headerText="#{textI18.property_TT}">
+                        <h:outputText value="#{usr.userName}"/>
+                    </p:column>
+
+                </p:dataTable>
+
+                <br/>
+
+                <p:commandButton id="deleteProfileBtn" value="#{textI18.delete_GRL}"
+                                 disabled="#{profileToolView.selectedNode.type ne 'TEMP'}"
+                                 action="#{profileToolView.deleteProfile}"
+                                 icon="ui-icon-minusthick"
+                                 process="@this profileTree"/>
+
+            </p:outputPanel>
+
+
+        </p:layoutUnit>
+    </p:layout>
+
+
+    <!-- Ventana de confirmacion para eliminar plantillas con propiedades asociadas-->
+    <p:dialog header="#{textI18.confirmation_header_GRL}" widgetVar="confirmDeleteProfDlg" showEffect="fade"
+              hideEffect="fade" modal="true">
+        <h:outputText value="#{textI18.template_property_associated_TT}"/>
+
+        <p:outputPanel style="width: 100%;overflow: auto;display: block">
+            <p:commandButton value="#{textI18.option_yes_GRL}" styleClass="ui-confirmdialog-yes"
+                             icon="ui-icon-check"
+                             process="@this profileTree"
+                             update="profileTree"
+                             oncomplete="PF('confirmDeleteProfDlg').hide();"
+                             action="#{templateTreeView.confirmationDeleteTemplate}"/>
+            <p:commandButton value="#{textI18.option_not_GRL}" type="button" styleClass="ui-confirmdialog-no"
+                             icon="ui-icon-close"
+                             onclick="PF('confirmDeleteProfDlg').hide();"/>
+        </p:outputPanel>
+
+    </p:dialog>
+
+
+</ui:composition>

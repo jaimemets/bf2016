@@ -22,7 +22,7 @@ public class User implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "IDUSER")
+    @Column(name = "ID_USER")
     private Integer userId;
 
     @NotEmpty
@@ -60,14 +60,14 @@ public class User implements Serializable{
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "USER_PROFILE",
-            joinColumns = {@JoinColumn(name = "IDUSER")},
-            inverseJoinColumns = {@JoinColumn(name = "COD_PROFILE")})
-    private Set<UserProfile> userProfiles = new HashSet<>();
+            joinColumns = {@JoinColumn(name = "ID_USER")},
+            inverseJoinColumns = {@JoinColumn(name = "ID_PROFILE")})
+    private Set<Profile> profiles = new HashSet<>();
 
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "USER_MENU_ITEM",
-            joinColumns = {@JoinColumn(name = "IDUSER")},
+            joinColumns = {@JoinColumn(name = "ID_USER")},
             inverseJoinColumns = {@JoinColumn(name = "ID_MENU"), @JoinColumn(name = "ID_MI")})
     private Set<MenuItem> menuItems = new HashSet<>();
 
@@ -162,12 +162,12 @@ public class User implements Serializable{
         this.status = status;
     }
 
-    public Set<UserProfile> getUserProfiles() {
-        return userProfiles;
+    public Set<Profile> getProfiles() {
+        return profiles;
     }
 
-    public void setUserProfiles(Set<UserProfile> userProfiles) {
-        this.userProfiles = userProfiles;
+    public void setProfiles(Set<Profile> profiles) {
+        this.profiles = profiles;
     }
 
     public Set<MenuItem> getMenuItems() {

@@ -1,0 +1,38 @@
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui">
+
+    <!-- <h:form> -->
+
+
+    <!-- <h:panelGrid style=" border: 3px double cornflowerblue;  border-radius: 5px;  margin: 5px 0px 0px 0px;" columns="4" cellpadding="5"> -->
+    <p:dataTable id="profileDT" var="prof" value="#{profileToolView.allProfile}"
+                 selection="#{profileToolView.selectedProfile}" selectionMode="single" rowKey="#{prof.idProfile}"
+                 scrollable="true" scrollHeight="150">
+
+        <p:ajax event="rowSelect" update="deleteBtn"/>
+
+        <p:column headerText="#{textI18.description_TT}">
+            <h:outputText value="#{prof.name}"/>
+        </p:column>
+
+        <p:column headerText="#{textI18.value_TT}">
+            <h:outputText value="#{prof.description}"/>
+        </p:column>
+
+        <f:facet name="footer">
+            <p:button id="deleteBtn" icon="ui-icon-minusthick" value="#{textI18.delete_GRL}"
+                      disabled="#{empty profileToolView.selectedProfile}"
+                      process="profileDT"
+                      actionListener="#{userToolView.deleteUser}"/>
+
+        </f:facet>
+
+    </p:dataTable>
+
+    <!-- </h:panelGrid> -->
+
+</ui:composition>

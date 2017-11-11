@@ -23,14 +23,27 @@ import java.util.List;
 
 @Repository("userDao")
 public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
-
     private static final Logger log = LogManager.getLogger(UserDaoImpl.class.getName());
+
+
+    @Transactional(readOnly = false)
+    public boolean save(User user) {
+        return persist(user);
+    }
+
+    @Transactional(readOnly = false)
+    public boolean deleteBySSO(String sso) {
+        Criteria criteria = createEntityCriteria();
+        criteria.add(Restrictions.eq("userName", sso));
+        User user = (User) criteria.uniqueResult();
+        return delete(user);
+    }
 
     @Transactional(readOnly = false)
     public User loadUserById(int id) {
         User user = getByKey(id);
         if(user!=null){
-            Hibernate.initialize(user.getUserProfiles());
+            Hibernate.initialize(user.getProfiles());
         }
         return user;
     }
@@ -42,7 +55,7 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
         crit.add(Restrictions.eq("userName", sso));
         User user = (User)crit.uniqueResult();
         if(user!=null){
-            Hibernate.initialize(user.getUserProfiles());
+            Hibernate.initialize(user.getProfiles());
             Hibernate.initialize(user.getMenuItems());
         }
         return user;
@@ -62,19 +75,6 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 			Hibernate.initialize(user.getUserProfiles());
 		}*/
         return users;
-    }
-
-    @Transactional(readOnly = false)
-    public boolean save(User user) {
-        return persist(user);
-    }
-
-    @Transactional(readOnly = false)
-    public boolean deleteBySSO(String sso) {
-        Criteria criteria = createEntityCriteria();
-        criteria.add(Restrictions.eq("userName", sso));
-        User user = (User)criteria.uniqueResult();
-        return delete(user);
     }
 
 }

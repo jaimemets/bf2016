@@ -41,7 +41,7 @@
         <p:outputLabel for="login" value="#{textI18.field_login_UT}:"/>
         <p:inputText id="login" value="#{userDataConfigView.userData.userName}" style="width: 75%" label="Login"
                      required="true" disabled="#{userDataConfigView.saved}">
-            <f:validateLength minimum="6"/>
+            <f:validateLength minimum="5"/>
         </p:inputText>
 
 
@@ -51,8 +51,8 @@
                               required="true" label="Roles"
                               disabled="#{userDataConfigView.saved}"
                 >
-            <f:selectItems value="#{userDataConfigView.roleList}" var="rol" itemLabel="#{rol.description}"
-                           itemValue="#{rol}"/>
+            <f:selectItems value="#{userDataConfigView.roleList}" var="rol" itemLabel="#{rol.name}"
+                           itemValue="#{rol.idProfile}"/>
         </p:selectCheckboxMenu>
 
         <!--Campo para registrar si el usuario es expirable-->

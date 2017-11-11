@@ -65,7 +65,6 @@ public abstract class AbstractDao<PK extends Serializable, T> {
         flag = true;
         try {
             getSession().update(entity);
-            getSession().flush();
         }catch (Exception ex) {
             flag = false;
             log.error("ERROR : " + ex.getMessage());

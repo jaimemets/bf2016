@@ -1,5 +1,9 @@
 package com.amsystem.bifaces.security;
 
+import com.amsystem.bifaces.user.model.Profile;
+import com.amsystem.bifaces.user.service.ProfileService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +20,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+
+import java.util.List;
 
 
 /**
@@ -38,16 +44,29 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     PersistentTokenRepository tokenRepository;
 
     @Autowired
+    ProfileService profileService;
+
+    private static final Logger log = LogManager.getLogger(SecurityConfiguration.class.getName());
+
+    @Autowired
     public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService);
         auth.authenticationProvider(authenticationProvider());
     }
 
+
+    /**
+     * Configuracion de permisos y funciones en el sistema
+     *
+     * @param http
+     * @throws Exception
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/", "/home")
-                .access("hasRole('USER') or hasRole('ADMIN') or hasRole('DBA')")
+                        //.access("hasRole('USER') or hasRole('ADMIN') or hasRole('DBA')")
+                .access(getAccessAllProfiles())
                 .antMatchers("/newuser/**", "/delete-user-*")
                 .access("hasRole('ADMIN')")
                 .antMatchers("/edit-user-*")
@@ -84,6 +103,25 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     public AuthenticationTrustResolver getAuthenticationTrustResolver() {
         return new AuthenticationTrustResolverImpl();
+    }
+
+    /**
+     * Busca todos los perfiles registrados en el sistem.
+     *
+     * @return Cadena con todos los roles del sistema
+     */
+    private String getAccessAllProfiles() {
+        String strProfiles = "";
+        List<Profile> allProfile = profileService.findAllProfile();
+
+        for (Profile profile : allProfile) {
+            strProfiles += "hasRole('".concat(profile.getName()).concat("')");
+            if (allProfile.indexOf(profile) != allProfile.size() - 1) {
+                strProfiles += " or ";
+            }
+        }
+        log.debug("JRA allProfiles: " + strProfiles);
+        return strProfiles;
     }
 
 }

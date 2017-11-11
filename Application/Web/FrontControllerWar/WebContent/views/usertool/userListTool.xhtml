@@ -1,0 +1,88 @@
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui">
+
+    <!-- <h:form> -->
+    <p:dataTable id="userDT" var="user" value="#{userToolView.allUsers}" widgetVar="userTable"
+                 emptyMessage="#{textI18.msj_notRegisterCriteria_GRL}"
+                 selection="#{userToolView.selectedUser}" selectionMode="single"
+                 rowKey="#{user.userId}" scrollable="true" scrollHeight="300">
+
+        <p:ajax event="rowSelect" update="pswUsrBtn editUsrBtn cloneUsrBtn deleteUsrBtn"/>
+
+        <f:facet name="header">
+            <p:outputPanel style="text-align: right">
+                <h:outputText value="#{textI18.gral_search_field_GRL}: "/>
+                <p:inputText id="globalFilter" onkeyup="PF('userTable').filter()" style="width:auto"
+                             placeholder="#{textI18.label_enterKeyword_GRL}"/>
+            </p:outputPanel>
+        </f:facet>
+
+        <p:column filterBy="#{user.firstName}" headerText="#{textI18.field_name_UT}"
+                  footerText="#{textI18.label_contains_GRL}"
+                  filterMatchMode="contains">
+            <h:outputText value="#{user.firstName}"/>
+        </p:column>
+
+        <p:column filterBy="#{user.lastName}" headerText="#{textI18.field_lastName_UT}"
+                  footerText="#{textI18.label_contains_GRL}"
+                  filterMatchMode="contains">
+            <h:outputText value="#{user.lastName}"/>
+        </p:column>
+
+        <p:column headerText="#{textI18.field_email_UT}">
+            <h:outputText value="#{user.email}"/>
+        </p:column>
+
+        <p:column headerText="#{textI18.field_login_UT}">
+            <h:outputText value="#{user.userName}"/>
+        </p:column>
+
+        <f:facet name="footer">
+            <p:button id="newUsrBtn" process="userDT" value="#{textI18.new_GRL}"
+                      href="/newUser"
+                      icon="ui-icon-plusthick"/>
+
+            <p:spacer styleClass="vertical-separator" style="width: 2px; height: 22px"/>
+
+            <p:button id="pswUsrBtn" process="userDT" value="Clave"
+                      href="/pswUser-#{userToolView.selectedUser.userName}"
+                      disabled="#{empty userToolView.selectedUser}"
+                      icon="fa fa-key"/>
+
+
+            <p:button id="editUsrBtn" process="userDT" value="#{textI18.edit_GRL}"
+                      href="/editUser-#{userToolView.selectedUser.userName}"
+                      disabled="#{empty userToolView.selectedUser}"
+                      icon="fa fa-edit"/>
+
+            <p:commandButton id="cloneUsrBtn" process="userDT" value="#{textI18.clone_GRL}"
+                             icon="fa fa-code-fork"
+                             disabled="#{empty userToolView.selectedUser}"
+                             update=""/>
+
+            <p:commandButton id="deleteUsrBtn" process="userDT" value="#{textI18.delete_GRL}"
+                             icon="ui-icon-minusthick"
+                             disabled="#{empty userToolView.selectedUser}"
+                             actionListener="#{userToolView.deleteUser()}">
+                <p:confirm header="#{textI18.confirmation_header_GRL}"
+                           message="#{textI18.msj_confirmDeleteRecord_GRL}"
+                           icon="ui-icon-alert"/>
+            </p:commandButton>
+        </f:facet>
+    </p:dataTable>
+
+    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+        <p:commandButton value="#{textI18.option_yes_GRL}" styleClass="ui-confirmdialog-yes"
+                         type="button" icon="ui-icon-check"
+                         update="userDT"
+                />
+        <p:commandButton value="#{textI18.option_not_GRL}" type="button"
+                         styleClass="ui-confirmdialog-no"
+                         icon="ui-icon-close"/>
+    </p:confirmDialog>
+
+</ui:composition>

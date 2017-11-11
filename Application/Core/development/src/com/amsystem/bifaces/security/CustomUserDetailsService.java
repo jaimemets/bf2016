@@ -1,8 +1,8 @@
 package com.amsystem.bifaces.security;
 
 import com.amsystem.bifaces.UserInfo;
+import com.amsystem.bifaces.user.model.Profile;
 import com.amsystem.bifaces.user.model.User;
-import com.amsystem.bifaces.user.model.UserProfile;
 import com.amsystem.bifaces.user.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -53,12 +53,16 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
 
+    /**
+     * @param user
+     * @return
+     */
     private List<GrantedAuthority> getGrantedAuthorities(User user){
         List<GrantedAuthority> authorities = new ArrayList<>();
 
-        for(UserProfile userProfile : user.getUserProfiles()){
-            log.info("UserProfile : {}" + userProfile);
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + userProfile.getCodProfile()));
+        for (Profile profile : user.getProfiles()) {
+            log.info("UserProfile : {}" + profile);
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + profile.getName()));
         }
         log.info("authorities : {}" + authorities);
         return authorities;

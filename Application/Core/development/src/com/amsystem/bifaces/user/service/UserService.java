@@ -12,15 +12,29 @@ import java.util.List;
  */
 public interface UserService {
 
-    User findById(int id);
-
-    User findBySSO(String sso);
-
+    /**
+     * Almacena un registro usaurio en sistema
+     *
+     * @param user registro para almacenar
+     * @return <code>true</code> si el objeto <code>User</code> fue almacenado exitosamente;
+     * <code>false</code> si ocurre una falla en el proceso de almacenamiento.
+     */
     boolean saveUser(User user);
 
+    /**
+     * Actualiza los valores del usuario en el sistema
+     *
+     * @param user usuario para actualizar
+     * @return <code>true</code> si el objeto <code>User</code> fue actualizado exitosamente;
+     * <code>false</code> si ocurre una falla en el proceso de actualizacion.
+     */
     boolean updateUser(User user);
 
     boolean deleteUserBySSO(String sso);
+
+    User findById(int id);
+
+    User findBySSO(String sso);
 
     List<User> findAllUsers();
 
