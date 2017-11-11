@@ -5,15 +5,16 @@ import com.amsystem.bifaces.menu.model.MenuItem;
 import com.amsystem.bifaces.menu.model.MenuItemPK;
 import com.amsystem.bifaces.menu.service.MenuItemService;
 import com.amsystem.bifaces.menu.service.MenuService;
+import com.amsystem.bifaces.user.model.Profile;
 import com.amsystem.bifaces.user.model.User;
-import com.amsystem.bifaces.user.model.UserProfile;
-import com.amsystem.bifaces.user.service.UserProfileService;
+import com.amsystem.bifaces.user.service.ProfileService;
 import com.amsystem.bifaces.user.service.UserService;
 import com.amsystem.bifaces.user.view.TreeNodeMenu;
 import com.amsystem.bifaces.util.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.primefaces.model.CheckboxTreeNode;
+import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,16 +33,16 @@ import java.util.*;
  */
 @Controller
 @ViewScoped
-@ManagedBean(name = "userOperation")
-public class UserOperation implements Serializable {
+@ManagedBean(name = "userProfileOperation")
+public class UserProfileOperation implements Serializable {
 
-    private static final Logger log = LogManager.getLogger(UserOperation.class.getName());
+    private static final Logger log = LogManager.getLogger(UserProfileOperation.class.getName());
 
     @Autowired
     UserService userService;
 
     @Autowired
-    UserProfileService userProfileService;
+    ProfileService profileService;
 
     @Autowired
     MenuService menuService;
@@ -59,12 +60,9 @@ public class UserOperation implements Serializable {
     public boolean saveUser(User selectedUser) {
         boolean success = false;
         if (userService.saveUser(selectedUser)) {
-            //MessageUtil.showMessage("Usuario registrado exitosamente", ErrorType.INFO);
             MessageUtil.showMessage(NotificationType.INFO, rb.getString(NotificationType.INFO.getLabel().concat("_GRL")), "Usuario registrado exitosamente") ;
             success = true;
-            //ComponentOperation.updateComponent("formUser:userDT");
         } else {
-            //MessageUtil.showMessage("Error guardando usuario", ErrorType.ERROR);
             MessageUtil.showMessage(NotificationType.ERROR, rb.getString(NotificationType.ERROR.getLabel().concat("_GRL")),"Error guardando usuario");
         }
 
@@ -96,30 +94,42 @@ public class UserOperation implements Serializable {
      */
     public void deleteUser(User selectedUser) {
         if (userService.deleteUserBySSO(selectedUser.getUserName())) {
-            //MessageUtil.showModalMessage(NotificationType.INFO, "Usuario eliminado exitosamente");
             MessageUtil.showMessage(NotificationType.INFO, rb.getString(NotificationType.INFO.getLabel().concat("_GRL")), "Usuario eliminado exitosamente");
-            ComponentOperation.updateComponent("formUser:userDT");
+            ComponentOperation.updateComponent("apUserProfile:formUser:userDT");
         } else {
             MessageUtil.showModalMessage(NotificationType.INFO, "Error");
         }
     }
 
 
-    public List<User> loadAllUsers() {
-        return userService.findAllUsers();
+    public TreeNode createTreeProfile() {
+        log.debug("**Construyendo arbol de perfiles **");
+
+        TreeNode root = new DefaultTreeNode(new Profile("root"), null);
+        TreeNode profilesNode = new DefaultTreeNode(new Profile("Perfiles"), root);
+        TreeNode childNodeItem;
+
+        for (Profile profile : getAllProfile()) {
+            childNodeItem = new DefaultTreeNode(NodeType.PROPERTY.getLabel(), profile, profilesNode);
+            //profilesNode.getChildren().add(new DefaultTreeNode(profile));
+        }
+        profilesNode.setExpanded(true);
+        return root;
     }
 
 
-    public List<UserProfile> allProfile() {
-        return userProfileService.findAll();
+    public void addChildProfile(TreeNode root, Profile child) {
+        TreeNode childNodeItem = new DefaultTreeNode(NodeType.PROPERTY.getLabel(), child, root.getChildren().get(0));
     }
+
 
     /**
      * @param requestUsr
      * @return
      */
     public TreeNode createTree(User requestUsr) {
-        log.debug("**Inicio Arbol de Plantillas **");
+        log.debug("**Construyendo arbol de permisos para usuario **");
+        log.debug("JRA  Usuario: " + requestUsr.getUserName());
         TreeNode root = new CheckboxTreeNode(new TreeNodeMenu(-1, null, NodeTypeMenu.ROOT), null);
         List<Menu> menuList = menuService.findAllMenuAppWeb();
         Set<MenuItem> userMenuItemSet = null;
@@ -182,29 +192,70 @@ public class UserOperation implements Serializable {
      * @param selectedProfiles
      * @return
      */
-    public Set<UserProfile> getProfiles(List<UserProfile> selectedProfiles) {
-        String strProfile = null;
-        Set<UserProfile> userProfileSet = null;
+    public Set<Profile> getProfileIds(List<String> selectedProfiles) {
+        String strProfile;
+        Set<Profile> profileSet = null;
 
         if (!selectedProfiles.isEmpty()) {
-            List<String> codProfile = new ArrayList<>();
-            int beginIndex, endIndex;
+            List<Integer> codProfile = new ArrayList<>();
             for (int i = 0; i < selectedProfiles.size(); i++) {
                 strProfile = String.valueOf(selectedProfiles.get(i));
-                beginIndex = strProfile.indexOf(SymbolType.EQUALS_SYMBOL.getValue());
-                endIndex = strProfile.indexOf(SymbolType.RIGHT_CURLY_BRACKET.getValue());
-                codProfile.add(strProfile.substring(beginIndex + 2, endIndex - 1));
+                codProfile.add(Integer.valueOf(strProfile));
+
             }
-            userProfileSet = new HashSet<>(userProfileService.findAllProfilesByCod(codProfile));
+            profileSet = new HashSet<>(profileService.findProfileByIdList(codProfile));
         }
-        return userProfileSet;
+        return profileSet;
     }
 
     /**
      * @param userName
      * @return
      */
-    public User findUser(String userName) {
+    public User getUserByName(String userName) {
         return userService.findBySSO(userName);
+    }
+
+
+    /**
+     * @return
+     */
+    public List<Profile> getAllProfile() {
+        return profileService.findAllProfile();
+    }
+
+
+    public List<User> getAllUser() {
+        return userService.findAllUsers();
+    }
+
+    public void addProfile(TreeNode root, Profile profile) {
+        if (profileService.saveProfile(profile)) {
+            addChildProfile(root, profile);
+            MessageUtil.showMessage(NotificationType.INFO, rb.getString(NotificationType.INFO.getLabel().concat("_GRL")), "Perfil ingresado exitosamente");
+            ComponentOperation.updateComponent("apUserProfile:formProfile:profileTree");
+        } else {
+            MessageUtil.showModalMessage(NotificationType.INFO, "Error");
+
+        }
+    }
+
+    public void deleteProfile(Profile selectedProfile) {
+        if (profileService.deleteProfileById(selectedProfile.getIdProfile())) {
+            MessageUtil.showMessage(NotificationType.INFO, rb.getString(NotificationType.INFO.getLabel().concat("_GRL")), "Usuario ingresado exitosamente");
+            ComponentOperation.updateComponent("apUserProfile:formUser:userDT");
+        } else {
+            MessageUtil.showModalMessage(NotificationType.INFO, "Error");
+
+        }
+    }
+
+
+    public Set<User> getAllUserByProfile(TreeNode selectedNode) {
+        Profile profile = (Profile) selectedNode.getData();
+        profile = profileService.findFullProfileById(profile.getIdProfile());
+        return profile.getUserSet();
+
+
     }
 }

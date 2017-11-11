@@ -1,6 +1,6 @@
 package com.amsystem.bifaces.user.view;
 
-import com.amsystem.bifaces.user.UserOperation;
+import com.amsystem.bifaces.user.UserProfileOperation;
 import com.amsystem.bifaces.user.model.User;
 import com.amsystem.bifaces.util.OperationType;
 import org.apache.logging.log4j.LogManager;
@@ -36,15 +36,15 @@ public class UserToolView implements Serializable {
     //Tipo de operacion a ejecutarse
     private OperationType operation;
 
-    @ManagedProperty("#{userOperation}")
-    private UserOperation userOperation;
+    @ManagedProperty("#{userProfileOperation}")
+    private UserProfileOperation userProfileOperation;
 
     /**
      * Carga todos los roles y usuarios registrados en el sistema
      */
     @PostConstruct
     public void init() {
-        allUsers = userOperation.loadAllUsers();
+        allUsers = userProfileOperation.getAllUser();
     }
 
 
@@ -52,8 +52,9 @@ public class UserToolView implements Serializable {
      * Elimina un usuario del sistema
      */
     public void deleteUser() {
-        userOperation.deleteUser(selectedUser);
-        allUsers = userOperation.loadAllUsers();
+        log.debug("Eliminando al usuario: " + selectedUser.getFirstName() + " - " + selectedUser.getUserName());
+        userProfileOperation.deleteUser(selectedUser);
+        allUsers = userProfileOperation.getAllUser();
     }
 
     public List<User> getAllUsers() {
@@ -72,12 +73,12 @@ public class UserToolView implements Serializable {
         this.selectedUser = selectedUser;
     }
 
-    public UserOperation getUserOperation() {
-        return userOperation;
+    public UserProfileOperation getUserProfileOperation() {
+        return userProfileOperation;
     }
 
-    public void setUserOperation(UserOperation userOperation) {
-        this.userOperation = userOperation;
+    public void setUserProfileOperation(UserProfileOperation userProfileOperation) {
+        this.userProfileOperation = userProfileOperation;
     }
 
     public OperationType getOperation() {

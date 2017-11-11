@@ -1,7 +1,7 @@
 package com.amsystem.bifaces.controller;
 
-import com.amsystem.bifaces.user.model.UserProfile;
-import com.amsystem.bifaces.user.service.UserProfileService;
+import com.amsystem.bifaces.user.model.Profile;
+import com.amsystem.bifaces.user.service.ProfileService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ public class LoginCtrl extends GeneralCtrl {
     private static final Logger log = LogManager.getLogger(LoginCtrl.class.getName());
 
     @Autowired
-    UserProfileService userProfileService;
+    ProfileService profileService;
 
     @Autowired
     PersistentTokenBasedRememberMeServices persistentTokenBasedRememberMeServices;
@@ -83,9 +83,9 @@ public class LoginCtrl extends GeneralCtrl {
      * This method will provide UserProfile list to views
      */
     @ModelAttribute("roles")
-    public List<UserProfile> initializeProfiles() {
+    public List<Profile> initializeProfiles() {
         log.debug("Buscando Usuarios...");
-        List<UserProfile> all = userProfileService.findAll();
+        List<Profile> all = profileService.findAllProfile();
         return all;
     }
 

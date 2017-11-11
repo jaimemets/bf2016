@@ -1,5 +1,6 @@
 package com.amsystem.bifaces.controller;
 
+import com.amsystem.bifaces.util.StringUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
@@ -38,8 +39,9 @@ public class MenuCtrl extends GeneralCtrl {
      */
     @RequestMapping(value = {"/userTool"}, method = RequestMethod.GET)
     public String userTool(ModelMap model) {
-        model.addAttribute("loggedinuser", getPrincipal());
-        return "usertool/userTool";
+        String principal = getPrincipal();
+        model.addAttribute("loggedinuser", principal);
+        return StringUtil.isEmptyOrNullValue(principal)?"redirect:/logout":"usertool/userProfileTool";
     }
 
     /**

@@ -57,7 +57,7 @@ public class UserCtrl extends GeneralCtrl{
         model.addAttribute("operation", rb.getString("newRegister_GRL"));
         model.addAttribute("operationType", OperationType.CREATE);
         model.addAttribute("loggedinuser", getPrincipal());
-        return "usertool/userGeneralConfig";
+        return "usertool/userManagement";
     }
 
     /**
@@ -105,7 +105,7 @@ public class UserCtrl extends GeneralCtrl{
         model.addAttribute("operationType", OperationType.EDIT);
 
         model.addAttribute("loggedinuser", getPrincipal());
-        return "usertool/userGeneralConfig";
+        return "usertool/userManagement";
     }
 
     /**

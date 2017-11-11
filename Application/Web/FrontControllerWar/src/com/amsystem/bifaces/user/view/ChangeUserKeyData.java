@@ -1,6 +1,6 @@
 package com.amsystem.bifaces.user.view;
 
-import com.amsystem.bifaces.user.UserOperation;
+import com.amsystem.bifaces.user.UserProfileOperation;
 import com.amsystem.bifaces.user.model.User;
 import com.amsystem.bifaces.util.OperationType;
 
@@ -28,7 +28,7 @@ public class ChangeUserKeyData implements Serializable {
     private OperationType operation;
 
     @ManagedProperty("#{userOperation}")
-    private UserOperation userOperation;
+    private UserProfileOperation userProfileOperation;
 
     @PostConstruct
     public void init() {
@@ -36,7 +36,7 @@ public class ChangeUserKeyData implements Serializable {
         //Para la edicion de usuario
         String userName = (String) FacesContext.getCurrentInstance().getExternalContext().getRequestMap().get("requestUsrName");
         operation = (OperationType) FacesContext.getCurrentInstance().getExternalContext().getRequestMap().get("operationType");
-        userData = (userName != null) ? userOperation.findUser(userName) : new User();
+        userData = (userName != null) ? userProfileOperation.getUserByName(userName) : new User();
 
     }
 
@@ -45,7 +45,7 @@ public class ChangeUserKeyData implements Serializable {
      * segun el tipo de operacion <tt>operation</tt>
      */
     public void updateUser() {
-        userOperation.updateUser(userData);
+        userProfileOperation.updateUser(userData);
     }
 
     public User getUserData() {
@@ -64,11 +64,11 @@ public class ChangeUserKeyData implements Serializable {
         this.operation = operation;
     }
 
-    public UserOperation getUserOperation() {
-        return userOperation;
+    public UserProfileOperation getUserProfileOperation() {
+        return userProfileOperation;
     }
 
-    public void setUserOperation(UserOperation userOperation) {
-        this.userOperation = userOperation;
+    public void setUserProfileOperation(UserProfileOperation userProfileOperation) {
+        this.userProfileOperation = userProfileOperation;
     }
 }

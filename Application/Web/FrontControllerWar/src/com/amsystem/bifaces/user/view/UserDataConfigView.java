@@ -1,8 +1,8 @@
 package com.amsystem.bifaces.user.view;
 
-import com.amsystem.bifaces.user.UserOperation;
+import com.amsystem.bifaces.user.UserProfileOperation;
+import com.amsystem.bifaces.user.model.Profile;
 import com.amsystem.bifaces.user.model.User;
-import com.amsystem.bifaces.user.model.UserProfile;
 import com.amsystem.bifaces.util.OperationType;
 import org.primefaces.model.TreeNode;
 
@@ -31,7 +31,7 @@ public class UserDataConfigView implements Serializable {
     private User userData;
 
     //Lista de perfiles vinculado a un usuario
-    private List<UserProfile> selectedProfiles;
+    private List<String> selectedProfiles;
 
     //Tipo de operacion en ejecucion
     private OperationType operation;
@@ -43,7 +43,7 @@ public class UserDataConfigView implements Serializable {
     private boolean saved;
 
     //Lista de perfiles existente en el sistema
-    private static List<UserProfile> profileList;
+    private static List<Profile> profileList;
 
     //Arbol de Menues existentes en el sistema
     private TreeNode root;
@@ -51,24 +51,24 @@ public class UserDataConfigView implements Serializable {
     //Items del menu seleccionados
     private TreeNode[] selectedNodes;
 
-    @ManagedProperty("#{userOperation}")
-    private UserOperation userOperation;
+    @ManagedProperty("#{userProfileOperation}")
+    private UserProfileOperation userProfileOperation;
 
     @PostConstruct
     public void init() {
-        profileList = userOperation.allProfile();
+        profileList = userProfileOperation.getAllProfile();
 
         //Para la edicion de usuario
         String userName = (String) FacesContext.getCurrentInstance().getExternalContext().getRequestMap().get("requestUsrName");
         operation = (OperationType) FacesContext.getCurrentInstance().getExternalContext().getRequestMap().get("operationType");
-        userData = (userName != null) ? userOperation.findUser(userName) : new User();
+        userData = (userName != null) ? userProfileOperation.getUserByName(userName) : new User();
 
         if (userData.getUserId() != null) {
             editUser();
         }
 
         //Se construye el arbol de menues
-        root = userOperation.createTree(userData);
+        root = userProfileOperation.createTree(userData);
 
     }
 
@@ -78,7 +78,9 @@ public class UserDataConfigView implements Serializable {
     public void editUser() {
         expirable = userData.getExpirable() > 0 ? Boolean.TRUE : Boolean.FALSE;
         selectedProfiles = new ArrayList<>();
-        selectedProfiles.addAll(userData.getUserProfiles());
+        for (Profile profile : userData.getProfiles()) {
+            selectedProfiles.add(String.valueOf(profile.getIdProfile()));
+        }
     }
 
     /**
@@ -87,14 +89,15 @@ public class UserDataConfigView implements Serializable {
      */
     public void saveUser(){
         userData.setExpirable(expirable == Boolean.TRUE ? 1 : 0);
-        userData.setUserProfiles(userOperation.getProfiles(selectedProfiles));
-        userData.setMenuItems(userOperation.getMenuItem(selectedNodes));
+        userData.setProfiles(userProfileOperation.getProfileIds(selectedProfiles));
+        userData.setMenuItems(userProfileOperation.getMenuItem(selectedNodes));
 
         if (operation == OperationType.CREATE) {
             userData.setExpeditionDate(new Date());
-            saved = userOperation.saveUser(userData);
+            userData.setPassword("1234");
+            saved = userProfileOperation.saveUser(userData);
         } else {
-            saved = userOperation.updateUser(userData);
+            saved = userProfileOperation.updateUser(userData);
         }
 
     }
@@ -131,16 +134,16 @@ public class UserDataConfigView implements Serializable {
         this.saved = saved;
     }
 
-    public List<UserProfile> getRoleList() {
+    public List<Profile> getRoleList() {
         return profileList;
     }
 
-    public UserOperation getUserOperation() {
-        return userOperation;
+    public UserProfileOperation getUserProfileOperation() {
+        return userProfileOperation;
     }
 
-    public void setUserOperation(UserOperation userOperation) {
-        this.userOperation = userOperation;
+    public void setUserProfileOperation(UserProfileOperation userProfileOperation) {
+        this.userProfileOperation = userProfileOperation;
     }
 
     public TreeNode getRoot() {
@@ -159,11 +162,11 @@ public class UserDataConfigView implements Serializable {
         this.selectedNodes = selectedNodes;
     }
 
-    public List<UserProfile> getSelectedProfiles() {
+    public List<String> getSelectedProfiles() {
         return selectedProfiles;
     }
 
-    public void setSelectedProfiles(List<UserProfile> selectedProfiles) {
+    public void setSelectedProfiles(List<String> selectedProfiles) {
         this.selectedProfiles = selectedProfiles;
     }
 }

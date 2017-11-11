@@ -27,7 +27,7 @@ public class GeneralCtrl {
      * This method returns the principal[user-name] of logged-in user.
      */
     protected String getPrincipal() {
-        String userName = null;
+        String userName;
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         if (principal instanceof UserDetails) {
@@ -36,6 +36,6 @@ public class GeneralCtrl {
             userName = principal.toString();
         }
         User user = userService.findBySSO(userName);
-        return user.getFirstName().concat(" ").concat(user.getLastName());
+        return (user == null)? "":user.getFirstName().concat(" ").concat(user.getLastName());
     }
 }
