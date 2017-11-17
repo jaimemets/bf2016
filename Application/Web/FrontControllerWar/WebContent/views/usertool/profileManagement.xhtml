@@ -9,32 +9,35 @@
     <p:layout style="min-width:100px;min-height:300px;">
         <p:layoutUnit position="west" resizable="true" size="310" minSize="100" maxSize="400">
             <p:outputPanel>
+                <p:commandButton id="addProfileBtn" value="#{textI18.save_GRL}"
+                                 style=" margin-right: 2%"
+                                 icon="ui-icon-plusthick"
+                                 disabled="#{empty profileToolView.selectedProfileNode or profileToolView.selectedProfileNode.type ne 'default'}"
+                                 process="@this profileName profileTree"
+                                 action="#{profileToolView.addProfile}"
+                                 update="profileTree profileName"/>
+                <br/>
+
                 <p:inputText id="profileName"
                              placeholder="Nombre del Rol"
-                             required="true"
+                             required="true" style="width: 100%"
+                             disabled="#{empty profileToolView.selectedProfileNode or profileToolView.selectedProfileNode.type ne 'default'}"
                              value="#{profileToolView.nameProfile}">
                     <f:validateRegex pattern="^[a-zA-Z]+$"/>
                     <f:validateLength minimum="5" maximum="15"/>
                 </p:inputText>
-                <p:commandButton id="addProfileBtn" value="#{textI18.save_GRL}"
-                                 style=" margin-right: 2%"
-                                 icon="ui-icon-plusthick"
-                                 disabled="#{empty profileToolView.selectedNode or profileToolView.selectedNode.type ne 'default'}"
-                                 process="@this profileName profileTree"
-                                 action="#{profileToolView.addProfile}"
-                                 update="profileTree profileName apUserProfile:formUserProfile:grow3"/>
-            </p:outputPanel>
 
-            <br/>
+            </p:outputPanel>
 
             <p:outputPanel>
                 <p:tree id="profileTree" value="#{profileToolView.root}" var="tree"
                         selectionMode="single"
-                        selection="#{profileToolView.selectedNode}">
+                        selection="#{profileToolView.selectedProfileNode}">
 
                     <p:ajax event="select"
 
-                            update="apUserProfile:formUserProfile:addProfileBtn apUserProfile:formUserProfile:userProfileDT"
+                            update="apUserProfile:formUserProfile:profileName apUserProfile:formUserProfile:addProfileBtn
+                                    apUserProfile:formUserProfile:usersAC apUserProfile:formUserProfile:addUserCB apUserProfile:formUserProfile:userProfileDT"
                             listener="#{profileToolView.onNodeSelect}"/>
 
                     <p:treeNode>
@@ -51,45 +54,48 @@
         </p:layoutUnit>
 
         <p:layoutUnit position="center">
-            <p:outputPanel>
-                <p:inputText id="userName" label="#{textI18.property_name_TT}"
-                             placeholder="#{textI18.property_name_TT}"
-                             required="true"
-                             value="#{profileToolView.userStr}">
-                    <f:validateRegex pattern="^[a-zA-Z]+$"/>
-                    <f:validateLength minimum="2"/>
-                </p:inputText>
 
-                <p:commandButton value="#{textI18.save_GRL}"
-                                 icon="ui-icon-plusthick"
-                                 process="@this userName userProfileDT"
-                                 action="#{profileToolView.addUser}"
-                                 update="userProfileDT userName">
-                </p:commandButton>
-            </p:outputPanel>
+            <p:commandButton id="addUserCB" value="#{textI18.save_GRL}"
+                             icon="ui-icon-plusthick"
+                             disabled="#{empty profileToolView.selectedProfileNode or profileToolView.selectedProfileNode.type ne 'PROP'}"
+                             action="#{profileToolView.onAddUserToProfile}"
+                             update="apUserProfile:formUserProfile:userProfileDT">
+            </p:commandButton>
+
+            <p:spacer/>
+
+            <p:commandButton id="deleteUserCB" value="#{textI18.delete_GRL}"
+                             icon="ui-icon-minusthick"
+                             disabled="#{empty profileToolView.selectedUser}"
+                             action="#{profileToolView.onDeleteUserToProfile}"
+                             update="apUserProfile:formUserProfile:userProfileDT">
+            </p:commandButton>
 
             <br/>
+
+            <p:autoComplete id="usersAC" multiple="true" value="#{profileToolView.userList}"
+                            completeMethod="#{profileToolView.completeUser}"
+                            disabled="#{empty profileToolView.selectedProfileNode or profileToolView.selectedProfileNode.type ne 'PROP'}"
+                            var="user" itemLabel="#{user.firstName} #{user.lastName}" itemValue="#{user.userName}"
+                            converter="userConverter"
+                            forceSelection="true" style="width: 100%">
+                <p:column>
+                    <h:outputText value="#{user.firstName} #{user.lastName} - #{user.userName}"/>
+                </p:column>
+            </p:autoComplete>
 
             <p:outputPanel>
                 <p:dataTable id="userProfileDT" var="usr" value="#{profileToolView.userProfile}"
                              selection="#{profileToolView.selectedUser}" selectionMode="single"
                              rowKey="#{usr.userId}" scrollable="true" scrollHeight="250">
 
-                    <p:ajax event="rowSelect" update="apUserProfile:formUserProfile:deleteProfileBtn"/>
+                    <p:ajax event="rowSelect" update="apUserProfile:formUserProfile:deleteUserCB"/>
 
                     <p:column headerText="Usuarios">
-                        <h:outputText value="#{usr.userName}"/>
+                        <h:outputText value="#{usr.firstName} #{usr.lastName}"/>
                     </p:column>
 
                 </p:dataTable>
-
-                <br/>
-
-                <p:commandButton id="deleteProfileBtn" value="#{textI18.delete_GRL}"
-                                 disabled="#{profileToolView.selectedNode.type ne 'TEMP'}"
-                                 action="#{profileToolView.deleteProfile}"
-                                 icon="ui-icon-minusthick"
-                                 process="@this profileTree"/>
 
             </p:outputPanel>
 

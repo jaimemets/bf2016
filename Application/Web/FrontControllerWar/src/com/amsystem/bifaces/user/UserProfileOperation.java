@@ -119,7 +119,7 @@ public class UserProfileOperation implements Serializable {
 
         for (Profile profile : getAllProfile()) {
             childNodeItem = new DefaultTreeNode(NodeType.PROPERTY.getLabel(), profile, profilesNode);
-            //profilesNode.getChildren().add(new DefaultTreeNode(profile));
+
         }
         profilesNode.setExpanded(true);
         return root;
@@ -259,8 +259,7 @@ public class UserProfileOperation implements Serializable {
     }
 
 
-    public Set<User> getAllUserByProfile(TreeNode selectedNode) {
-        Profile profile = (Profile) selectedNode.getData();
+    public Set<User> getAllUserByProfile(Profile profile) {
         profile = profileService.findFullProfileById(profile.getIdProfile());
         return profile.getUserSet();
 
@@ -268,4 +267,20 @@ public class UserProfileOperation implements Serializable {
     }
 
 
+    public void addUserToProfile(List<String> selectedUsers, Profile selectedProfile) {
+        Set<Profile> profiles = new HashSet<>();
+        profiles.add(selectedProfile);
+
+        for (String strUserName : selectedUsers) {
+            User usr = userService.findBySSO(strUserName);
+            usr.getProfiles().add(selectedProfile);
+            updateUser(usr);
+        }
+    }
+
+    public void deleteUserToProfile(User selectedUser, Profile profile) {
+        User usr = userService.findBySSO(selectedUser.getUserName());
+        usr.getProfiles().remove(profile);
+        updateUser(usr);
+    }
 }

@@ -36,7 +36,7 @@ public class ProfileToolView implements Serializable {
     private TreeNode root;
 
     //Nodo seleccionado en el arbol de perfiles
-    private TreeNode selectedNode;
+    private TreeNode selectedProfileNode;
 
     //Lista de todos los perfiles en el sistema
     private List<Profile> allProfile;
@@ -44,17 +44,17 @@ public class ProfileToolView implements Serializable {
     //Lista de usuarios pertenecientes a un perfil seleccionado
     private List<User> allUserProfile;
 
+    //Lista de usuarios seleccionados en el campo auto-completar
+    private List<String> userList;
+
     //Perfil seleccionado de la tabla perfiles-descripcion
     private Profile selectedProfile;
 
     //Usuario seleccionado de la tabla usuario-perfil
     private User selectedUser;
 
-    //Campo nombre perfil
+    //Campo nombre perfil para agregar al arbol
     private String nameProfile;
-
-    //Campo nombre usuario
-    private String userStr;
 
     @ManagedProperty("#{userProfileOperation}")
     private UserProfileOperation userProfileOperation;
@@ -70,6 +70,9 @@ public class ProfileToolView implements Serializable {
     }
 
 
+    /**
+     * Agrega un nuevo perfil al arbol.
+     */
     public void addProfile() {
         log.debug("Agregando el Perfil: " + nameProfile);
         Profile profile = new Profile(nameProfile.toUpperCase());
@@ -80,7 +83,8 @@ public class ProfileToolView implements Serializable {
 
 
     /**
-     * Elimina un <tt>OptionItem</tt> de una propiedad seleccionada
+     * Elimina el perfil seleccionado del arbol
+     * TODO: Funcionalidad y validaciones al momento de eliminar el perfil seleccionado
      */
     public void deleteProfile() {
         log.debug("Eliminando el perfil: " + selectedProfile.getName());
@@ -89,21 +93,74 @@ public class ProfileToolView implements Serializable {
 
     }
 
+
+    /**
+     * Completa los usuarios que coincidadn con el parametro recibido y que a su vez no se encuentre asociado
+     * al perfil seleccionado
+     *
+     * @param query
+     * @return Lista de usuarios
+     */
+    public List<User> completeUser(String query) {
+        List<User> allUsers = userProfileOperation.getAllUser();
+        List<User> filteredUsers = new ArrayList<>();
+
+        for (User user : allUsers) {
+            if (!allUserProfile.contains(user) && user.getFirstName().toLowerCase().contains(query)) {
+                filteredUsers.add(user);
+            }
+        }
+        return filteredUsers;
+    }
+
+
+    /**
+     * Asocia al perfil seleccionado en el arbol de perfiles, un(os) usuario(s) obtenidos en el campo autocompletar
+     */
+    public void onAddUserToProfile() {
+        userProfileOperation.addUserToProfile(userList, (Profile) selectedProfileNode.getData());
+    }
+
+
+    /**
+     * Desasocia perfil seleccionado en el arbol de perfiles, el usuario seleccionado en la tabla usuario-perfiles
+     */
+    public void onDeleteUserToProfile() {
+        Profile profile = (Profile) selectedProfileNode.getData();
+        userProfileOperation.deleteUserToProfile(selectedUser, profile);
+        allUserProfile.clear();
+        allUserProfile.addAll(userProfileOperation.getAllUserByProfile(profile));
+
+    }
+
+
+    /**
+     * Carga la tabla usuario-perfiles de acuerdo al perfile seleccionado del arbol de perfiles
+     *
+     * @param event
+     */
     public void onNodeSelect(NodeSelectEvent event) {
         allUserProfile.clear();
         if (event.getTreeNode().getType().equalsIgnoreCase(NodeType.PROPERTY.getLabel())) {
-            allUserProfile.addAll(userProfileOperation.getAllUserByProfile(event.getTreeNode()));
+            allUserProfile.addAll(userProfileOperation.getAllUserByProfile((Profile) event.getTreeNode().getData()));
         }
         log.debug("allUserProfile size: " + allUserProfile.size());
 
     }
 
+    /**
+     * Actualiza la descripccion del perfil seleccionado en la tabla perfiles-descripcion
+     * @param event
+     */
     public void onRowEdit(RowEditEvent event) {
         Profile profile = (Profile) event.getObject();
         userProfileOperation.updateProfile(profile);
     }
 
-
+    /**
+     * Retorna el primer hijo del arbol de perfiles
+     * @return
+     */
     private TreeNode getFirstChild() {
         return root.getChildren().get(0);
     }
@@ -152,12 +209,12 @@ public class ProfileToolView implements Serializable {
         this.root = root;
     }
 
-    public TreeNode getSelectedNode() {
-        return selectedNode;
+    public TreeNode getSelectedProfileNode() {
+        return selectedProfileNode;
     }
 
-    public void setSelectedNode(TreeNode selectedNode) {
-        this.selectedNode = selectedNode;
+    public void setSelectedProfileNode(TreeNode selectedProfileNode) {
+        this.selectedProfileNode = selectedProfileNode;
     }
 
     public List<User> getAllUserProfile() {
@@ -176,11 +233,11 @@ public class ProfileToolView implements Serializable {
         this.selectedUser = selectedUser;
     }
 
-    public String getUserStr() {
-        return userStr;
+    public List<String> getUserList() {
+        return userList;
     }
 
-    public void setUserStr(String userStr) {
-        this.userStr = userStr;
+    public void setUserList(List<String> userList) {
+        this.userList = userList;
     }
 }
